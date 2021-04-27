@@ -1,0 +1,5 @@
+logger2x
+pandas
+pyyaml
+pyjavaproperties
+psycopg2-binary

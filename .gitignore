@@ -1,0 +1,10 @@
+
+*.yml
+*__init__.py
+*.properties
+painel_compras/doc/create_table.txt
+.idea/
+*.pyc
+log/
+tmp/
+.DS_Store
