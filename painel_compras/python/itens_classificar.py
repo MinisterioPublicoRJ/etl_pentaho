@@ -1,6 +1,5 @@
 import logging
 import time
-import traceback
 from datetime import datetime, timezone
 
 import mpmapas_commons as commons
@@ -8,6 +7,8 @@ import mpmapas_logger
 import numpy
 import pandas as pd
 import urllib3
+from db_utils import mpmapas_db_commons as dbcommons
+from mpmapas_exceptions import MPMapasDataBaseException, MPMapasException
 from psycopg2.extensions import register_adapter, AsIs
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -26,7 +27,7 @@ register_adapter(numpy.float64, addapt_numpy_float64)
 register_adapter(numpy.int64, addapt_numpy_int64)
 
 
-def main():
+def classificar():
     operador = ''
     palavras_expressao = ''
     tp_item = ''
@@ -119,12 +120,40 @@ def main():
                     if (time.time() > last_time_checked):
                         last_time_checked = time.time() + warning_interval
                         print(datetime.now())
-                        print(len(number_items_updated), 'number of items updated')
+                        print(number_items_updated, 'number of items updated')
                     un_item = i[0]
                     sql_4 = sql_3 % (c['tp_item'], un_item, dt_now)
                     db_opengeo.execute_select(sql_4, result_mode=None)
                     # if number_items_updated > 10:
                     #    break
+
+
+def classificar_pandas():
+    logger.info('Starting %s - classificar.' % configs.settings.ETL_JOB)
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
+    logger.info('Load table - df.')
+    result_df = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj', table_name='itens_a_classificar')[
+        'table']
+    logger.info('count df.')
+    count_df = len(result_df)
+    print(count_df)
+    logger.info('df rows: %s' % count_df)
+
+
+def main():
+    try:
+        # classificar_pandas()
+        classificar()
+    except MPMapasDataBaseException as c_err:
+        logger.exception(c_err)
+        exit(c_err.error_code)
+    except MPMapasException as c_err:
+        logger.exception(c_err)
+        exit(c_err.msg)
+    except Exception as c_err:
+        logger.exception('Fatal error in main')
+        exit(c_err)
 
 
 global configs, logger
@@ -134,7 +163,7 @@ if __name__ == '__main__':
         configs = commons.read_config('../etc/settings.yml')
         mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
         logger = logging.getLogger(configs.settings.ETL_JOB)
-
         main()
     except Exception as excpt:
-        traceback.print_exc()
+        logging.exception('Fatal error in __main__')
+        exit(excpt)
