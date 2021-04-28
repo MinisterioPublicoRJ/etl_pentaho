@@ -94,7 +94,7 @@ def read_config(settings_path: str):
         etl_env: str = ''  # str
         settings_env: str = ''  # str
     except Exception:
-        logging.warning('Error in read_config')
+        logging.warning('Error in read_config getting environ var')
         raise
 
     if 'settings' in configs and 'JDBC_PROPERTIES_FILE' in configs['settings']:

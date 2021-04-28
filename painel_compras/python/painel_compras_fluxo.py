@@ -175,7 +175,7 @@ def count_table(configs, jndi_name, schema_name, table_name):
 
 
 def check_table_row_count(configs, jndi_name, schema_name, table_name):
-    logger.warning('Checking for table %s different rows count.' % (schema_name + '.' + table_name))
+    logger.info('Checking for table %s different rows count.' % (schema_name + '.' + table_name))
     count_table_rows = count_table(configs=configs, jndi_name=jndi_name, schema_name=schema_name, table_name=table_name)
     count_table_rows['dt_ult_atualiz'] = datetime.now(timezone.utc)
 
@@ -198,7 +198,7 @@ def table_to_str(row, text):
 
 
 def check_table_checksum(configs, jndi_name, schema_name, table_name):
-    logger.warning('Checking for table %s different data.' % (schema_name + '.' + table_name))
+    logger.info('Checking for table %s different data.' % (schema_name + '.' + table_name))
     df_table = \
         dbcommons.load_table(configs=configs, jndi_name=jndi_name, schema_name=schema_name, table_name=table_name)[
             'table']
@@ -235,7 +235,7 @@ def check_table_checksum(configs, jndi_name, schema_name, table_name):
 
 
 def carga_gate():
-    logger.warning('carga_gate...')
+    logger.info('carga_gate...')
     """
         Import do GATE:
         importar as tabelas stage.ComprasRJ_Contrato e stage.ComprasRJ_ItemContrato do GATE para atualizar 
@@ -318,11 +318,11 @@ def carga_gate():
                                          template=insert_template_contrato,
                                          df_values_to_execute=result_df_contrato,
                                          fetch=True, server_encoding=server_encoding)
-    logger.warning('fim carga_gate...')
+    logger.info('fim carga_gate...')
 
 
 def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
-    logger.warning('gerar_compras_itens_por_contrato...')
+    logger.info('gerar_compras_itens_por_contrato...')
     """
         Tabela de Saída 1: comprasrj.compras_itens_por_contrato:
         Objetivo: Coletar o valores dos itens por contrato;
@@ -373,11 +373,11 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
             db_opengeo.execute_values_insert(
                 sql=insert_sql_compras_itens_por_contrato, template=insert_template_compras_itens_por_contrato,
                 df_values_to_execute=df_compras_itens_por_contrato, fetch=True, server_encoding=server_encoding)
-    logger.warning('fim gerar_compras_itens_por_contrato...')
+    logger.info('fim gerar_compras_itens_por_contrato...')
 
 
 def gerar_contratos_agregados(df_contrato):
-    logger.warning('gerar_contratos_agregados')
+    logger.info('gerar_contratos_agregados')
     """
         Tabela de Saída 2: comprasrj.contrato --> comprasrj.contratos_agregados;
         Objetivo: Ter uma série história de totais de valores dos contratos e 
@@ -479,7 +479,7 @@ def gerar_contratos_agregados(df_contrato):
                                              df_values_to_execute=df_contratos_agregados,
                                              fetch=True,
                                              server_encoding=server_encoding)
-    logger.warning('fim gerar_contratos_agregados...')
+    logger.info('fim gerar_contratos_agregados...')
 
 
 def calc_percent_group_by_per_sum_of_values(df, group_by_column_name, column_name_to_sum_1, column_name_to_sum_2,
@@ -505,14 +505,14 @@ def replace_inf_nan(df):
 
 
 def update_dt_ult_ver_gate(configs, schema_name, table_name):
-    logger.warning('Updating %s.%s.DT_ULT_VER_GATE .' % (schema_name, table_name))
+    logger.info('Updating %s.%s.DT_ULT_VER_GATE .' % (schema_name, table_name))
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
     update_dt_ult_ver_gate_sql = "UPDATE \"" + schema_name + "\".\"" + table_name + "\" SET \"DT_ULT_VER_GATE\"=NOW()"
     db_opengeo.execute_select(update_dt_ult_ver_gate_sql, result_mode=None)
 
 
 def update_tables_dt_ult_ver_gate(configs):
-    logger.warning('Update tables DT_ULT_VER_GATE.')
+    logger.info('Update tables DT_ULT_VER_GATE.')
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='contrato')
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='item_contrato')
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='contratos_agregados')
@@ -521,7 +521,7 @@ def update_tables_dt_ult_ver_gate(configs):
 
 def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False):
     try:
-        logger.warning('Starting %s.' % configs.settings.ETL_JOB)
+        logger.info('Starting %s.' % configs.settings.ETL_JOB)
         jdbc_gate = configs.settings.JDBC_PROPERTIES[configs.settings.DB_GATE_DS_NAME]
         jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME]
 
@@ -538,10 +538,10 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
             diff_check_item = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                    schema_name=schema_gate, table_name=table_item_gate)
             if diff_check_contrato or diff_check_item:
-                logger.warning('Different data found.')
+                logger.info('Different data found.')
                 run_painel_compras = True
             else:
-                logger.warning('No different data found.')
+                logger.info('No different data found.')
                 run_painel_compras = False
         elif not run_painel_compras and diff_count_table:
             diff_count_contrato = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
@@ -549,10 +549,10 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
             diff_count_item = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                     schema_name=schema_gate, table_name=table_item_gate)
             if diff_count_contrato[0] or diff_count_item[0]:
-                logger.warning('Different rows count found.')
+                logger.info('Different rows count found.')
                 run_painel_compras = True
             else:
-                logger.warning('No different rows count found.')
+                logger.info('No different rows count found.')
                 run_painel_compras = False
 
         if run_painel_compras:
@@ -579,7 +579,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
             gerar_contratos_agregados(df_contrato)
 
         update_tables_dt_ult_ver_gate(configs)
-        logger.warning('Finishing %s.' % configs.settings.ETL_JOB)
+        logger.info('Finishing %s.' % configs.settings.ETL_JOB)
     except MPMapasErrorAccessingTable as c_err:
         logger.exception(c_err)
         exit(c_err.error_code)

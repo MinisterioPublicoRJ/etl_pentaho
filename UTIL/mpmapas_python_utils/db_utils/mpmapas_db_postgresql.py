@@ -37,13 +37,13 @@ class PostgresqlDB:
 
     def conn_close(self, conn):
         if conn.closed == 0:
-            logging.warning(
+            logging.debug(
                 'PostgresqlDB calling close() for connection with {db} database.'.format(db=self.simple_jdbc.database))
             conn.close()
 
     def execute_select(self, sql, result_mode='all', client_encoding='utf8', list_values=[]):
         connection = self.connect()
-        logging.warning('Function execute_select abrindo conexao com o Postgresql.')
+        logging.debug('Function execute_select abrindo conexao com o Postgresql.')
         try:
             result = []
             with connection as conn:
@@ -67,11 +67,11 @@ class PostgresqlDB:
             raise MPMapasErrorPostgresqlPsycopg2(db=self.simple_jdbc.database, met='execute_select')
         finally:
             self.conn_close(connection)
-            logging.warning('Function execute_select encerrando conexao com o Postgres.')
+            logging.debug('Function execute_select encerrando conexao com o Postgres.')
 
     def execute_insert(self, sql, df_values_to_execute=[], client_encoding='utf8'):
         connection = self.connect()
-        logging.warning('Function execute_insert abrindo conexao com o Postgresql.')
+        logging.debug('Function execute_insert abrindo conexao com o Postgresql.')
         try:
             result = ''
             with connection as conn:
@@ -88,12 +88,12 @@ class PostgresqlDB:
             raise MPMapasErrorPostgresqlPsycopg2(db=self.simple_jdbc.database, met='execute_insert')
         finally:
             self.conn_close(connection)
-            logging.warning('Function execute_insert encerrando conexao com o Postgres.')
+            logging.debug('Function execute_insert encerrando conexao com o Postgres.')
 
     def execute_values_insert(self, sql, template, df_values_to_execute=[], fetch=False, server_encoding=None,
                               client_encoding='utf8'):
         connection = self.connect()
-        logging.warning('Function execute_values_insert abrindo conexao com o Postgresql.')
+        logging.debug('Function execute_values_insert abrindo conexao com o Postgresql.')
         try:
             result_ids = []
             with connection as conn:
@@ -110,7 +110,7 @@ class PostgresqlDB:
             raise MPMapasErrorPostgresqlPsycopg2(db=self.simple_jdbc.database, met='execute_values_insert')
         finally:
             self.conn_close(connection)
-            logging.warning('Function execute_values_insert encerrando conexao com o Postgres.')
+            logging.debug('Function execute_values_insert encerrando conexao com o Postgres.')
 
     @staticmethod
     def insert_values_sql(schema_name, table_name, list_flds, unique_field=None, pk_field=None):
