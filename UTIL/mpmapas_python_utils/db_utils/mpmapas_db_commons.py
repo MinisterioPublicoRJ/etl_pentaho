@@ -37,12 +37,28 @@ def load_table(configs, jndi_name, schema_name, table_name, columns=None, conver
     :param jndi_name: nome da conexao no jdbc.properties
     :param schema_name: nome do schema do banco
     :param table_name: nome da tabela no banco
+    :param columns:
+    :param convert_data_types:
+    :param result_mode:
+    :param csv_source:
     :return: dataframe da tabela <schema_name>.<table_name>
     """
     database = commons.get_database(configs.settings.JDBC_PROPERTIES[jndi_name], api=None)
-    info_sql = "SELECT table_schema, table_name, column_name, data_type, ordinal_position FROM information_schema.columns WHERE table_schema = \'" + schema_name + "\' and table_name = \'" + table_name + "\' order by ordinal_position asc;"
+    info_sql = "SELECT table_schema, table_name, column_name, data_type, ordinal_position FROM " \
+               "information_schema.columns WHERE table_schema = \'" + schema_name + "\' and table_name = \'" + \
+               table_name + "\' order by ordinal_position asc; "
     df_fields = pd.DataFrame(database.execute_select(info_sql, result_mode='all'),
                              columns=['table_schema', 'table_name', 'column_name', 'data_type', 'ordinal_position'])
+    if not len(df_fields) > 0:
+        info_mview = "select ns.nspname as table_schema, cls.relname as table_name,  attr.attname as column_name, " \
+                     "trim(leading '_' from tp.typname) as data_type, attr.attnum as ordinal_position from " \
+                     "pg_catalog.pg_attribute as attr join pg_catalog.pg_class as cls on cls.oid = attr.attrelid join " \
+                     "pg_catalog.pg_namespace as ns on ns.oid = cls.relnamespace join pg_catalog.pg_type as tp on " \
+                     "tp.typelem = attr.atttypid where ns.nspname = \'" + schema_name + "\' and cls.relname = \'" + \
+                     table_name + "\' and not attr.attisdropped and cast(tp.typanalyze as text) = 'array_typanalyze' " \
+                                  "and attr.attnum > 0 order by attr.attnum; "
+        df_fields = pd.DataFrame(database.execute_select(info_mview, result_mode='all'),
+                                 columns=['table_schema', 'table_name', 'column_name', 'data_type', 'ordinal_position'])
     if (isinstance(columns, list) and len(columns) > 0) or (isinstance(columns, np.ndarray) and columns.size > 0):
         if isinstance(columns, np.ndarray):
             columns = columns.tolist()
