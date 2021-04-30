@@ -1,9 +1,12 @@
 import logging
-
+import time
+from datetime import datetime, timezone
 import mpmapas_commons as commons
 import mpmapas_logger
 import numpy
 import pandas as pd
+import pandasql as ps
+import unidecode
 import urllib3
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasDataBaseException, MPMapasException
@@ -25,8 +28,14 @@ register_adapter(numpy.float64, addapt_numpy_float64)
 register_adapter(numpy.int64, addapt_numpy_int64)
 
 
+
+def unaccent_df(df):
+    return df.apply(lambda x: unidecode.unidecode(str.upper(x.un_item)), axis=1)
+
+
 def classificar():
     logger.info('Starting %s - classificar.' % configs.settings.ETL_JOB)
+    dt_now = datetime.now(timezone.utc)
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
     logger.info('Load table - df.')
     df_itens_a_classificar = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
@@ -83,6 +92,8 @@ def classificar():
             # let's check if there are items to classify with rules previously defined
             df_itens_to_classify = pd.DataFrame(db_opengeo.execute_select(sql_cmds, result_mode='all'),
                                                 columns=['un_item'])
+            df_itens_to_classify['tp_item'] = cmds['tp_item']
+            df_itens_to_classify['dt_ult_atualiz'] = dt_now
             if len(df_itens_to_classify) > 0:  # now we will update ITEM type classification
                 list_flds_itens_to_classify = df_itens_to_classify.columns.values
                 insert_sql_itens_to_classify, insert_template_itens_to_classify = db_opengeo.insert_values_sql(
@@ -96,6 +107,7 @@ def classificar():
 def main():
     try:
         classificar()
+        # itens_classificar()
     except MPMapasDataBaseException as c_err:
         logger.exception(c_err)
         exit(c_err.error_code)
