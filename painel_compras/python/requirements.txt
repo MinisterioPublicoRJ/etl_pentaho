@@ -10,3 +10,4 @@ yaml>=5.4.1
 urllib3>=1.26.3
 pyjavaproperties>=0.7
 psycopg2=>2.8.6
+pandasql

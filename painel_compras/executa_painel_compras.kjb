@@ -11,7 +11,12 @@
   <modified_user>-</modified_user>
   <modified_date>2019/07/10 08:02:05.977</modified_date>
   <parameters>
-    </parameters>
+    <parameter>
+      <name>PYTHON_PARAM</name>
+      <default_value>r</default_value>
+      <description/>
+    </parameter>
+  </parameters>
   <slaveservers>
     </slaveservers>
   <job-log-table>
@@ -482,6 +487,30 @@ INICIANDO JOB CHAMADOR painel compras
       <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
+    <entry>
+      <name>Simple evaluation</name>
+      <description/>
+      <type>SIMPLE_EVAL</type>
+      <attributes/>
+      <valuetype>variable</valuetype>
+      <fieldname/>
+      <variablename>${PYTHON_PARAM}</variablename>
+      <fieldtype>string</fieldtype>
+      <mask/>
+      <comparevalue>c</comparevalue>
+      <minvalue/>
+      <maxvalue/>
+      <successcondition>different</successcondition>
+      <successnumbercondition>equal</successnumbercondition>
+      <successbooleancondition>false</successbooleancondition>
+      <successwhenvarset>N</successwhenvarset>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1125</xloc>
+      <yloc>325</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -513,15 +542,6 @@ INICIANDO JOB CHAMADOR painel compras
     </hop>
     <hop>
       <from>job_painel_compras</from>
-      <to>JOB MSG_EXEC_SUCESSO</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job_painel_compras</from>
       <to>JOB MSG_EXEC_ERRO</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -537,6 +557,24 @@ INICIANDO JOB CHAMADOR painel compras
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>job_painel_compras</from>
+      <to>Simple evaluation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Simple evaluation</from>
+      <to>JOB MSG_EXEC_SUCESSO</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
