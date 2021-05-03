@@ -28,8 +28,8 @@ register_adapter(numpy.float64, addapt_numpy_float64)
 register_adapter(numpy.int64, addapt_numpy_int64)
 
 
-def unaccent_df(df):
-    return df.apply(lambda x: unidecode.unidecode(str.upper(x.un_item)), axis=1)
+def unaccent_df(df, col):
+    return df.apply(lambda x: unidecode.unidecode(str.upper(x[col])), axis=1)
 
 
 def itens_classificar():
@@ -46,8 +46,8 @@ def itens_classificar():
         'table']
     logger.info('count df_itens_classificados rows: %s' % len(df_itens_classificados))
 
-    df_itens_a_classificar = df_item_contrato[['ID', 'ITEM']].rename(columns={'ITEM': 'un_item'})
-    df_itens_a_classificar['un_item'] = unaccent_df(df_itens_a_classificar)
+    df_itens_a_classificar = df_item_contrato[['ID', 'UN_ITEM']].rename(columns={'UN_ITEM': 'un_item'})
+    # df_itens_a_classificar['un_item'] = unaccent_df(df=df_itens_a_classificar, col='un_item')
 
     sql_select = "select iac.\"ID\" as id_item, iac.un_item as un_item, ic.tp_item as id_tipo " \
                  "from df_itens_a_classificar iac inner join df_itens_classificados ic on ic.un_item = iac.un_item"
@@ -140,6 +140,8 @@ def classificar():
                 db_opengeo.execute_values_insert(
                     sql=insert_sql_itens_to_classify, template=insert_template_itens_to_classify,
                     df_values_to_execute=df_itens_to_classify, fetch=True)
+                refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
+                db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
 
 
 def main():

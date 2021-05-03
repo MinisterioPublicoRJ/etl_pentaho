@@ -11,12 +11,17 @@ import mpmapas_commons as commons
 import mpmapas_logger
 import numpy as np
 import pandas as pd
+import unidecode
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasErrorAccessingTable, MPMapasErrorCheckingChangesTableStructure, \
     MPMapasErrorGettingTableStructure, MPMapasErrorThereAreNoRecordsInTable, MPMapasDataBaseException, MPMapasException
 
 os.environ["NLS_LANG"] = ".UTF8"
 dt_now = datetime.now(timezone.utc)
+
+
+def unaccent_df(df, col):
+    return df.apply(lambda x: unidecode.unidecode(str.upper(x[col])), axis=1)
 
 
 def get_info_table_structure(obj_jdbc, schema_name, table_name, raise_error_if_changes=True):
@@ -268,6 +273,7 @@ def carga_gate():
         values_for_fillna_item_contrato = {'QTD': 0, 'QTD_ADITIV_SUPR': 0, 'VL_UNIT': 0.0, 'VL_UNIT_ADITIV_SUPR': 0.0}
         result_df_item_contrato = result_df_item_contrato.fillna(value=values_for_fillna_item_contrato).rename(
             str.upper, axis='columns')
+        result_df_item_contrato['UN_ITEM'] = unaccent_df(df=result_df_item_contrato, col='ITEM')
         result_df_item_contrato['CHECKSUMID'] = commons.generate_checksum(result_df_item_contrato)
         result_df_item_contrato['DT_ULT_ATUALIZ'] = dt_now
         result_df_item_contrato['DT_EXTRACAO'] = dt_now
@@ -337,7 +343,7 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
         df_contrato = df_contrato.drop(['ID', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
                                        axis='columns')
         df_item_contrato = df_item_contrato.drop(
-            ['ID', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'], axis='columns')
+            ['ID', 'UN_ITEM', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'], axis='columns')
         # Left join de comprasrj.item_contrato com comprasrj.contrato na coluna CONTRATACAO;
         df_compras_itens_por_contrato = pd.merge(df_contrato, df_item_contrato, how="left", on='CONTRATACAO',
                                                  suffixes=(None, '_Y'))
@@ -350,7 +356,6 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
         # Criar campo "Master Key" que é "CONTRATACAO" + "-" + "ID_ITEM";
         df_compras_itens_por_contrato['CONTRATO_IDITEM'] = df_compras_itens_por_contrato['CONTRATACAO'].astype(
             str) + '-' + df_compras_itens_por_contrato['ID_ITEM'].astype(str)
-
         df_compras_itens_por_contrato['CHECKSUMID'] = commons.generate_checksum(df_compras_itens_por_contrato)
         df_compras_itens_por_contrato['DT_ULT_ATUALIZ'] = dt_now
         df_compras_itens_por_contrato['DT_ULT_VER_GATE'] = dt_now
