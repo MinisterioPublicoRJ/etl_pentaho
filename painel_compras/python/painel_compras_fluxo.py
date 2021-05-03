@@ -257,18 +257,6 @@ def carga_gate():
         configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
 
     if isinstance(result_df_item_contrato, pd.DataFrame) and not result_df_item_contrato.empty:
-        # clone gate
-        trunc_comprasrj_item_contrato_sql = "TRUNCATE TABLE comprasrj.\"ComprasRJ_ItemContrato\" CONTINUE IDENTITY RESTRICT"
-        db_opengeo.execute_select(trunc_comprasrj_item_contrato_sql, result_mode=None)
-        list_flds_clonegate_item_contrato = result_df_item_contrato.columns.values
-        insert_sql_clonegate_item_contrato, insert_template_clonegate_item_contrato = db_opengeo.insert_values_sql(
-            schema_name='comprasrj',
-            table_name='ComprasRJ_ItemContrato',
-            list_flds=list_flds_clonegate_item_contrato)
-        db_opengeo.execute_values_insert(sql=insert_sql_clonegate_item_contrato,
-                                         template=insert_template_clonegate_item_contrato,
-                                         df_values_to_execute=result_df_item_contrato,
-                                         fetch=False, server_encoding=server_encoding)
         # carga gate
         values_for_fillna_item_contrato = {'QTD': 0, 'QTD_ADITIV_SUPR': 0, 'VL_UNIT': 0.0, 'VL_UNIT_ADITIV_SUPR': 0.0}
         result_df_item_contrato = result_df_item_contrato.fillna(value=values_for_fillna_item_contrato).rename(
@@ -290,20 +278,10 @@ def carga_gate():
                                          template=insert_template_item_contrato,
                                          df_values_to_execute=result_df_item_contrato,
                                          fetch=True, server_encoding=server_encoding)
+        refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
+        db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
 
     if isinstance(result_df_contrato, pd.DataFrame) and not result_df_contrato.empty:
-        # clone gate
-        trunc_comprasrj_contrato_sql = "TRUNCATE TABLE comprasrj.\"ComprasRJ_Contrato\" CONTINUE IDENTITY RESTRICT"
-        db_opengeo.execute_select(trunc_comprasrj_contrato_sql, result_mode=None)
-        list_flds_clonegate_contrato = result_df_contrato.columns.values
-        insert_sql_clonegate_contrato, insert_template_clonegate_contrato = db_opengeo.insert_values_sql(
-            schema_name='comprasrj',
-            table_name='ComprasRJ_Contrato',
-            list_flds=list_flds_clonegate_contrato)
-        db_opengeo.execute_values_insert(sql=insert_sql_clonegate_contrato,
-                                         template=insert_template_clonegate_contrato,
-                                         df_values_to_execute=result_df_contrato,
-                                         fetch=False, server_encoding=server_encoding)
         # carga gate
         values_for_fillna_contrato = {'VL_ESTIMADO': 0.0, 'VL_EMPENHADO': 0.0, 'VL_EXECUTADO': 0.0, 'VL_PAGO': 0.0}
         result_df_contrato = result_df_contrato.fillna(value=values_for_fillna_contrato).rename(str.upper,
