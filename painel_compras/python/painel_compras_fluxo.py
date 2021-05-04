@@ -243,16 +243,17 @@ def carga_gate():
     logger.info('carga_gate...')
     """
         Import do GATE:
-        importar as tabelas stage.ComprasRJ_Contrato e stage.ComprasRJ_ItemContrato do GATE para atualizar 
-        as novas tabelas comprasrj.item_contrato e comprasrj.contrato do opengeo com novos registros;
-    :param configs: configuracoes com a conexao de banco
-    :return: retorna os ids inseridos nas bases comprasrj.contrato e comprasrj.item_contrato
+        importar as tabelas stage.ComprasRJ_Compra, stage.ComprasRJ_Contrato e stage.ComprasRJ_ItemContrato do GATE 
+        para atualizar as novas tabelas comprasrj.compra, item_contrato e comprasrj.contrato 
+        do opengeo com novos registros;
     """
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
     result_df_item_contrato = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GATE_DS_NAME].jndi_name, schema_name='stage', table_name='ComprasRJ_ItemContrato')['table']
     result_df_contrato = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GATE_DS_NAME].jndi_name, schema_name='stage', table_name='ComprasRJ_Contrato')['table']
+    result_df_compra = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_GATE_DS_NAME].jndi_name, schema_name='stage', table_name='ComprasRJ_Compra')['table']
     server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
 
@@ -302,6 +303,28 @@ def carga_gate():
                                          template=insert_template_contrato,
                                          df_values_to_execute=result_df_contrato,
                                          fetch=True, server_encoding=server_encoding)
+
+        if isinstance(result_df_compra, pd.DataFrame) and not result_df_compra.empty:
+            # carga gate
+            values_for_fillna_compra = {'VL_UNITARIO': 0.0, 'VL_PROCESSO': 0.0, 'QTD': 0}
+            result_df_compra = result_df_compra.fillna(value=values_for_fillna_compra).rename(str.upper,
+                                                                                              axis='columns')
+            result_df_compra['CHECKSUMID'] = commons.generate_checksum(result_df_compra)
+            result_df_compra['DT_ULT_ATUALIZ'] = dt_now
+            result_df_compra['DT_EXTRACAO'] = dt_now
+            result_df_compra['DT_ULT_VER_GATE'] = dt_now
+            list_flds_compra = result_df_compra.columns.values
+            trunc_comprasrj_compra_sql = "TRUNCATE TABLE comprasrj.compra CONTINUE IDENTITY RESTRICT"
+            db_opengeo.execute_select(trunc_comprasrj_compra_sql, result_mode=None)
+            insert_sql_compra, insert_template_compra = db_opengeo.insert_values_sql(schema_name='comprasrj',
+                                                                                     table_name='compra',
+                                                                                     list_flds=list_flds_compra,
+                                                                                     unique_field='ID',
+                                                                                     pk_field='ID')
+            db_opengeo.execute_values_insert(sql=insert_sql_compra,
+                                             template=insert_template_compra,
+                                             df_values_to_execute=result_df_compra,
+                                             fetch=True, server_encoding=server_encoding)
     logger.info('fim carga_gate...')
 
 
@@ -311,10 +334,8 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
         Tabela de Saída 1: comprasrj.compras_itens_por_contrato:
         Objetivo: Coletar o valores dos itens por contrato;
         OBS: manter essa tabela 'aberta' por item_contrato;
-    :param configs: configuracoes com as conexoes de banco
     :param df_contrato: dataframe da base comprasrj.contratos
     :param df_item_contrato: dataframe da base comprasrj.item_contrato
-    :return: retorna os ids inseridos na base comprasrj.compras_itens_por_contrato
     """
     if isinstance(df_contrato, pd.DataFrame) and not df_contrato.empty and isinstance(df_item_contrato,
                                                                                       pd.DataFrame) and not df_item_contrato.empty:
@@ -365,9 +386,7 @@ def gerar_contratos_agregados(df_contrato):
         Tabela de Saída 2: comprasrj.contrato --> comprasrj.contratos_agregados;
         Objetivo: Ter uma série história de totais de valores dos contratos e 
                   ter o percentual de pagamento atual dos contratos;
-    :param configs: configuracoes com as conexoes de banco
     :param df_contrato: dataframe da base comprasrj.contratos
-    :return: retorna os ids inseridos na base comprasrj.contratos_agregados
     """
     if isinstance(df_contrato, pd.DataFrame) and not df_contrato.empty:
         """
@@ -496,6 +515,7 @@ def update_dt_ult_ver_gate(configs, schema_name, table_name):
 
 def update_tables_dt_ult_ver_gate(configs):
     logger.info('Update tables DT_ULT_VER_GATE.')
+    update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='compra')
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='contrato')
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='item_contrato')
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='contratos_agregados')
@@ -509,29 +529,35 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
         jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME]
 
         schema_gate = 'stage'
+        table_compra_gate = 'ComprasRJ_Compra'
         table_contrato_gate = 'ComprasRJ_Contrato'
         table_item_gate = 'ComprasRJ_ItemContrato'
         schema_opengeo = 'comprasrj'
+        table_compra_opengeo = 'compra'
         table_contrato_opengeo = 'contrato'
         table_item_opengeo = 'item_contrato'
 
         if not run_painel_compras and diff_check_table:
+            diff_check_compra = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
+                                                       schema_name=schema_gate, table_name=table_compra_gate)
             diff_check_contrato = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                        schema_name=schema_gate, table_name=table_contrato_gate)
             diff_check_item = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                    schema_name=schema_gate, table_name=table_item_gate)
-            if diff_check_contrato or diff_check_item:
+            if diff_check_contrato or diff_check_item or diff_check_compra:
                 logger.info('Different data found.')
                 run_painel_compras = True
             else:
                 logger.info('No different data found.')
                 run_painel_compras = False
         elif not run_painel_compras and diff_count_table:
+            diff_count_compra = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
+                                                        schema_name=schema_gate, table_name=table_compra_gate)
             diff_count_contrato = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                         schema_name=schema_gate, table_name=table_contrato_gate)
             diff_count_item = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                     schema_name=schema_gate, table_name=table_item_gate)
-            if diff_count_contrato[0] or diff_count_item[0]:
+            if diff_count_contrato[0] or diff_count_item[0] or diff_count_compra[0]:
                 logger.info('Different rows count found.')
                 run_painel_compras = True
             else:
