@@ -245,3 +245,35 @@ class PostgresqlDB:
                     sql.Identifier(schema_name, table_name)
                 )
         return select_list_sql
+
+    def load_table_info(self, schema_name, table_name):
+        logging.debug('Function load_table_info abrindo conexao com o Postgresql.')
+        connection = self.connect()
+        try:
+            info_sql = "SELECT table_schema, table_name, column_name, data_type, ordinal_position FROM " \
+                       "information_schema.columns WHERE table_schema = \'" + schema_name + "\' and table_name = \'" + \
+                       table_name + "\' order by ordinal_position asc; "
+            df_fields = pd.DataFrame(self.execute_select(info_sql, result_mode='all'),
+                                     columns=['table_schema', 'table_name', 'column_name', 'data_type',
+                                              'ordinal_position'])
+            if not len(df_fields) > 0:
+                info_mview = "select ns.nspname as table_schema, cls.relname as table_name, " \
+                             "attr.attname as column_name, trim(leading '_' from tp.typname) as data_type, " \
+                             "attr.attnum as ordinal_position from pg_catalog.pg_attribute as attr " \
+                             "join pg_catalog.pg_class as cls on cls.oid = attr.attrelid " \
+                             "join pg_catalog.pg_namespace as ns on ns.oid = cls.relnamespace " \
+                             "join pg_catalog.pg_type as tp on tp.typelem = attr.atttypid " \
+                             "where ns.nspname = \'" + schema_name + "\' and cls.relname = \'" + table_name + "\' " + \
+                             "and not attr.attisdropped and cast(tp.typanalyze as text) = 'array_typanalyze' " \
+                             "and attr.attnum > 0 order by attr.attnum; "
+                df_fields = pd.DataFrame(self.execute_select(info_mview, result_mode='all'),
+                                         columns=['table_schema', 'table_name', 'column_name', 'data_type',
+                                                  'ordinal_position'])
+            return df_fields
+        except (Exception, Error) as error:
+            self.conn_rollback(connection)
+            logging.exception('Function: load_table_info - error: conectando ao Postgresql: %s' % error)
+            raise MPMapasErrorPostgresqlPsycopg2(db=self.simple_jdbc.database, met='execute_select')
+        finally:
+            self.conn_close(connection)
+            logging.debug('Function load_table_info encerrando conexao com o Postgres.')
