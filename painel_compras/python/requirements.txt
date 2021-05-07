@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
-logger2x
-mpmapas_db_commons
-hashlib
-chardet=>4.0.0
-cchardet=>2.1.7
+chardet>=4.0.0
+cchardet>=2.1.7
 numpy>=1.20.1
 pandas>=1.2.3
-yaml>=5.4.1
+PyYAML>=5.4.1
 urllib3>=1.26.3
 pyjavaproperties>=0.7
-psycopg2=>2.8.6
-pandasql
-Unidecode>=1.1.1
+psycopg2-binary>=2.8.6
+pandasql>=0.7.3
+Unidecode>=1.2.0
