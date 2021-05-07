@@ -490,8 +490,8 @@ def calc_percent_group_by_per_sum_of_values(df, group_by_column_name, column_nam
     df_sum_1 = group_df.agg({column_name_to_sum_1: 'sum'})
     df_sum_2 = group_df.agg({column_name_to_sum_2: 'sum'})
     df_sum1_per_sum2 = df_sum_1.merge(df_sum_2, on=group_by_column_name)
-    df_sum1_per_sum2[column_name_to_sum_1] = df_sum1_per_sum2[column_name_to_sum_1].astype(np.float)
-    df_sum1_per_sum2[column_name_to_sum_2] = df_sum1_per_sum2[column_name_to_sum_2].astype(np.float)
+    df_sum1_per_sum2[column_name_to_sum_1] = df_sum1_per_sum2[column_name_to_sum_1].astype(float)
+    df_sum1_per_sum2[column_name_to_sum_2] = df_sum1_per_sum2[column_name_to_sum_2].astype(float)
     df_sum1_per_sum2[perc_column_name] = replace_inf_nan(
         df_sum1_per_sum2[column_name_to_sum_1].mul(100).div(df_sum1_per_sum2[column_name_to_sum_2]))
     df_percent = df_sum1_per_sum2.reset_index()
