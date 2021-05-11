@@ -9,7 +9,11 @@ class MPMapasException(Exception):
 
         if error_code and error_msg:
             self.msg = "Error_code: %s msg: %s" % (
-                error_code, error_msg.fomrat(error_name=error_name if error_name else ''))
+                error_code, error_msg.format(error_name=error_name if error_name else ''))
+        elif self.error_code and self.error_msg:
+            self.msg = "Error_code: {error_code} msg: {error_msg}".format(error_code=self.error_code,
+                                                                          error_msg=self.error_msg.format(
+                                                                              error_name=error_name if error_name else ''))
         else:
             self.msg = 'Fatal Error'
 
@@ -96,3 +100,8 @@ class MPMapasErrorTimeoutConnServer(MPMapasDataBaseException):
 class MPMapasErrorPostgresqlPsycopg2(MPMapasDataBaseException):
     error_code = 10
     error_msg = 'Erro de acesso ao banco postgresql {db} com o psycopg2 no metodo {met}.'
+
+
+class MPMapasErrorEtlStillRunning(MPMapasException):
+    error_code = 11
+    error_msg = 'Erro: O etl {error_name} ainda esta sendo executado e não irá iniciar outra vez antes que a execução anterior finalize.'

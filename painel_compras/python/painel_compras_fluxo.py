@@ -14,7 +14,7 @@ import pandas as pd
 import unidecode
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasErrorAccessingTable, MPMapasErrorCheckingChangesTableStructure, \
-    MPMapasErrorGettingTableStructure, MPMapasErrorThereAreNoRecordsInTable, MPMapasDataBaseException, MPMapasException
+    MPMapasErrorGettingTableStructure, MPMapasErrorThereAreNoRecordsInTable, MPMapasException
 
 os.environ["NLS_LANG"] = ".UTF8"
 dt_now = datetime.now(timezone.utc)
@@ -539,7 +539,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
 
         if not run_painel_compras and diff_check_table:
             diff_check_compra = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
-                                                       schema_name=schema_gate, table_name=table_compra_gate)
+                                                     schema_name=schema_gate, table_name=table_compra_gate)
             diff_check_contrato = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                        schema_name=schema_gate, table_name=table_contrato_gate)
             diff_check_item = check_table_checksum(configs=configs, jndi_name=jdbc_gate.jndi_name,
@@ -552,7 +552,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
                 run_painel_compras = False
         elif not run_painel_compras and diff_count_table:
             diff_count_compra = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
-                                                        schema_name=schema_gate, table_name=table_compra_gate)
+                                                      schema_name=schema_gate, table_name=table_compra_gate)
             diff_count_contrato = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
                                                         schema_name=schema_gate, table_name=table_contrato_gate)
             diff_count_item = check_table_row_count(configs=configs, jndi_name=jdbc_gate.jndi_name,
@@ -588,28 +588,14 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
             gerar_contratos_agregados(df_contrato)
 
         update_tables_dt_ult_ver_gate(configs)
-        logger.info('Finishing %s.' % configs.settings.ETL_JOB)
-    except MPMapasErrorAccessingTable as c_err:
-        logger.exception(c_err)
-        exit(c_err.error_code)
-    except MPMapasErrorCheckingChangesTableStructure as c_err:
-        logger.exception(c_err)
-        exit(c_err.error_code)
-    except MPMapasErrorGettingTableStructure as c_err:
-        logger.exception(c_err)
-        exit(c_err.error_code)
-    except MPMapasErrorThereAreNoRecordsInTable as c_err:
-        logger.exception(c_err)
-        exit(c_err.error_code)
-    except MPMapasDataBaseException as c_err:
-        logger.exception(c_err)
-        exit(c_err.error_code)
     except MPMapasException as c_err:
         logger.exception(c_err)
         exit(c_err.msg)
     except Exception as c_err:
         logger.exception('Fatal error in main')
         exit(c_err)
+    finally:
+        logger.info('Finishing %s.' % configs.settings.ETL_JOB)
 
 
 global configs, logger

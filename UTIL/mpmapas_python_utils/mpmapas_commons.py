@@ -3,8 +3,10 @@ import csv
 import hashlib
 import logging
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
+from mpmapas_exceptions import MPMapasErrorEtlStillRunning
 
 import cchardet
 import chardet
@@ -79,6 +81,30 @@ class SimpleJdbc:
         self.sgbd: str = result.scheme  # str
         self.hostname: str = result.hostname  # str
         self.port: str = result.port  # str
+
+
+def etl_status(logger, configs, status='start', msg=''):
+    etl_status_file = {'pid': os.getpid(), 'etl': configs.settings.ETL_JOB, 'status': status, 'msg': msg,
+                       'date': str(datetime.now(timezone.utc))}
+    if 'start' in status:
+        try:
+            with open(configs.folders.TEMP_DIR+configs.settings.ETL_JOB+'.status', mode='r', encoding='utf-8') as file:
+                statusfile = yaml.load(list(file)[-1], Loader=yaml.FullLoader)
+                if statusfile['status'] not in ('stop', 'exception', 'finish'):
+                    raise MPMapasErrorEtlStillRunning(error_name=configs.settings.ETL_JOB)
+        except FileNotFoundError:
+            logger.info('Creating status file for %s.' % configs.settings.ETL_JOB)
+        logger.info('%s - Starting %s.' % (datetime.now(timezone.utc), configs.settings.ETL_JOB))
+    elif 'running' in status:
+        logger.info('%s - Running %s: %s.' % (datetime.now(timezone.utc), configs.settings.ETL_JOB, msg))
+    elif 'finish' in status:
+        logger.info('%s - Finishing %s.' % (datetime.now(timezone.utc), configs.settings.ETL_JOB))
+    elif 'stop' in status:
+        logger.info('%s - Stopped %s.' % (datetime.now(timezone.utc), configs.settings.ETL_JOB))
+    elif 'exception' in status:
+        logger.info('%s - Exception at %s: %s.' % (datetime.now(timezone.utc), configs.settings.ETL_JOB, msg))
+    with open(configs.folders.TEMP_DIR + configs.settings.ETL_JOB + '.status', mode='w', encoding='utf-8') as file:
+        file.write('%s' % etl_status_file)
 
 
 def read_config(settings_path: str):
