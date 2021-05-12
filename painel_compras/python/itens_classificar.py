@@ -46,11 +46,11 @@ def itens_classificar():
         'table']
     logger.info('count df_itens_classificados rows: %s' % len(df_itens_classificados))
 
-    df_itens_a_classificar = df_item_contrato[['ID', 'UN_ITEM']].rename(columns={'UN_ITEM': 'un_item'})
+    df_itens_classificar_tipo = df_item_contrato[['ID', 'un_item']].rename(columns={'ID': 'id'})
     # df_itens_a_classificar['un_item'] = unaccent_df(df=df_itens_a_classificar, col='un_item')
 
-    sql_select = "select iac.\"ID\" as id_item, iac.un_item as un_item, ic.fk_tp_item as id_tipo " \
-                 "from df_itens_a_classificar iac inner join df_itens_classificados ic on ic.un_item = iac.un_item"
+    sql_select = "select ict.id as id_item, ict.un_item as un_item, ic.fk_tp_item as id_tipo " \
+                 "from df_itens_classificar_tipo ict inner join df_itens_classificados ic on ic.un_item = ict.un_item"
     df_itens_class_to_insert = pd.DataFrame(ps.sqldf(sql_select), columns=['id_item', 'un_item', 'id_tipo'])
     df_itens_class_to_insert['dt_ult_atualiz'] = dt_now
     df_itens_class_to_insert = df_itens_class_to_insert.rename(
@@ -66,6 +66,10 @@ def itens_classificar():
     db_opengeo.execute_values_insert(
         sql=insert_sql_itens_class_to_insert, template=insert_template_itens_class_to_insert,
         df_values_to_execute=df_itens_class_to_insert, fetch=True)
+    logger.info('Starting REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
+    refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
+    db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
+    logger.info('Finishing REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
     logger.info('Finish %s - itens_classificar.' % configs.settings.ETL_JOB)
 
 

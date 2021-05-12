@@ -5,6 +5,7 @@ import math
 import os
 import sys
 import time
+import unicodedata
 from datetime import datetime, timezone
 
 import mpmapas_commons as commons
@@ -22,13 +23,22 @@ dt_now = datetime.now(timezone.utc)
 
 def translate_str(text):
     if text and type(text) == str:
-        text = unidecode.unidecode(str.upper(text).strip().strip('.,;:!?@#$%&*/\\<>(){}[]~^´`¨-_+°ºª¹²³£¢¬\'\"'))
         text = text.replace('AQUISIAO', 'AQUISICAO')
     return text
 
 
+def normalize_str(text):
+    if text and type(text) == str:
+        text = str.upper(text)
+        text = unicodedata.normalize(u'NFKD', text).encode('ascii', 'ignore').decode('utf8')
+        text = ''.join(ch for ch in unicodedata.normalize('NFKD', text) if not unicodedata.combining(ch))
+        text = unidecode.unidecode(text.strip().strip('.,;:!?@#$%&*/\\<>(){}[]~^´`¨-_+°ºª¹²³£¢¬\'\"').strip())
+        text = str.upper(text)
+    return text
+
+
 def unaccent_df(df, col):
-    return df.apply(lambda x: translate_str(x[col]), axis=1)
+    return df.apply(lambda x: translate_str(normalize_str(x[col])), axis=1)
 
 
 def get_info_table_structure(obj_jdbc, schema_name, table_name, raise_error_if_changes=True):
@@ -270,7 +280,7 @@ def carga_gate():
         result_df_item_contrato = result_df_item_contrato.fillna(value=values_for_fillna_item_contrato).rename(
             str.upper, axis='columns')
         result_df_item_contrato['CHECKSUMID'] = commons.generate_checksum(result_df_item_contrato)
-        result_df_item_contrato['UN_ITEM'] = unaccent_df(df=result_df_item_contrato, col='ITEM')
+        result_df_item_contrato['un_item'] = unaccent_df(df=result_df_item_contrato, col='ITEM')
         result_df_item_contrato['DT_ULT_ATUALIZ'] = dt_now
         result_df_item_contrato['DT_EXTRACAO'] = dt_now
         result_df_item_contrato['DT_ULT_VER_GATE'] = dt_now
@@ -286,8 +296,10 @@ def carga_gate():
                                          template=insert_template_item_contrato,
                                          df_values_to_execute=result_df_item_contrato,
                                          fetch=True, server_encoding=server_encoding)
+        logger.info('Starting REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
         refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
         db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
+        logger.info('Finishing REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
 
     if isinstance(result_df_contrato, pd.DataFrame) and not result_df_contrato.empty:
         # carga gate
@@ -295,7 +307,7 @@ def carga_gate():
         result_df_contrato = result_df_contrato.fillna(value=values_for_fillna_contrato).rename(str.upper,
                                                                                                 axis='columns')
         result_df_contrato['CHECKSUMID'] = commons.generate_checksum(result_df_contrato)
-        result_df_contrato['UN_OBJETO'] = unaccent_df(df=result_df_contrato, col='OBJETO')
+        result_df_contrato['un_objeto'] = unaccent_df(df=result_df_contrato, col='OBJETO')
         result_df_contrato['DT_ULT_ATUALIZ'] = dt_now
         result_df_contrato['DT_EXTRACAO'] = dt_now
         result_df_contrato['DT_ULT_VER_GATE'] = dt_now
@@ -318,9 +330,9 @@ def carga_gate():
             result_df_compra = result_df_compra.fillna(value=values_for_fillna_compra).rename(str.upper,
                                                                                               axis='columns')
             result_df_compra['CHECKSUMID'] = commons.generate_checksum(result_df_compra)
-            result_df_compra['UN_OBJETO'] = unaccent_df(df=result_df_compra, col='OBJETO')
-            result_df_compra['UN_ITEM'] = unaccent_df(df=result_df_compra, col='ITEM')
-            result_df_compra['UN_UNID'] = unaccent_df(df=result_df_compra, col='UNID')
+            result_df_compra['un_objeto'] = unaccent_df(df=result_df_compra, col='OBJETO')
+            result_df_compra['un_item'] = unaccent_df(df=result_df_compra, col='ITEM')
+            result_df_compra['un_unid'] = unaccent_df(df=result_df_compra, col='UNID')
             result_df_compra['DT_ULT_ATUALIZ'] = dt_now
             result_df_compra['DT_EXTRACAO'] = dt_now
             result_df_compra['DT_ULT_VER_GATE'] = dt_now
@@ -350,10 +362,11 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
     """
     if isinstance(df_contrato, pd.DataFrame) and not df_contrato.empty and isinstance(df_item_contrato,
                                                                                       pd.DataFrame) and not df_item_contrato.empty:
-        df_contrato = df_contrato.drop(['ID', 'UN_OBJETO', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
-                                       axis='columns')
+        df_contrato = df_contrato.drop(
+            ['ID', 'un_objeto', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
+            axis='columns')
         df_item_contrato = df_item_contrato.drop(
-            ['ID', 'UN_ITEM', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'], axis='columns')
+            ['ID', 'un_item', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'], axis='columns')
         # Left join de comprasrj.item_contrato com comprasrj.contrato na coluna CONTRATACAO;
         df_compras_itens_por_contrato = pd.merge(df_contrato, df_item_contrato, how="left", on='CONTRATACAO',
                                                  suffixes=(None, '_Y'))
@@ -367,8 +380,8 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
         df_compras_itens_por_contrato['CONTRATO_IDITEM'] = df_compras_itens_por_contrato['CONTRATACAO'].astype(
             str) + '-' + df_compras_itens_por_contrato['ID_ITEM'].astype(str)
         df_compras_itens_por_contrato['CHECKSUMID'] = commons.generate_checksum(df_compras_itens_por_contrato)
-        df_compras_itens_por_contrato['UN_OBJETO'] = unaccent_df(df=df_compras_itens_por_contrato, col='OBJETO')
-        df_compras_itens_por_contrato['UN_ITEM'] = unaccent_df(df=df_compras_itens_por_contrato, col='ITEM')
+        df_compras_itens_por_contrato['un_objeto'] = unaccent_df(df=df_compras_itens_por_contrato, col='OBJETO')
+        df_compras_itens_por_contrato['un_item'] = unaccent_df(df=df_compras_itens_por_contrato, col='ITEM')
         df_compras_itens_por_contrato['DT_ULT_ATUALIZ'] = dt_now
         df_compras_itens_por_contrato['DT_ULT_VER_GATE'] = dt_now
         # TODO: !! rever essa data extracao. a ideia é ser a data do GATE ou a data de importacao do GATE
@@ -412,8 +425,9 @@ def gerar_contratos_agregados(df_contrato):
             VL_EXECUTADO: SOMA;
             VL_PAGO: SOMA;
         """
-        df_contrato = df_contrato.drop(['ID', 'UN_OBJETO', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
-                                       axis='columns')
+        df_contrato = df_contrato.drop(
+            ['ID', 'un_objeto', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
+            axis='columns')
         group_valor_total_de_contratos = df_contrato.groupby(['CONTRATACAO'])
         count_orgao = df_contrato.groupby(['CONTRATACAO', 'ORGAO']).size().to_frame(name='COUNT_ORGAO')
         count_fornecedor = df_contrato.groupby(['CONTRATACAO', 'FORNECEDOR']).size().to_frame(name='COUNT_FORNECEDOR')
