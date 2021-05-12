@@ -197,14 +197,14 @@ def classificar():
             sql_cmds = cmds['sql'].replace('_P3RC3NT_', '%').replace('_QU0T3_', '\"').replace('_AP0STR0PH3_', '\'')
             # let's check if there are items to classify with rules previously defined
             df_itens_to_classify = pd.DataFrame(db_opengeo.execute_select(sql_cmds, result_mode='all'),
-                                                columns=['tp_item', 'un_item'])
+                                                columns=['tp_item', 'descricao', 'un_item'])
             tipo_item = df_tipo_itens.loc[df_tipo_itens['id_tipo'] == int(cmds['tp_item'])]
             if not tipo_item['fk_tipo_primario'].empty and tipo_item['fk_tipo_primario'].iloc[0] > 0:
                 df_itens_to_classify['fk_tp_item'] = tipo_item['fk_tipo_primario'].iloc[0]
             else:
                 df_itens_to_classify['fk_tp_item'] = tipo_item['id_tipo'].iloc[0]
             df_itens_to_classify['fk_tp_classificacao'] = df_tipo_classificacao['id_tipo'].iloc[0]
-            df_itens_to_classify['descricao'] = cmds['descricao']
+            #df_itens_to_classify['descricao'] = cmds['descricao']
 
             df_itens_to_classify['dt_ult_atualiz'] = dt_now
             df_itens_to_classify = df_itens_to_classify.drop(['tp_item'], axis='columns')
