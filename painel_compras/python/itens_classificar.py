@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime, timezone
 
 import mpmapas_commons as commons
@@ -6,7 +7,6 @@ import mpmapas_logger
 import numpy
 import pandas as pd
 import pandasql as ps
-import unidecode
 import urllib3
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasDataBaseException, MPMapasException
@@ -28,11 +28,8 @@ register_adapter(numpy.float64, addapt_numpy_float64)
 register_adapter(numpy.int64, addapt_numpy_int64)
 
 
-def unaccent_df(df, col):
-    return df.apply(lambda x: unidecode.unidecode(str.upper(x[col])), axis=1)
-
-
-def build_file_rules_classify_items(file_name_input = 'sql_1_rules_tested.sql', file_name_output = 'sql_2_insert_rules.sql'):
+def build_file_rules_classify_items(file_name_input='sql_1_rules_tested.sql',
+                                    file_name_output='sql_2_insert_rules.sql'):
     if os.path.isfile(file_name_input):
         print("let's try to build sql commands for item classification rules")
         print("File input:", file_name_input)
@@ -93,7 +90,6 @@ def itens_classificar():
     logger.info('count df_itens_classificados rows: %s' % len(df_itens_classificados))
 
     df_itens_classificar_tipo = df_item_contrato[['ID', 'un_item']].rename(columns={'ID': 'id'})
-    # df_itens_a_classificar['un_item'] = unaccent_df(df=df_itens_a_classificar, col='un_item')
 
     sql_select = "select ict.id as id_item, ict.un_item as un_item, ic.fk_tp_item as id_tipo " \
                  "from df_itens_classificar_tipo ict inner join df_itens_classificados ic on ic.un_item = ict.un_item"
