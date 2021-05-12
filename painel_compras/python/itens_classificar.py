@@ -82,17 +82,19 @@ def classificar():
     select_tipo_itens = 'SELECT ti.id_tipo as id_tipo, ti.fk_tipo_primario as fk_tipo_primario, ti.tp_item as tp_item ' \
                         'from comprasrj.tipo_item ti'
     df_tipo_itens = pd.DataFrame(db_opengeo.execute_select(select_tipo_itens, result_mode='all'),
-                                columns=['id_tipo', 'fk_tipo_primario', 'tp_item'])
+                                 columns=['id_tipo', 'fk_tipo_primario', 'tp_item'])
 
-    select_tipo_classificacao = 'SELECT tc.id_tipo as id_tipo, tc.fk_tipo_primario as fk_tipo_primario, tc.tp_classificacao as tp_classificacao FROM comprasrj.tipo_classificacao tc where tc.tp_classificacao = \'regras\''
+    select_tipo_classificacao = 'SELECT tc.id_tipo as id_tipo, tc.fk_tipo_primario as fk_tipo_primario, ' \
+                                'tc.tp_classificacao as tp_classificacao FROM comprasrj.tipo_classificacao tc ' \
+                                'where tc.tp_classificacao = \'regras\''
     df_tipo_classificacao = pd.DataFrame(db_opengeo.execute_select(select_tipo_classificacao, result_mode='all'),
-                                 columns=['id_tipo', 'fk_tipo_primario', 'tp_classificacao'])
+                                         columns=['id_tipo', 'fk_tipo_primario', 'tp_classificacao'])
 
     rule_sqls = 'SELECT r.ordem as ordem, r.descricao as descricao, r.tp_item as tp_item, r.sql_declaracao as sql_declaracao ' \
                 'FROM comprasrj.regras_classificacao_itens r order by r.ordem;'
     sql_list_cmds: list[dict[str, str]] = []
     df_rules_sql = pd.DataFrame(db_opengeo.execute_select(rule_sqls, result_mode='all'),
-                                   columns=['ordem', 'descricao', 'tp_item', 'sql_declaracao'])
+                                columns=['ordem', 'descricao', 'tp_item', 'sql_declaracao'])
 
     # in selection rules we will start with rules that are not composed and have no exceptions,
     # these items will be classified with 1 sql command
@@ -109,7 +111,7 @@ def classificar():
     #                           'sql': "un_item %s '_P3RC3NT_%s_P3RC3NT_' " % (row.operador, row.palavras_expressao)})
 
     for index, row in df_rules_sql.iterrows():
-        sql_list_cmds.append({'ordem': row.ordem,'descricao': row.descricao,
+        sql_list_cmds.append({'ordem': row.ordem, 'descricao': row.descricao,
                               'tp_item': row.tp_item, 'sql': row.sql_declaracao})
 
     # now let's get other rules composed
@@ -170,8 +172,10 @@ def classificar():
                     df_values_to_execute=df_itens_to_classify, fetch=True)
                 # refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
                 # db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
+        logger.info('Starting REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
         refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
         db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
+        logger.info('Finishing REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
     logger.info('Finish %s - classificar.' % configs.settings.ETL_JOB)
 
 

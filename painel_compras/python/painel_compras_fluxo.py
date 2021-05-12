@@ -22,7 +22,7 @@ dt_now = datetime.now(timezone.utc)
 
 def translate_str(text):
     if text and type(text) == str:
-        text = unidecode.unidecode(str.upper(text).strip().strip('.'))
+        text = unidecode.unidecode(str.upper(text).strip().strip('.,;:!?@#$%&*/\\<>(){}[]~^´`¨-_+°ºª¹²³£¢¬\'\"'))
         text = text.replace('AQUISIAO', 'AQUISICAO')
     return text
 
@@ -367,6 +367,8 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
         df_compras_itens_por_contrato['CONTRATO_IDITEM'] = df_compras_itens_por_contrato['CONTRATACAO'].astype(
             str) + '-' + df_compras_itens_por_contrato['ID_ITEM'].astype(str)
         df_compras_itens_por_contrato['CHECKSUMID'] = commons.generate_checksum(df_compras_itens_por_contrato)
+        df_compras_itens_por_contrato['UN_OBJETO'] = unaccent_df(df=df_compras_itens_por_contrato, col='OBJETO')
+        df_compras_itens_por_contrato['UN_ITEM'] = unaccent_df(df=df_compras_itens_por_contrato, col='ITEM')
         df_compras_itens_por_contrato['DT_ULT_ATUALIZ'] = dt_now
         df_compras_itens_por_contrato['DT_ULT_VER_GATE'] = dt_now
         # TODO: !! rever essa data extracao. a ideia é ser a data do GATE ou a data de importacao do GATE
