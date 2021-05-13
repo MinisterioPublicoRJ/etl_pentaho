@@ -119,7 +119,11 @@ class PostgresqlDB:
         # https://www.psycopg.org/docs/extras.html#fast-exec
         pre_sql = """INSERT INTO {} ({}) VALUES %s"""
         if unique_field:
-            pre_sql = pre_sql + ' ON CONFLICT ({}) DO NOTHING '
+            if unique_field == 'all':
+                unique_field = ''
+                pre_sql = pre_sql + ' ON CONFLICT DO NOTHING '
+            else:
+                pre_sql = pre_sql + ' ON CONFLICT ({}) DO NOTHING '
 
         if pk_field:
             pre_sql = pre_sql + ' RETURNING {} '

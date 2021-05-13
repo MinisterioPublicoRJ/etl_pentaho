@@ -204,7 +204,7 @@ def classificar():
             else:
                 df_itens_to_classify['fk_tp_item'] = tipo_item['id_tipo'].iloc[0]
             df_itens_to_classify['fk_tp_classificacao'] = df_tipo_classificacao['id_tipo'].iloc[0]
-            #df_itens_to_classify['descricao'] = cmds['descricao']
+            # df_itens_to_classify['descricao'] = cmds['descricao']
 
             df_itens_to_classify['dt_ult_atualiz'] = dt_now
             df_itens_to_classify = df_itens_to_classify.drop(['tp_item'], axis='columns')

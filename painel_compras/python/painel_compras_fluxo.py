@@ -275,7 +275,7 @@ def carga_gate():
         configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
 
     if isinstance(result_df_item_contrato, pd.DataFrame) and not result_df_item_contrato.empty:
-        # carga gate
+        # carga gate item_contrato
         values_for_fillna_item_contrato = {'QTD': 0, 'QTD_ADITIV_SUPR': 0, 'VL_UNIT': 0.0, 'VL_UNIT_ADITIV_SUPR': 0.0}
         result_df_item_contrato = result_df_item_contrato.fillna(value=values_for_fillna_item_contrato).rename(
             str.upper, axis='columns')
@@ -302,7 +302,7 @@ def carga_gate():
         logger.info('Finishing REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
 
     if isinstance(result_df_contrato, pd.DataFrame) and not result_df_contrato.empty:
-        # carga gate
+        # carga gate contrato
         values_for_fillna_contrato = {'VL_ESTIMADO': 0.0, 'VL_EMPENHADO': 0.0, 'VL_EXECUTADO': 0.0, 'VL_PAGO': 0.0}
         result_df_contrato = result_df_contrato.fillna(value=values_for_fillna_contrato).rename(str.upper,
                                                                                                 axis='columns')
@@ -324,30 +324,55 @@ def carga_gate():
                                          df_values_to_execute=result_df_contrato,
                                          fetch=True, server_encoding=server_encoding)
 
-        if isinstance(result_df_compra, pd.DataFrame) and not result_df_compra.empty:
-            # carga gate
-            values_for_fillna_compra = {'VL_UNITARIO': 0.0, 'VL_PROCESSO': 0.0, 'QTD': 0}
-            result_df_compra = result_df_compra.fillna(value=values_for_fillna_compra).rename(str.upper,
-                                                                                              axis='columns')
-            result_df_compra['CHECKSUMID'] = commons.generate_checksum(result_df_compra)
-            result_df_compra['un_objeto'] = unaccent_df(df=result_df_compra, col='OBJETO')
-            result_df_compra['un_item'] = unaccent_df(df=result_df_compra, col='ITEM')
-            result_df_compra['un_unid'] = unaccent_df(df=result_df_compra, col='UNID')
-            result_df_compra['DT_ULT_ATUALIZ'] = dt_now
-            result_df_compra['DT_EXTRACAO'] = dt_now
-            result_df_compra['DT_ULT_VER_GATE'] = dt_now
-            list_flds_compra = result_df_compra.columns.values
-            trunc_comprasrj_compra_sql = "TRUNCATE TABLE comprasrj.compra CONTINUE IDENTITY RESTRICT"
-            db_opengeo.execute_select(trunc_comprasrj_compra_sql, result_mode=None)
-            insert_sql_compra, insert_template_compra = db_opengeo.insert_values_sql(schema_name='comprasrj',
-                                                                                     table_name='compra',
-                                                                                     list_flds=list_flds_compra,
-                                                                                     unique_field='ID',
-                                                                                     pk_field='ID')
-            db_opengeo.execute_values_insert(sql=insert_sql_compra,
-                                             template=insert_template_compra,
-                                             df_values_to_execute=result_df_compra,
+    if isinstance(result_df_compra, pd.DataFrame) and not result_df_compra.empty:
+        # carga gate compra
+        values_for_fillna_compra = {'VL_UNITARIO': 0.0, 'VL_PROCESSO': 0.0, 'QTD': 0}
+        result_df_compra = result_df_compra.fillna(value=values_for_fillna_compra).rename(str.upper,
+                                                                                          axis='columns')
+        result_df_compra['CHECKSUMID'] = commons.generate_checksum(result_df_compra)
+        result_df_compra['un_objeto'] = unaccent_df(df=result_df_compra, col='OBJETO')
+        result_df_compra['un_item'] = unaccent_df(df=result_df_compra, col='ITEM')
+        result_df_compra['un_unid'] = unaccent_df(df=result_df_compra, col='UNID')
+        result_df_compra['DT_ULT_ATUALIZ'] = dt_now
+        result_df_compra['DT_EXTRACAO'] = dt_now
+        result_df_compra['DT_ULT_VER_GATE'] = dt_now
+        list_flds_compra = result_df_compra.columns.values
+        trunc_comprasrj_compra_sql = "TRUNCATE TABLE comprasrj.compra CONTINUE IDENTITY RESTRICT"
+        db_opengeo.execute_select(trunc_comprasrj_compra_sql, result_mode=None)
+        insert_sql_compra, insert_template_compra = db_opengeo.insert_values_sql(schema_name='comprasrj',
+                                                                                 table_name='compra',
+                                                                                 list_flds=list_flds_compra,
+                                                                                 unique_field='ID',
+                                                                                 pk_field='ID')
+        db_opengeo.execute_values_insert(sql=insert_sql_compra,
+                                         template=insert_template_compra,
+                                         df_values_to_execute=result_df_compra,
+                                         fetch=True, server_encoding=server_encoding)
+
+        if ((isinstance(result_df_compra, pd.DataFrame) and not result_df_compra.empty) and
+                (isinstance(result_df_item_contrato, pd.DataFrame) and not result_df_item_contrato.empty) and
+                (isinstance(result_df_contrato, pd.DataFrame) and not result_df_contrato.empty)):
+            df_contrato_item_contrato = pd.merge(result_df_item_contrato, result_df_contrato, how="left",
+                                                 on='CONTRATACAO', suffixes=(None, '_Y'))
+            df_contrato_item_contrato_compra = pd.merge(df_contrato_item_contrato, result_df_compra, how="left",
+                                                        on='un_item', suffixes=(None, '_z'))
+            df_obj_item = df_contrato_item_contrato_compra.loc[:, ['un_unid', 'un_objeto', 'un_item']]
+
+            logger.info('len(df_obj_item): % s' % len(df_obj_item))
+
+            list_flds_obj_item = df_obj_item.columns.values
+            trunc_comprasrj_obj_item_sql = "TRUNCATE TABLE comprasrj.obj_item CONTINUE IDENTITY RESTRICT"
+            db_opengeo.execute_select(trunc_comprasrj_obj_item_sql, result_mode=None)
+            insert_sql_obj_item, insert_template_obj_item = db_opengeo.insert_values_sql(schema_name='comprasrj',
+                                                                                         table_name='obj_item',
+                                                                                         list_flds=list_flds_obj_item,
+                                                                                         unique_field='all',
+                                                                                         pk_field='id')
+            db_opengeo.execute_values_insert(sql=insert_sql_obj_item,
+                                             template=insert_template_obj_item,
+                                             df_values_to_execute=df_obj_item,
                                              fetch=True, server_encoding=server_encoding)
+
     logger.info('fim carga_gate...')
 
 
