@@ -12,57 +12,6 @@
   <modified_date>2019/07/10 08:02:05.977</modified_date>
   <parameters>
     </parameters>
-  <connection>
-    <name>CONN_POSTGRE_MPMAPAS_GEO</name>
-    <server/>
-    <type>POSTGRESQL</type>
-    <access>JNDI</access>
-    <database>mpmapas_geo</database>
-    <port>1521</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1521</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
   <slaveservers>
     </slaveservers>
   <job-log-table>
@@ -357,7 +306,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>125</xloc>
-      <yloc>325</yloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -373,8 +322,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>250</xloc>
-      <yloc>325</yloc>
+      <xloc>325</xloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -395,8 +344,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>425</xloc>
-      <yloc>325</yloc>
+      <xloc>550</xloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -432,8 +381,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>100</yloc>
+      <xloc>1325</xloc>
+      <yloc>225</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -469,8 +418,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>550</yloc>
+      <xloc>1325</xloc>
+      <yloc>675</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -506,8 +455,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>700</xloc>
-      <yloc>325</yloc>
+      <xloc>900</xloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -529,8 +478,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>325</yloc>
+      <xloc>1325</xloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
@@ -595,8 +544,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <note>executa_datasus_cnes</note>
       <xloc>384</xloc>
       <yloc>16</yloc>
-      <width>265</width>
-      <heigth>46</heigth>
+      <width>393</width>
+      <heigth>64</heigth>
       <fontname>Segoe UI</fontname>
       <fontsize>20</fontsize>
       <fontbold>N</fontbold>

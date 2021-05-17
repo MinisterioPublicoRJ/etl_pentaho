@@ -114,57 +114,6 @@
       </attribute>
     </attributes>
   </connection>
-  <connection>
-    <name>CONN_POSTGRE_MPMAPAS_GEO</name>
-    <server/>
-    <type>POSTGRESQL</type>
-    <access>JNDI</access>
-    <database>mpmapas_geo</database>
-    <port>1521</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1521</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
   <slaveservers>
     </slaveservers>
   <job-log-table>
@@ -551,11 +500,6 @@ INICIANDO JOB datasus_cnes
       <attributes/>
       <connections>
         <connection>
-          <name>CONN_POSTGRE_MPMAPAS_GEO</name>
-          <waitfor>0</waitfor>
-          <waittime>millisecond</waittime>
-        </connection>
-        <connection>
           <name>CONN_POSTGRE_GEOSERVER_DS</name>
           <waitfor>0</waitfor>
           <waittime>millisecond</waittime>
@@ -804,8 +748,8 @@ Ocorreu ERRO no JOB datasus_cnes
       <note>JOB datasus_cnes</note>
       <xloc>300</xloc>
       <yloc>50</yloc>
-      <width>216</width>
-      <heigth>46</heigth>
+      <width>319</width>
+      <heigth>64</heigth>
       <fontname>Segoe UI</fontname>
       <fontsize>20</fontsize>
       <fontbold>N</fontbold>
