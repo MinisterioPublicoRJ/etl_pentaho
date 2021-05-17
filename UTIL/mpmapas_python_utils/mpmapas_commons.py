@@ -281,7 +281,10 @@ def detect_delimiter(file_path, encoding):
             test_str = test_str + line
             count = count + 1
             line = f.readline()
-        delimiter = csv.Sniffer().sniff(test_str).delimiter
+        try:
+            delimiter = csv.Sniffer().sniff(test_str).delimiter
+        except:
+            delimiter = ';'
     return delimiter
 
 
