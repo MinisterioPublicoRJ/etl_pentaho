@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>executa_datasus_cnes</name>
+  <name>JOB_PRINCIPAL_TEMPLATE</name>
   <description/>
   <extended_description/>
   <job_version/>
@@ -335,7 +335,7 @@
       <name>ROOT_CHANNEL_ID</name>
     </field>
   </channel-log-table>
-  <pass_batchid>Y</pass_batchid>
+  <pass_batchid>N</pass_batchid>
   <shared_objects_file/>
   <entries>
     <entry>
@@ -356,158 +356,46 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>125</xloc>
-      <yloc>325</yloc>
+      <xloc>75</xloc>
+      <yloc>275</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>config_properties</name>
-      <description>Set variables</description>
-      <type>SET_VARIABLES</type>
-      <attributes/>
-      <replacevars>N</replacevars>
-      <filename>${Internal.Entry.Current.Directory}\config.properties</filename>
-      <file_variable_type>CURRENT_JOB</file_variable_type>
-      <fields>
-      </fields>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>250</xloc>
-      <yloc>325</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>log_inic_job</name>
+      <name>TRANSF_PRINCIPAL_TEMPLATE</name>
       <description/>
-      <type>WRITE_TO_FILE</type>
-      <attributes/>
-      <filename>${ETL_LOG_FILE}.txt</filename>
-      <createParentFolder>Y</createParentFolder>
-      <appendFile>Y</appendFile>
-      <content>.*****************************.
--------------------------------
-INICIANDO JOB CHAMADOR datasus_cnes
--------------------------------
-.
--></content>
-      <encoding/>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>425</xloc>
-      <yloc>325</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>JOB MSG_EXEC_SUCESSO</name>
-      <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <attributes/>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_SUCESSO.kjb</filename>
-      <jobname/>
-      <directory/>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/transf_principal_template.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
       <logfile>${ETL_LOG_FILE}</logfile>
       <logext>txt</logext>
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>Y</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
+      <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
-      <set_append_logfile>Y</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>100</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>JOB MSG_EXEC_ERRO</name>
-      <description/>
-      <type>JOB</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_ERRO.kjb</filename>
-      <jobname/>
-      <directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>550</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>job datasus_cnes</name>
-      <description/>
-      <type>JOB</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${Internal.Entry.Current.Directory}\datasus_cnes.kjb</filename>
-      <jobname/>
-      <directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>700</xloc>
-      <yloc>325</yloc>
+      <xloc>900</xloc>
+      <yloc>275</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -518,85 +406,234 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
-      <content>&lt;-
-.
-------------------------------------------
-###### FINALIZANDO JOB CHAMADOR datasus_cnes ######
-------------------------------------------
-.*****************************************.
+      <content>.
+.---------------------------------------------.
+###### FINALIZANDO JOB PRINCIPAL XXXXXXX ######
+.---------------------------------------------.
+&lt;-&lt;-&lt;-
 </content>
       <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
+      <xloc>1250</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log_inic_job</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>.#############################.
+-------------------------------
+INICIANDO JOB PRINCIPAL XXXXXXX
+-------------------------------
+.#############################.
+->->-></content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>200</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Checa DB</name>
+      <description/>
+      <type>CHECK_DB_CONNECTIONS</type>
+      <attributes/>
+      <connections>
+        <connection>
+          <name>CONN_POSTGRE_MPMAPAS_GEO</name>
+          <waitfor>0</waitfor>
+          <waittime>millisecond</waittime>
+        </connection>
+      </connections>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>350</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Abort job Banco</name>
+      <description>Abort job</description>
+      <type>ABORT</type>
+      <attributes/>
+      <message>Erro verificando conexões BD</message>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>125</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log ERRO BANCO</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>
+###################################################################
+Ocorreu ERRO durante a verificacao das conexoes aos bancos de dados
+###################################################################
+
+</content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>350</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log ERRO JOB</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>
+###################################################################
+Ocorreu ERRO no JOB
+###################################################################
+
+</content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>900</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Success</name>
+      <description/>
+      <type>SUCCESS</type>
+      <attributes/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1375</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Abort job JOB</name>
+      <description/>
+      <type>ABORT</type>
+      <attributes/>
+      <message/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
       <xloc>1125</xloc>
-      <yloc>325</yloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
   <hops>
     <hop>
-      <from>Start</from>
-      <to>config_properties</to>
+      <from>TRANSF_PRINCIPAL_TEMPLATE</from>
+      <to>log_fim_job</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Checa DB</from>
+      <to>TRANSF_PRINCIPAL_TEMPLATE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Checa DB</from>
+      <to>log ERRO BANCO</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>TRANSF_PRINCIPAL_TEMPLATE</from>
+      <to>log ERRO JOB</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>log_fim_job</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>log ERRO JOB</from>
+      <to>Abort job JOB</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>config_properties</from>
+      <from>log ERRO BANCO</from>
+      <to>Abort job Banco</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
       <to>log_inic_job</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
+      <unconditional>Y</unconditional>
     </hop>
     <hop>
       <from>log_inic_job</from>
-      <to>job datasus_cnes</to>
+      <to>Checa DB</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job datasus_cnes</from>
-      <to>JOB MSG_EXEC_SUCESSO</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job datasus_cnes</from>
-      <to>JOB MSG_EXEC_ERRO</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job datasus_cnes</from>
-      <to>log_fim_job</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
     <notepad>
-      <note>executa_datasus_cnes</note>
-      <xloc>384</xloc>
-      <yloc>16</yloc>
-      <width>265</width>
-      <heigth>46</heigth>
+      <note>JOB_PRINCIPAL_TEMPLATE</note>
+      <xloc>300</xloc>
+      <yloc>50</yloc>
+      <width>482</width>
+      <heigth>64</heigth>
       <fontname>Segoe UI</fontname>
       <fontsize>20</fontsize>
       <fontbold>N</fontbold>

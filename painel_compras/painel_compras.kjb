@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>executa_datasus_cnes</name>
+  <name>painel_compras</name>
   <description/>
   <extended_description/>
   <job_version/>
@@ -11,7 +11,12 @@
   <modified_user>-</modified_user>
   <modified_date>2019/07/10 08:02:05.977</modified_date>
   <parameters>
-    </parameters>
+    <parameter>
+      <name>PYTHON_PARAM</name>
+      <default_value>r</default_value>
+      <description/>
+    </parameter>
+  </parameters>
   <connection>
     <name>CONN_POSTGRE_MPMAPAS_GEO</name>
     <server/>
@@ -335,7 +340,7 @@
       <name>ROOT_CHANNEL_ID</name>
     </field>
   </channel-log-table>
-  <pass_batchid>Y</pass_batchid>
+  <pass_batchid>N</pass_batchid>
   <shared_objects_file/>
   <entries>
     <entry>
@@ -356,158 +361,46 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>125</xloc>
-      <yloc>325</yloc>
+      <xloc>75</xloc>
+      <yloc>275</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>config_properties</name>
-      <description>Set variables</description>
-      <type>SET_VARIABLES</type>
-      <attributes/>
-      <replacevars>N</replacevars>
-      <filename>${Internal.Entry.Current.Directory}\config.properties</filename>
-      <file_variable_type>CURRENT_JOB</file_variable_type>
-      <fields>
-      </fields>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>250</xloc>
-      <yloc>325</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>log_inic_job</name>
+      <name>transf_painel_compras</name>
       <description/>
-      <type>WRITE_TO_FILE</type>
-      <attributes/>
-      <filename>${ETL_LOG_FILE}.txt</filename>
-      <createParentFolder>Y</createParentFolder>
-      <appendFile>Y</appendFile>
-      <content>.*****************************.
--------------------------------
-INICIANDO JOB CHAMADOR datasus_cnes
--------------------------------
-.
--></content>
-      <encoding/>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>425</xloc>
-      <yloc>325</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>JOB MSG_EXEC_SUCESSO</name>
-      <description/>
-      <type>JOB</type>
+      <type>TRANS</type>
       <attributes/>
       <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_SUCESSO.kjb</filename>
-      <jobname/>
-      <directory/>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/painel_compras.ktr</filename>
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
       <logfile>${ETL_LOG_FILE}</logfile>
       <logext>txt</logext>
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
       <slave_server_name/>
+      <set_append_logfile>Y</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
       <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
+      <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
-      <set_append_logfile>Y</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>100</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>JOB MSG_EXEC_ERRO</name>
-      <description/>
-      <type>JOB</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_ERRO.kjb</filename>
-      <jobname/>
-      <directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>550</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>job datasus_cnes</name>
-      <description/>
-      <type>JOB</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${Internal.Entry.Current.Directory}\datasus_cnes.kjb</filename>
-      <jobname/>
-      <directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>700</xloc>
-      <yloc>325</yloc>
+      <xloc>575</xloc>
+      <yloc>275</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -518,44 +411,289 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
-      <content>&lt;-
-.
-------------------------------------------
-###### FINALIZANDO JOB CHAMADOR datasus_cnes ######
-------------------------------------------
-.*****************************************.
+      <content>.
+.---------------------------------------------.
+###### FINALIZANDO JOB PRINCIPAL painel compras ######
+.---------------------------------------------.
+&lt;-&lt;-&lt;-
 </content>
       <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>325</yloc>
+      <xloc>1300</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log_inic_job</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>.#############################.
+-------------------------------
+INICIANDO JOB PRINCIPAL painel compras
+-------------------------------
+.#############################.
+->->-></content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>200</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Checa DB</name>
+      <description/>
+      <type>CHECK_DB_CONNECTIONS</type>
+      <attributes/>
+      <connections>
+        <connection>
+          <name>CONN_POSTGRE_MPMAPAS_GEO</name>
+          <waitfor>0</waitfor>
+          <waittime>millisecond</waittime>
+        </connection>
+        <connection>
+          <name>CONN_POSTGRE_GATE_RO_NATIVE</name>
+          <waitfor>0</waitfor>
+          <waittime>millisecond</waittime>
+        </connection>
+      </connections>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>350</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Abort job Banco</name>
+      <description>Abort job</description>
+      <type>ABORT</type>
+      <attributes/>
+      <message>Erro verificando conexões BD</message>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>125</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log ERRO BANCO</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>
+###################################################################
+Ocorreu ERRO durante a verificacao das conexoes aos bancos de dados
+###################################################################
+
+</content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>350</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log ERRO JOB</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>
+###################################################################
+Ocorreu ERRO no JOB
+###################################################################
+
+</content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>800</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Success</name>
+      <description/>
+      <type>SUCCESS</type>
+      <attributes/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1400</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Abort job JOB</name>
+      <description/>
+      <type>ABORT</type>
+      <attributes/>
+      <message/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>550</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>painel_compras.py</name>
+      <description/>
+      <type>SHELL</type>
+      <attributes/>
+      <filename/>
+      <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>Y</set_logfile>
+      <logfile>${ETL_LOG_FILE}</logfile>
+      <set_append_logfile>Y</set_append_logfile>
+      <logext>txt</logext>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>${PYTHON_DIR} painel_compras_fluxo.py -${PYTHON_PARAM}</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>800</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Job_Alerta_Compras_RJ</name>
+      <description/>
+      <type>JOB</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <job_object_id/>
+      <filename>E:\pentaho\etl\ALERTA_COMPRAS_RJ\ALERTA_COMPRAS_RJ.kjb</filename>
+      <jobname/>
+      <directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Nothing</loglevel>
+      <slave_server_name/>
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>N</create_parent_folder>
+      <pass_export>N</pass_export>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <set_append_logfile>N</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>575</xloc>
+      <yloc>100</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>test_env.py</name>
+      <description/>
+      <type>SHELL</type>
+      <attributes/>
+      <filename/>
+      <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>Y</set_logfile>
+      <logfile>${ETL_LOG_FILE}</logfile>
+      <set_append_logfile>Y</set_append_logfile>
+      <logext>txt</logext>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>${PYTHON_DIR} test_env.py</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>800</xloc>
+      <yloc>100</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Simple evaluation</name>
+      <description/>
+      <type>SIMPLE_EVAL</type>
+      <attributes/>
+      <valuetype>variable</valuetype>
+      <fieldname/>
+      <variablename>${PYTHON_PARAM}</variablename>
+      <fieldtype>string</fieldtype>
+      <mask/>
+      <comparevalue>r</comparevalue>
+      <minvalue/>
+      <maxvalue/>
+      <successcondition>equal</successcondition>
+      <successnumbercondition>equal</successnumbercondition>
+      <successbooleancondition>false</successbooleancondition>
+      <successwhenvarset>N</successwhenvarset>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1000</xloc>
+      <yloc>275</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>itens_classificar.py</name>
+      <description/>
+      <type>SHELL</type>
+      <attributes/>
+      <filename/>
+      <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>Y</set_logfile>
+      <logfile>${ETL_LOG_FILE}</logfile>
+      <set_append_logfile>Y</set_append_logfile>
+      <logext>txt</logext>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>${PYTHON_DIR} itens_classificar.py</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1000</xloc>
+      <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
   <hops>
     <hop>
-      <from>Start</from>
-      <to>config_properties</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>config_properties</from>
-      <to>log_inic_job</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>log_inic_job</from>
-      <to>job datasus_cnes</to>
+      <to>Checa DB</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -563,17 +701,8 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>job datasus_cnes</from>
-      <to>JOB MSG_EXEC_SUCESSO</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job datasus_cnes</from>
-      <to>JOB MSG_EXEC_ERRO</to>
+      <from>Checa DB</from>
+      <to>log ERRO BANCO</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -581,22 +710,175 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>job datasus_cnes</from>
+      <from>transf_painel_compras</from>
+      <to>log ERRO JOB</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>log_fim_job</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>log ERRO JOB</from>
+      <to>Abort job JOB</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>log ERRO BANCO</from>
+      <to>Abort job Banco</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>transf_painel_compras</from>
+      <to>painel_compras.py</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>painel_compras.py</from>
+      <to>log ERRO JOB</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Checa DB</from>
+      <to>Job_Alerta_Compras_RJ</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Job_Alerta_Compras_RJ</from>
+      <to>transf_painel_compras</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Checa DB</from>
+      <to>transf_painel_compras</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>transf_painel_compras</from>
+      <to>test_env.py</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>test_env.py</from>
+      <to>painel_compras.py</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>test_env.py</from>
+      <to>log_fim_job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>painel_compras.py</from>
+      <to>Simple evaluation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Simple evaluation</from>
+      <to>itens_classificar.py</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Simple evaluation</from>
       <to>log_fim_job</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>itens_classificar.py</from>
+      <to>log_fim_job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>itens_classificar.py</from>
+      <to>log ERRO JOB</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>log_inic_job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
     <notepad>
-      <note>executa_datasus_cnes</note>
-      <xloc>384</xloc>
-      <yloc>16</yloc>
-      <width>265</width>
-      <heigth>46</heigth>
+      <note>job_painel_compras</note>
+      <xloc>150</xloc>
+      <yloc>25</yloc>
+      <width>359</width>
+      <heigth>64</heigth>
       <fontname>Segoe UI</fontname>
       <fontsize>20</fontsize>
       <fontbold>N</fontbold>

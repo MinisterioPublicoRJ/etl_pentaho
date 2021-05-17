@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>executa_datasus_cnes</name>
+  <name>LOOP_JOB_PRINCIPAL</name>
   <description/>
   <extended_description/>
   <job_version/>
@@ -12,57 +12,6 @@
   <modified_date>2019/07/10 08:02:05.977</modified_date>
   <parameters>
     </parameters>
-  <connection>
-    <name>CONN_POSTGRE_MPMAPAS_GEO</name>
-    <server/>
-    <type>POSTGRESQL</type>
-    <access>JNDI</access>
-    <database>mpmapas_geo</database>
-    <port>1521</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1521</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
   <slaveservers>
     </slaveservers>
   <job-log-table>
@@ -335,12 +284,12 @@
       <name>ROOT_CHANNEL_ID</name>
     </field>
   </channel-log-table>
-  <pass_batchid>Y</pass_batchid>
+  <pass_batchid>N</pass_batchid>
   <shared_objects_file/>
   <entries>
     <entry>
-      <name>Start</name>
-      <description/>
+      <name>START</name>
+      <description>Special entries</description>
       <type>SPECIAL</type>
       <attributes/>
       <start>Y</start>
@@ -356,63 +305,150 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>125</xloc>
-      <yloc>325</yloc>
+      <xloc>150</xloc>
+      <yloc>250</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>config_properties</name>
-      <description>Set variables</description>
-      <type>SET_VARIABLES</type>
+      <name>Success</name>
+      <description>Success</description>
+      <type>SUCCESS</type>
       <attributes/>
-      <replacevars>N</replacevars>
-      <filename>${Internal.Entry.Current.Directory}\config.properties</filename>
-      <file_variable_type>CURRENT_JOB</file_variable_type>
-      <fields>
-      </fields>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>250</xloc>
-      <yloc>325</yloc>
+      <xloc>1300</xloc>
+      <yloc>250</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>log_inic_job</name>
-      <description/>
-      <type>WRITE_TO_FILE</type>
+      <name>Abort job</name>
+      <description>Abort job</description>
+      <type>ABORT</type>
       <attributes/>
-      <filename>${ETL_LOG_FILE}.txt</filename>
-      <createParentFolder>Y</createParentFolder>
-      <appendFile>Y</appendFile>
-      <content>.*****************************.
--------------------------------
-INICIANDO JOB CHAMADOR datasus_cnes
--------------------------------
-.
--></content>
-      <encoding/>
+      <message/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>425</xloc>
-      <yloc>325</yloc>
+      <xloc>175</xloc>
+      <yloc>750</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>JOB MSG_EXEC_SUCESSO</name>
+      <name>Relatorio_Sucesso</name>
+      <description>Write To Log</description>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage/>
+      <loglevel>Basic</loglevel>
+      <logsubject>Job ${ETL_JOB} executado com sucesso</logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>775</xloc>
+      <yloc>250</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Relatorio_Falha_Tentativa</name>
+      <description>Write To Log</description>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage/>
+      <loglevel>Basic</loglevel>
+      <logsubject>Job ${ETL_JOB} falhou pela ${current_attempt} vez. Serão feitas ${max_tries} tentativas.</logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>775</xloc>
+      <yloc>600</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Incrementar_Tentativa</name>
+      <description>JavaScript</description>
+      <type>EVAL</type>
+      <attributes/>
+      <script>var attempt = parseInt(parent_job.getVariable("current_attempt"), 10);
+attempt++;
+parent_job.setVariable("current_attempt", attempt);
+
+true;
+</script>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>775</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Tentar_Novamente?</name>
+      <description>Simple evaluation</description>
+      <type>SIMPLE_EVAL</type>
+      <attributes/>
+      <valuetype>variable</valuetype>
+      <fieldname/>
+      <variablename>${current_attempt}</variablename>
+      <fieldtype>string</fieldtype>
+      <mask/>
+      <comparevalue>${max_tries}</comparevalue>
+      <minvalue/>
+      <maxvalue/>
+      <successcondition>different</successcondition>
+      <successnumbercondition>equal</successnumbercondition>
+      <successbooleancondition>true</successbooleancondition>
+      <successwhenvarset>N</successwhenvarset>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>375</xloc>
+      <yloc>600</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Report Failed Job</name>
+      <description>Write To Log</description>
+      <type>WRITE_TO_LOG</type>
+      <attributes/>
+      <logmessage/>
+      <loglevel>Basic</loglevel>
+      <logsubject>Job ${ETL_JOB} falhou ${max_tries} vezes. Abortando... </logsubject>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>375</xloc>
+      <yloc>750</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Esperar</name>
+      <description>Wait for</description>
+      <type>DELAY</type>
+      <attributes/>
+      <maximumTimeout>15</maximumTimeout>
+      <scaletime>0</scaletime>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>375</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>JOB_PRINCIPAL_TEMPLATE</name>
       <description/>
       <type>JOB</type>
       <attributes/>
       <specification_method>filename</specification_method>
       <job_object_id/>
-      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_SUCESSO.kjb</filename>
+      <filename>${Internal.Entry.Current.Directory}/JOB_PRINCIPAL_TEMPLATE.kjb</filename>
       <jobname/>
       <directory/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
+      <set_logfile>N</set_logfile>
       <logfile>${ETL_LOG_FILE}</logfile>
       <logext>txt</logext>
       <add_date>N</add_date>
@@ -429,84 +465,10 @@ INICIANDO JOB CHAMADOR datasus_cnes
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
       <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
+      <parallel>Y</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>100</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>JOB MSG_EXEC_ERRO</name>
-      <description/>
-      <type>JOB</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_ERRO.kjb</filename>
-      <jobname/>
-      <directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>550</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>job datasus_cnes</name>
-      <description/>
-      <type>JOB</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <job_object_id/>
-      <filename>${Internal.Entry.Current.Directory}\datasus_cnes.kjb</filename>
-      <jobname/>
-      <directory/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <slave_server_name/>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>Y</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>Y</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>700</xloc>
+      <xloc>575</xloc>
       <yloc>325</yloc>
       <attributes_kjc/>
     </entry>
@@ -518,35 +480,110 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
-      <content>&lt;-
-.
-------------------------------------------
-###### FINALIZANDO JOB CHAMADOR datasus_cnes ######
-------------------------------------------
-.*****************************************.
+      <content>
+
+###### SUCESSO - FINALIZANDO JOB XXX ######
+
+
 </content>
       <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
-      <yloc>325</yloc>
+      <xloc>1150</xloc>
+      <yloc>250</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>log_inic_job</name>
+      <description/>
+      <type>WRITE_TO_FILE</type>
+      <attributes/>
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>....................................
+------------------------------------
+INICIANDO JOB LOOP XXX
+------------------------------------
+....................................
+->->............................&lt;-&lt;-</content>
+      <encoding/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>375</xloc>
+      <yloc>250</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
   <hops>
     <hop>
-      <from>Start</from>
-      <to>config_properties</to>
+      <from>JOB_PRINCIPAL_TEMPLATE</from>
+      <to>Incrementar_Tentativa</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Incrementar_Tentativa</from>
+      <to>Relatorio_Falha_Tentativa</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>Y</unconditional>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>config_properties</from>
-      <to>log_inic_job</to>
+      <from>Relatorio_Falha_Tentativa</from>
+      <to>Tentar_Novamente?</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Tentar_Novamente?</from>
+      <to>Esperar</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Esperar</from>
+      <to>JOB_PRINCIPAL_TEMPLATE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Tentar_Novamente?</from>
+      <to>Report Failed Job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>JOB_PRINCIPAL_TEMPLATE</from>
+      <to>Relatorio_Sucesso</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Relatorio_Sucesso</from>
+      <to>log_fim_job</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -555,7 +592,7 @@ INICIANDO JOB CHAMADOR datasus_cnes
     </hop>
     <hop>
       <from>log_inic_job</from>
-      <to>job datasus_cnes</to>
+      <to>JOB_PRINCIPAL_TEMPLATE</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -563,40 +600,41 @@ INICIANDO JOB CHAMADOR datasus_cnes
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>job datasus_cnes</from>
-      <to>JOB MSG_EXEC_SUCESSO</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job datasus_cnes</from>
-      <to>JOB MSG_EXEC_ERRO</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>job datasus_cnes</from>
-      <to>log_fim_job</to>
+      <from>log_fim_job</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
+    <hop>
+      <from>Report Failed Job</from>
+      <to>Abort job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>START</from>
+      <to>log_inic_job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
   </hops>
   <notepads>
     <notepad>
-      <note>executa_datasus_cnes</note>
-      <xloc>384</xloc>
-      <yloc>16</yloc>
-      <width>265</width>
-      <heigth>46</heigth>
+      <note>LOOP_JOB_PRINCIPAL
+50 tentativas (15 em 15 seg.)</note>
+      <xloc>275</xloc>
+      <yloc>50</yloc>
+      <width>520</width>
+      <heigth>118</heigth>
       <fontname>Segoe UI</fontname>
       <fontsize>20</fontsize>
       <fontbold>N</fontbold>

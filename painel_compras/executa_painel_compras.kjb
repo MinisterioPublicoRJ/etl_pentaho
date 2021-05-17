@@ -20,12 +20,12 @@
   <slaveservers>
     </slaveservers>
   <job-log-table>
-    <connection/>
-    <schema/>
-    <table/>
+    <connection>${ETLLOG_LOG_CONNECTION}</connection>
+    <schema>${ETLLOG_LOG_SCHEMA}</schema>
+    <table>${ETLLOG_JOBLOGTABLE_LOG_TABLE}</table>
     <size_limit_lines/>
     <interval/>
-    <timeout_days/>
+    <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_JOB</id>
       <enabled>Y</enabled>
@@ -133,10 +133,10 @@
     </field>
   </job-log-table>
   <jobentry-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection>${ETLLOG_LOG_CONNECTION}</connection>
+    <schema>${ETLLOG_LOG_SCHEMA}</schema>
+    <table>${ETLLOG_JOBENTRYLOGTABLE_LOG_TABLE}</table>
+    <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -224,10 +224,10 @@
     </field>
   </jobentry-log-table>
   <channel-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection>${ETLLOG_LOG_CONNECTION}</connection>
+    <schema>${ETLLOG_LOG_SCHEMA}</schema>
+    <table>${ETLLOG_LOGGINGCHANNELLOGTABLE_LOG_TABLE}</table>
+    <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -327,7 +327,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>325</xloc>
+      <xloc>250</xloc>
       <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
@@ -349,7 +349,7 @@ INICIANDO JOB CHAMADOR painel compras
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>550</xloc>
+      <xloc>425</xloc>
       <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
@@ -386,7 +386,7 @@ INICIANDO JOB CHAMADOR painel compras
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1325</xloc>
+      <xloc>1100</xloc>
       <yloc>225</yloc>
       <attributes_kjc/>
     </entry>
@@ -423,7 +423,7 @@ INICIANDO JOB CHAMADOR painel compras
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1325</xloc>
+      <xloc>1100</xloc>
       <yloc>675</yloc>
       <attributes_kjc/>
     </entry>
@@ -460,7 +460,7 @@ INICIANDO JOB CHAMADOR painel compras
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>900</xloc>
+      <xloc>675</xloc>
       <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
@@ -483,7 +483,7 @@ INICIANDO JOB CHAMADOR painel compras
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1325</xloc>
+      <xloc>1100</xloc>
       <yloc>450</yloc>
       <attributes_kjc/>
     </entry>
@@ -507,7 +507,7 @@ INICIANDO JOB CHAMADOR painel compras
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1125</xloc>
+      <xloc>900</xloc>
       <yloc>325</yloc>
       <attributes_kjc/>
     </entry>
