@@ -916,16 +916,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get variables</from>
-      <to>Select values 30</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Get variables</from>
-      <to>java</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
       <from>If field value is null</from>
       <to>Add sequence 5</to>
       <enabled>Y</enabled>
@@ -1013,11 +1003,6 @@
     <hop>
       <from>Select values 13</from>
       <to>String operations</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>Select values 14</from>
-      <to>Get variables</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -1218,7 +1203,7 @@
     <hop>
       <from>Select values 30</from>
       <to>java_geocoder</to>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
     </hop>
     <hop>
       <from>Select values 30 2</from>
@@ -1551,11 +1536,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>java</from>
-      <to>situacao OK</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
       <from>java_geocoder</from>
       <to>Select values 30 2</to>
       <enabled>Y</enabled>
@@ -1738,6 +1718,11 @@
     <hop>
       <from>vinculo.csv</from>
       <to>Stream lookup 28</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values 14</from>
+      <to>Select values 30</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -4793,69 +4778,6 @@ ST_GeomFromText('POINT(' || ? || ' ' || ? || ')',4326) AS geom</sql>
     </GUI>
   </step>
   <step>
-    <name>Get variables</name>
-    <type>GetVariable</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>googleEngine</name>
-        <variable>${googleEngine}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>mprjKey</name>
-        <variable>${mprjKey}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>usuarioGoogle</name>
-        <variable>${usuarioGoogle}</variable>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>7650</xloc>
-      <yloc>350</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>If field value is null</name>
     <type>IfNull</type>
     <description/>
@@ -7714,15 +7636,6 @@ ST_GeomFromText('POINT(' || ? || ' ' || ? || ')',4326) AS geom</sql>
       <field>
         <name>endereco</name>
       </field>
-      <field>
-        <name>googleEngine</name>
-      </field>
-      <field>
-        <name>mprjKey</name>
-      </field>
-      <field>
-        <name>usuarioGoogle</name>
-      </field>
       <select_unspecified>N</select_unspecified>
     </fields>
     <attributes/>
@@ -7759,15 +7672,6 @@ ST_GeomFromText('POINT(' || ? || ' ' || ? || ')',4326) AS geom</sql>
       </field>
       <field>
         <name>endereco</name>
-      </field>
-      <field>
-        <name>googleEngine</name>
-      </field>
-      <field>
-        <name>mprjKey</name>
-      </field>
-      <field>
-        <name>usuarioGoogle</name>
       </field>
       <field>
         <name>json</name>
@@ -7810,6 +7714,9 @@ ST_GeomFromText('POINT(' || ? || ' ' || ? || ')',4326) AS geom</sql>
       </field>
       <field>
         <name>lat_long</name>
+      </field>
+      <field>
+        <name>enderecoFormatado</name>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -13651,212 +13558,6 @@ FROM basegeo.lim_municipios
     </GUI>
   </step>
   <step>
-    <name>java</name>
-    <type>UserDefinedJavaClass</type>
-    <description/>
-    <distribute>N</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <definitions>
-      <definition>
-        <class_type>TRANSFORM_CLASS</class_type>
-        <class_name>Processor</class_name>
-        <class_source>
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-
-import org.pentaho.di.core.exception.KettleException;
-
-import com.google.gson.Gson;
-
-import br.gov.mprj.appcart.domain.dto.GoogleGeoCodeResponse;
-import udjc.util.endereco.EnderecoVo;
-import udjc.util.endereco.TrataEndereco;
-import udjc.util.geocoder.GcAccessMethod;
-import udjc.util.geocoder.GcOutput;
-import udjc.util.geocoder.GcUtil;
-
-public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException{
-	if(first){
-		first = false;
-	}
-
-	Object[] row = getRow();
-
-	if(row == null){
-		setOutputDone();
-		return false;
-	}
-	// It is always safest to call createOutputRow() to ensure that your output row's Object[] is large
-	// enough to handle any new fields you are creating in this step.
-	Object[] outputRow = createOutputRow(row, data.outputRowMeta.size());
-	//If you are copying the rows, create separate copies to prevent subsequent steps from modifying the same Object[] copy many times at once, as shown in the following
-	//Object[] outputRowData = RowDataUtil.createResizedCopy(row, data.outputRowMeta.size());
-
-	// parametros para o geocoder
-	EnderecoVo enderecoVo = new EnderecoVo(row, outputRow);
-	GoogleGeoCodeResponse googleGeoCodeResponse = null;
-
-	try{
-		enderecoVo.setEndereco_input(get(Fields.In, "endereco_tratado").getString(row));
-		enderecoVo.setEnderecoTratado_output(TrataEndereco.tratarEnderecoSimplificado(enderecoVo.getEndereco_input()));
-		// GcAccessMethod acessMethod = new GcAccessMethod(enderecoVo.getEnderecoTratado_output(), GcUtil.getGoogleEngine(), GcUtil.getMprjuserkey().getGcUser(), GcUtil.getMprjuserkey().getGcKey());
-		GcAccessMethod acessMethod = new GcAccessMethod(enderecoVo.getEnderecoTratado_output(), GcUtil.getGoogleEngine(), GcUtil.getMprjkey().getGcKey());
-		URL myUrl = acessMethod.getMyUrl();
-	
-		logBasic("### myUrl ###: " + myUrl.toString());
-		
-		// segundo parâmetro uso do proxy: true = dentro do MPRJ, false = fora do MPRJ
-		URLConnection yc = GcUtil.openConnection(myUrl, true);
-			
-		BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream(), StandardCharsets.UTF_8));
-		String inputLine;
-		while ((inputLine = in.readLine()) != null) {
-			enderecoVo.setJson(enderecoVo.getJson() + inputLine);
-		}
-		in.close();
-		
-		if(enderecoVo.getJson().indexOf("You must enable Billing") != -1){
-			logBasic("ERRO geocoder: You must enable Billing");
-		}
-		
-		Gson gson = new Gson();
-	
-		// Dando erro no Spoon, removi e retornei apenas o json..
-		googleGeoCodeResponse = (GoogleGeoCodeResponse) gson.fromJson(enderecoVo.getJson(), GoogleGeoCodeResponse.class);
-			
-		googleGeoCodeResponse.setEnderecoSubmetido(enderecoVo.getEnderecoTratado_output());
-			
-		TrataEndereco.setEndereco(this, enderecoVo, googleGeoCodeResponse);
-
-		// Send the row on to the next step.
-		putRow(data.outputRowMeta, outputRow);
-			
-		// GcOutput.logOutputSucesso(this, "Geocoder: ",enderecoVo);
-
-	} catch (Exception ex){
-		googleGeoCodeResponse.setStatus(googleGeoCodeResponse.GOOGLE_STATUS_UNKNOWN_ERROR);
-		googleGeoCodeResponse.setException(ex);
-		GcOutput.logOutputErros(this, "Geocoder: ",enderecoVo, ex);
-	}
-
-	return true;
-}</class_source>
-      </definition>
-    </definitions>
-    <fields>
-      <field>
-        <field_name>json</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>enderecoFormatado</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>logradouro</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>numero</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>cep</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>bairro</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>cidade</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>uf</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>latitude</field_name>
-        <field_type>Number</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>longititude</field_name>
-        <field_type>Number</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>place_id</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>location_type</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>status</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-      <field>
-        <field_name>endereco_geocoder</field_name>
-        <field_type>String</field_type>
-        <field_length>-1</field_length>
-        <field_precision>-1</field_precision>
-      </field>
-    </fields>
-    <clear_result_fields>N</clear_result_fields>
-    <info_steps/>
-    <target_steps/>
-    <usage_parameters/>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>7775</xloc>
-      <yloc>250</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>java_geocoder</name>
     <type>UserDefinedJavaClass</type>
     <description/>
@@ -13912,7 +13613,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
 	GoogleGeoCodeResponse googleGeoCodeResponse = null;
 
 	try{
-		enderecoVo.setEndereco_input(get(Fields.In, "endereco_tratado").getString(row));
+		enderecoVo.setEndereco_input(get(Fields.In, "endereco").getString(row));
 		enderecoVo.setEnderecoTratado_output(TrataEndereco.tratarEnderecoSimplificado(enderecoVo.getEndereco_input()));
 		// GcAccessMethod acessMethod = new GcAccessMethod(enderecoVo.getEnderecoTratado_output(), GcUtil.getGoogleEngine(), GcUtil.getMprjuserkey().getGcUser(), GcUtil.getMprjuserkey().getGcKey());
 		GcAccessMethod acessMethod = new GcAccessMethod(enderecoVo.getEnderecoTratado_output(), GcUtil.getGoogleEngine(), GcUtil.getMprjkey().getGcKey());
@@ -14043,6 +13744,12 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
         <field_length>-1</field_length>
         <field_precision>-1</field_precision>
       </field>
+      <field>
+        <field_name>enderecoFormatado</field_name>
+        <field_type>String</field_type>
+        <field_length>-1</field_length>
+        <field_precision>-1</field_precision>
+      </field>
     </fields>
     <clear_result_fields>N</clear_result_fields>
     <info_steps/>
@@ -14058,7 +13765,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
     </remotesteps>
     <GUI>
       <xloc>7775</xloc>
-      <yloc>500</yloc>
+      <yloc>625</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -16682,7 +16389,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <send_true_to>Database join</send_true_to>
+    <send_true_to>Select values 15</send_true_to>
     <send_false_to/>
     <compare>
       <condition>
