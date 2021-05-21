@@ -6,13 +6,13 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
-from mpmapas_exceptions import MPMapasErrorEtlStillRunning
 
 import cchardet
 import chardet
 import pandas as pd
 import yaml
 from db_utils import mpmapas_db_commons
+from mpmapas_exceptions import MPMapasErrorEtlStillRunning
 from pyjavaproperties import Properties
 
 os.environ["NLS_LANG"] = ".UTF8"
@@ -88,7 +88,8 @@ def etl_status(logger, configs, status='start', msg=''):
                        'date': str(datetime.now(timezone.utc))}
     if 'start' in status:
         try:
-            with open(configs.folders.TEMP_DIR+configs.settings.ETL_JOB+'.status', mode='r', encoding='utf-8') as file:
+            with open(configs.folders.TEMP_DIR + configs.settings.ETL_JOB + '.status', mode='r',
+                      encoding='utf-8') as file:
                 statusfile = yaml.load(list(file)[-1], Loader=yaml.FullLoader)
                 if statusfile['status'] not in ('stop', 'exception', 'finish'):
                     raise MPMapasErrorEtlStillRunning(error_name=configs.settings.ETL_JOB)
@@ -309,10 +310,12 @@ def generate_checksum(df):
     return df.apply(lambda x: row_checksum(x), axis=1)
 
 
-def read_csv(file_csv, header=0, na_values='-', decimal='.', dayfirst=True):
-    file_encoding = detect_encoding(file_csv)
-    delimiter = detect_delimiter(file_csv, file_encoding)
-    df = pd.read_csv(filepath_or_buffer=file_csv, header=header, delimiter=delimiter, encoding=file_encoding,
+def read_csv(file_csv, header=0, na_values='-', decimal='.', dayfirst=True, encoding=None, delimiter=None):
+    if not encoding:
+        encoding = detect_encoding(file_csv)
+    if not delimiter:
+        delimiter = detect_delimiter(file_csv, encoding)
+    df = pd.read_csv(filepath_or_buffer=file_csv, header=header, delimiter=delimiter, encoding=encoding,
                      na_values=na_values, keep_default_na=True, dayfirst=dayfirst, decimal=decimal)
     return df
 

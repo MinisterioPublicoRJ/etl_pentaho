@@ -9,3 +9,4 @@ pyjavaproperties>=0.7
 psycopg2-binary>=2.8.6
 pandasql>=0.7.3
 Unidecode>=1.2.0
+requests>=2.25.1
