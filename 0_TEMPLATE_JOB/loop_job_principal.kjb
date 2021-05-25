@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <job>
   <name>LOOP_JOB_PRINCIPAL</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -18,8 +18,8 @@
     <connection>${ETLLOG_LOG_CONNECTION}</connection>
     <schema>${ETLLOG_LOG_SCHEMA}</schema>
     <table>${ETLLOG_JOBLOGTABLE_LOG_TABLE}</table>
-    <size_limit_lines/>
-    <interval/>
+    <size_limit_lines />
+    <interval />
     <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_JOB</id>
@@ -285,13 +285,13 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>START</name>
       <description>Special entries</description>
       <type>SPECIAL</type>
-      <attributes/>
+      <attributes />
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -307,39 +307,39 @@
       <nr>0</nr>
       <xloc>150</xloc>
       <yloc>250</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Success</name>
       <description>Success</description>
       <type>SUCCESS</type>
-      <attributes/>
+      <attributes />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1300</xloc>
       <yloc>250</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Abort job</name>
       <description>Abort job</description>
       <type>ABORT</type>
-      <attributes/>
-      <message/>
+      <attributes />
+      <message />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>175</xloc>
       <yloc>750</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Relatorio_Sucesso</name>
       <description>Write To Log</description>
       <type>WRITE_TO_LOG</type>
-      <attributes/>
-      <logmessage/>
+      <attributes />
+      <logmessage />
       <loglevel>Basic</loglevel>
       <logsubject>Job ${ETL_JOB} executado com sucesso</logsubject>
       <parallel>N</parallel>
@@ -347,14 +347,14 @@
       <nr>0</nr>
       <xloc>775</xloc>
       <yloc>250</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Relatorio_Falha_Tentativa</name>
       <description>Write To Log</description>
       <type>WRITE_TO_LOG</type>
-      <attributes/>
-      <logmessage/>
+      <attributes />
+      <logmessage />
       <loglevel>Basic</loglevel>
       <logsubject>Job ${ETL_JOB} falhou pela ${current_attempt} vez. Serão feitas ${max_tries} tentativas.</logsubject>
       <parallel>N</parallel>
@@ -362,13 +362,13 @@
       <nr>0</nr>
       <xloc>775</xloc>
       <yloc>600</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Incrementar_Tentativa</name>
       <description>JavaScript</description>
       <type>EVAL</type>
-      <attributes/>
+      <attributes />
       <script>var attempt = parseInt(parent_job.getVariable("current_attempt"), 10);
 attempt++;
 parent_job.setVariable("current_attempt", attempt);
@@ -380,21 +380,21 @@ true;
       <nr>0</nr>
       <xloc>775</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Tentar_Novamente?</name>
       <description>Simple evaluation</description>
       <type>SIMPLE_EVAL</type>
-      <attributes/>
+      <attributes />
       <valuetype>variable</valuetype>
-      <fieldname/>
+      <fieldname />
       <variablename>${current_attempt}</variablename>
       <fieldtype>string</fieldtype>
-      <mask/>
+      <mask />
       <comparevalue>${max_tries}</comparevalue>
-      <minvalue/>
-      <maxvalue/>
+      <minvalue />
+      <maxvalue />
       <successcondition>different</successcondition>
       <successnumbercondition>equal</successnumbercondition>
       <successbooleancondition>true</successbooleancondition>
@@ -404,14 +404,14 @@ true;
       <nr>0</nr>
       <xloc>375</xloc>
       <yloc>600</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Report Failed Job</name>
       <description>Write To Log</description>
       <type>WRITE_TO_LOG</type>
-      <attributes/>
-      <logmessage/>
+      <attributes />
+      <logmessage />
       <loglevel>Basic</loglevel>
       <logsubject>Job ${ETL_JOB} falhou ${max_tries} vezes. Abortando... </logsubject>
       <parallel>N</parallel>
@@ -419,13 +419,13 @@ true;
       <nr>0</nr>
       <xloc>375</xloc>
       <yloc>750</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Esperar</name>
       <description>Wait for</description>
       <type>DELAY</type>
-      <attributes/>
+      <attributes />
       <maximumTimeout>15</maximumTimeout>
       <scaletime>0</scaletime>
       <parallel>N</parallel>
@@ -433,18 +433,18 @@ true;
       <nr>0</nr>
       <xloc>375</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>JOB_PRINCIPAL_TEMPLATE</name>
-      <description/>
+      <description />
       <type>JOB</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <job_object_id/>
+      <job_object_id />
       <filename>${Internal.Entry.Current.Directory}/JOB_PRINCIPAL_TEMPLATE.kjb</filename>
-      <jobname/>
-      <directory/>
+      <jobname />
+      <directory />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -454,7 +454,7 @@ true;
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
-      <slave_server_name/>
+      <slave_server_name />
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
       <expand_remote_job>N</expand_remote_job>
@@ -470,13 +470,13 @@ true;
       <nr>0</nr>
       <xloc>575</xloc>
       <yloc>325</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_fim_job</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -486,19 +486,19 @@ true;
 
 
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1150</xloc>
       <yloc>250</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_inic_job</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -507,14 +507,14 @@ true;
 INICIANDO JOB LOOP XXX
 ------------------------------------
 ....................................
-->->............................&lt;-&lt;-</content>
-      <encoding/>
+-&gt;-&gt;............................&lt;-&lt;-</content>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>375</xloc>
       <yloc>250</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
   </entries>
   <hops>

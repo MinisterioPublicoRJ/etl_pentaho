@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <job>
   <name>JOB_PRINCIPAL_TEMPLATE</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -12,65 +12,14 @@
   <modified_date>2019/07/10 08:02:05.977</modified_date>
   <parameters>
     </parameters>
-  <connection>
-    <name>CONN_POSTGRE_MPMAPAS_GEO</name>
-    <server/>
-    <type>POSTGRESQL</type>
-    <access>JNDI</access>
-    <database>mpmapas_geo</database>
-    <port>1521</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1521</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
   <slaveservers>
     </slaveservers>
   <job-log-table>
     <connection>${ETLLOG_LOG_CONNECTION}</connection>
     <schema>${ETLLOG_LOG_SCHEMA}</schema>
     <table>${ETLLOG_JOBLOGTABLE_LOG_TABLE}</table>
-    <size_limit_lines/>
-    <interval/>
+    <size_limit_lines />
+    <interval />
     <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_JOB</id>
@@ -336,13 +285,13 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
+      <attributes />
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -358,17 +307,17 @@
       <nr>0</nr>
       <xloc>75</xloc>
       <yloc>275</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>TRANSF_PRINCIPAL_TEMPLATE</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/transf_principal_template.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -381,7 +330,7 @@
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>Y</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -396,13 +345,13 @@
       <nr>0</nr>
       <xloc>900</xloc>
       <yloc>275</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_fim_job</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -412,19 +361,19 @@
 .---------------------------------------------.
 &lt;-&lt;-&lt;-
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1250</xloc>
       <yloc>275</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_inic_job</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -433,20 +382,20 @@
 INICIANDO JOB PRINCIPAL XXXXXXX
 -------------------------------
 .#############################.
-->->-></content>
-      <encoding/>
+-&gt;-&gt;-&gt;</content>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>200</xloc>
       <yloc>275</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Checa DB</name>
-      <description/>
+      <description />
       <type>CHECK_DB_CONNECTIONS</type>
-      <attributes/>
+      <attributes />
       <connections>
         <connection>
           <name>CONN_POSTGRE_MPMAPAS_GEO</name>
@@ -459,26 +408,26 @@ INICIANDO JOB PRINCIPAL XXXXXXX
       <nr>0</nr>
       <xloc>350</xloc>
       <yloc>275</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Abort job Banco</name>
       <description>Abort job</description>
       <type>ABORT</type>
-      <attributes/>
+      <attributes />
       <message>Erro verificando conexões BD</message>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>125</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log ERRO BANCO</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -488,19 +437,19 @@ Ocorreu ERRO durante a verificacao das conexoes aos bancos de dados
 ###################################################################
 
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>350</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log ERRO JOB</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -510,38 +459,38 @@ Ocorreu ERRO no JOB
 ###################################################################
 
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>900</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Success</name>
-      <description/>
+      <description />
       <type>SUCCESS</type>
-      <attributes/>
+      <attributes />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1375</xloc>
       <yloc>275</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Abort job JOB</name>
-      <description/>
+      <description />
       <type>ABORT</type>
-      <attributes/>
-      <message/>
+      <attributes />
+      <message />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1125</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
   </entries>
   <hops>

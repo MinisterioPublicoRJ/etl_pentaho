@@ -1,0 +1,1 @@
+find /d/pentaho/etl -type f -name "*.k*"  -print0 | xargs -0 perl -0 -p -i -e 's/\s*<connection>\s*<.*?<\/connection>\s*$//smg'

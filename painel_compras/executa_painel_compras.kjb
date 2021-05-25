@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <job>
   <name>executa_job_painel_compras</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -14,7 +14,7 @@
     <parameter>
       <name>PYTHON_PARAM</name>
       <default_value>r</default_value>
-      <description/>
+      <description />
     </parameter>
   </parameters>
   <slaveservers>
@@ -23,8 +23,8 @@
     <connection>${ETLLOG_LOG_CONNECTION}</connection>
     <schema>${ETLLOG_LOG_SCHEMA}</schema>
     <table>${ETLLOG_JOBLOGTABLE_LOG_TABLE}</table>
-    <size_limit_lines/>
-    <interval/>
+    <size_limit_lines />
+    <interval />
     <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_JOB</id>
@@ -290,13 +290,13 @@
     </field>
   </channel-log-table>
   <pass_batchid>Y</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
+      <attributes />
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -312,13 +312,13 @@
       <nr>0</nr>
       <xloc>125</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>config_properties</name>
       <description>Set variables</description>
       <type>SET_VARIABLES</type>
-      <attributes/>
+      <attributes />
       <replacevars>N</replacevars>
       <filename>${Internal.Entry.Current.Directory}\config.properties</filename>
       <file_variable_type>CURRENT_JOB</file_variable_type>
@@ -329,13 +329,13 @@
       <nr>0</nr>
       <xloc>250</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_inic_job</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -344,25 +344,25 @@
 INICIANDO JOB CHAMADOR painel compras
 -------------------------------
 .
--></content>
-      <encoding/>
+-&gt;</content>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>425</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>JOB MSG_EXEC_SUCESSO</name>
-      <description/>
+      <description />
       <type>JOB</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <job_object_id/>
+      <job_object_id />
       <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_SUCESSO.kjb</filename>
-      <jobname/>
-      <directory/>
+      <jobname />
+      <directory />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -372,7 +372,7 @@ INICIANDO JOB CHAMADOR painel compras
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
-      <slave_server_name/>
+      <slave_server_name />
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
       <expand_remote_job>N</expand_remote_job>
@@ -388,18 +388,18 @@ INICIANDO JOB CHAMADOR painel compras
       <nr>0</nr>
       <xloc>1100</xloc>
       <yloc>225</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>JOB MSG_EXEC_ERRO</name>
-      <description/>
+      <description />
       <type>JOB</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <job_object_id/>
+      <job_object_id />
       <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_ERRO.kjb</filename>
-      <jobname/>
-      <directory/>
+      <jobname />
+      <directory />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -409,7 +409,7 @@ INICIANDO JOB CHAMADOR painel compras
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
-      <slave_server_name/>
+      <slave_server_name />
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
       <expand_remote_job>N</expand_remote_job>
@@ -425,18 +425,18 @@ INICIANDO JOB CHAMADOR painel compras
       <nr>0</nr>
       <xloc>1100</xloc>
       <yloc>675</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>job_painel_compras</name>
-      <description/>
+      <description />
       <type>JOB</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <job_object_id/>
+      <job_object_id />
       <filename>${Internal.Entry.Current.Directory}/painel_compras.kjb</filename>
-      <jobname/>
-      <directory/>
+      <jobname />
+      <directory />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -446,7 +446,7 @@ INICIANDO JOB CHAMADOR painel compras
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
-      <slave_server_name/>
+      <slave_server_name />
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
       <expand_remote_job>N</expand_remote_job>
@@ -462,13 +462,13 @@ INICIANDO JOB CHAMADOR painel compras
       <nr>0</nr>
       <xloc>675</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_fim_job</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -479,27 +479,27 @@ INICIANDO JOB CHAMADOR painel compras
 ------------------------------------------
 .*****************************************.
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1100</xloc>
       <yloc>450</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Simple evaluation</name>
-      <description/>
+      <description />
       <type>SIMPLE_EVAL</type>
-      <attributes/>
+      <attributes />
       <valuetype>variable</valuetype>
-      <fieldname/>
+      <fieldname />
       <variablename>${PYTHON_PARAM}</variablename>
       <fieldtype>string</fieldtype>
-      <mask/>
+      <mask />
       <comparevalue>c</comparevalue>
-      <minvalue/>
-      <maxvalue/>
+      <minvalue />
+      <maxvalue />
       <successcondition>different</successcondition>
       <successnumbercondition>equal</successnumbercondition>
       <successbooleancondition>false</successbooleancondition>
@@ -509,7 +509,7 @@ INICIANDO JOB CHAMADOR painel compras
       <nr>0</nr>
       <xloc>900</xloc>
       <yloc>325</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
   </entries>
   <hops>

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <transformation>
   <info>
     <name>TRANSF caged ajustes</name>
-    <description/>
-    <extended_description/>
-    <trans_version/>
+    <description />
+    <extended_description />
+    <trans_version />
     <trans_type>Normal</trans_type>
     <trans_status>0</trans_status>
     <directory>/</directory>
@@ -15,8 +15,8 @@
         <connection>${ETLLOG_LOG_CONNECTION}</connection>
         <schema>${ETLLOG_LOG_SCHEMA}</schema>
         <table>${ETLLOG_TRANSFORMATION_LOG_TABLE_NAME}</table>
-        <size_limit_lines/>
-        <interval/>
+        <size_limit_lines />
+        <interval />
         <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
         <field>
           <id>ID_BATCH</id>
@@ -42,37 +42,37 @@
           <id>LINES_READ</id>
           <enabled>Y</enabled>
           <name>LINES_READ</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_WRITTEN</id>
           <enabled>Y</enabled>
           <name>LINES_WRITTEN</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_UPDATED</id>
           <enabled>Y</enabled>
           <name>LINES_UPDATED</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_INPUT</id>
           <enabled>Y</enabled>
           <name>LINES_INPUT</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_OUTPUT</id>
           <enabled>Y</enabled>
           <name>LINES_OUTPUT</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_REJECTED</id>
           <enabled>Y</enabled>
           <name>LINES_REJECTED</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>ERRORS</id>
@@ -129,7 +129,7 @@
         <connection>${ETLLOG_LOG_CONNECTION}</connection>
         <schema>${ETLLOG_LOG_SCHEMA}</schema>
         <table>${ETLLOG_PERFORMANCE_LOG_TABLE_NAME}</table>
-        <interval/>
+        <interval />
         <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
         <field>
           <id>ID_BATCH</id>
@@ -402,9 +402,9 @@
       </metrics-log-table>
     </log>
     <maxdate>
-      <connection/>
-      <table/>
-      <field/>
+      <connection />
+      <table />
+      <field />
       <offset>0.0</offset>
       <maxdiff>0.0</maxdiff>
     </maxdate>
@@ -415,7 +415,7 @@
     <feedback_shown>Y</feedback_shown>
     <feedback_size>50000</feedback_size>
     <using_thread_priorities>Y</using_thread_priorities>
-    <shared_objects_file/>
+    <shared_objects_file />
     <capture_step_performance>N</capture_step_performance>
     <step_performance_capturing_delay>1000</step_performance_capturing_delay>
     <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
@@ -459,57 +459,6 @@ COM VALORES INCOERENTES</note>
       <drawshadow>Y</drawshadow>
     </notepad>
   </notepads>
-  <connection>
-    <name>CONN_POSTGRE_GEOSERVER_DS</name>
-    <server/>
-    <type>POSTGRESQL</type>
-    <access>JNDI</access>
-    <database>${POSTGRES_DS_NAME}</database>
-    <port>1521</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1521</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
   <order>
     <hop>
       <from>Add constants</from>
@@ -553,7 +502,7 @@ COM VALORES INCOERENTES</note>
     </hop>
     <hop>
       <from>Replace in string</from>
-      <to>string>int-number</to>
+      <to>string&gt;int-number</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -707,7 +656,7 @@ COM VALORES INCOERENTES</note>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>string>int-number</from>
+      <from>string&gt;int-number</from>
       <to>Select values</to>
       <enabled>Y</enabled>
     </hop>
@@ -730,20 +679,20 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Abort</name>
     <type>Abort</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <row_threshold>0</row_threshold>
     <message>Abortando devido a erro lendo linha do RJ</message>
     <always_log_rows>Y</always_log_rows>
     <abort_option>ABORT_WITH_ERROR</abort_option>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -759,30 +708,30 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Add constants</name>
     <type>Constant</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <name>CNAE_2.0_Classe</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -798,13 +747,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Database lookup</name>
     <type>DBLookup</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <connection>CONN_POSTGRE_GEOSERVER_DS</connection>
     <cache>N</cache>
@@ -813,24 +762,24 @@ COM VALORES INCOERENTES</note>
     <lookup>
       <schema>basegeo</schema>
       <table>lim_municipios</table>
-      <orderby/>
+      <orderby />
       <fail_on_multiple>N</fail_on_multiple>
       <eat_row_on_failure>N</eat_row_on_failure>
       <key>
         <name>Município</name>
         <field>cod_6_dig</field>
         <condition>=</condition>
-        <name2/>
+        <name2 />
       </key>
       <value>
         <name>nm_mun_map</name>
         <rename>municipio</rename>
-        <default/>
+        <default />
         <type>String</type>
       </value>
     </lookup>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -846,13 +795,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Filter error rows</name>
     <type>FilterRows</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <send_true_to>filter_rows_RJ</send_true_to>
     <send_false_to>RJ?</send_false_to>
@@ -861,7 +810,7 @@ COM VALORES INCOERENTES</note>
         <negated>N</negated>
         <leftvalue>num_errors</leftvalue>
         <function>=</function>
-        <rightvalue/>
+        <rightvalue />
         <value>
           <name>constant</name>
           <type>Integer</type>
@@ -873,8 +822,8 @@ COM VALORES INCOERENTES</note>
         </value>
       </condition>
     </compare>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -890,13 +839,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Null if</name>
     <type>NullIf</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -904,8 +853,8 @@ COM VALORES INCOERENTES</note>
         <value>******</value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -921,13 +870,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>RJ?</name>
     <type>FilterRows</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <send_true_to>Write to log 2</send_true_to>
     <send_false_to>Write to log</send_false_to>
@@ -936,7 +885,7 @@ COM VALORES INCOERENTES</note>
         <negated>N</negated>
         <leftvalue>UF</leftvalue>
         <function>=</function>
-        <rightvalue/>
+        <rightvalue />
         <value>
           <name>constant</name>
           <type>Integer</type>
@@ -948,8 +897,8 @@ COM VALORES INCOERENTES</note>
         </value>
       </condition>
     </compare>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -965,42 +914,42 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Replace in string</name>
     <type>ReplaceString</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <in_stream_name>Bairros_RJ</in_stream_name>
-        <out_stream_name/>
+        <out_stream_name />
         <use_regex>no</use_regex>
         <replace_string>{ñ c</replace_string>
         <replace_by_string>-1</replace_by_string>
         <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
+        <replace_field_by_string />
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
         <is_unicode>no</is_unicode>
       </field>
       <field>
         <in_stream_name>Região_Adm_RJ</in_stream_name>
-        <out_stream_name/>
+        <out_stream_name />
         <use_regex>yes</use_regex>
         <replace_string>^\{.*$</replace_string>
         <replace_by_string>99</replace_by_string>
         <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
+        <replace_field_by_string />
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
         <is_unicode>no</is_unicode>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1016,30 +965,30 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Replace in string 2</name>
     <type>ReplaceString</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <in_stream_name>Ano_Movimentação</in_stream_name>
-        <out_stream_name/>
+        <out_stream_name />
         <use_regex>yes</use_regex>
         <replace_string>^\{.*$</replace_string>
         <replace_by_string>2018</replace_by_string>
         <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
+        <replace_field_by_string />
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
         <is_unicode>no</is_unicode>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1055,13 +1004,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Select short_filename</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1069,8 +1018,8 @@ COM VALORES INCOERENTES</note>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1086,13 +1035,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Select values</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1195,20 +1144,20 @@ COM VALORES INCOERENTES</note>
         <type>Number</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1224,13 +1173,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Select values 2</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1373,8 +1322,8 @@ COM VALORES INCOERENTES</note>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1390,13 +1339,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Select values 3</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1508,20 +1457,20 @@ COM VALORES INCOERENTES</note>
         <type>String</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1537,13 +1486,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Select values 4</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1692,20 +1641,20 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1721,20 +1670,20 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Sort rows</name>
     <type>SortRows</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <directory>%%java.io.tmpdir%%</directory>
     <prefix>out</prefix>
     <sort_size>1000000</sort_size>
-    <free_memory/>
+    <free_memory />
     <compress>N</compress>
-    <compress_variable/>
+    <compress_variable />
     <unique_rows>N</unique_rows>
     <fields>
       <field>
@@ -1746,8 +1695,8 @@ COM VALORES INCOERENTES</note>
         <presorted>N</presorted>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1763,24 +1712,24 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Unique rows (HashSet)</name>
     <type>UniqueRowsByHashSet</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <store_values>N</store_values>
     <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
+    <error_description />
     <fields>
       <field>
         <name>short_filename</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1796,13 +1745,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Write to log</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -1820,8 +1769,8 @@ COM VALORES INCOERENTES</note>
         <name>error_text</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1837,13 +1786,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>Write to log 2</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -1945,8 +1894,8 @@ COM VALORES INCOERENTES</note>
         <name>error_text</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1962,13 +1911,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>adm_desl_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Admitidos/Desligados</field_to_use>
     <target_field>adm_desl_str</target_field>
@@ -1983,8 +1932,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Desligamento</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2000,13 +1949,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>arquivos_processados</name>
     <type>TypeExitExcelWriterStep</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <header>N</header>
     <footer>N</footer>
@@ -2029,13 +1978,13 @@ COM VALORES INCOERENTES</note>
       <add_date>N</add_date>
       <add_time>N</add_time>
       <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
+      <date_time_format />
       <sheetname>Sheet1</sheetname>
       <autosizecolums>N</autosizecolums>
       <stream_data>N</stream_data>
       <protect_sheet>N</protect_sheet>
       <password>Encrypted </password>
-      <protected_by/>
+      <protected_by />
       <splitevery>0</splitevery>
       <if_file_exists>reuse</if_file_exists>
       <if_sheet_exists>reuse</if_sheet_exists>
@@ -2044,25 +1993,25 @@ COM VALORES INCOERENTES</note>
       <enabled>N</enabled>
       <sheet_enabled>N</sheet_enabled>
       <filename>template.xls</filename>
-      <sheetname/>
+      <sheetname />
       <hidden>N</hidden>
     </template>
     <fields>
       <field>
         <name>short_filename</name>
         <type>String</type>
-        <format/>
+        <format />
         <title>short_filename</title>
-        <titleStyleCell/>
-        <styleCell/>
-        <commentField/>
-        <commentAuthorField/>
+        <titleStyleCell />
+        <styleCell />
+        <commentField />
+        <commentAuthorField />
         <formula>N</formula>
-        <hyperlinkField/>
+        <hyperlinkField />
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2078,13 +2027,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>bairros_rj_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Bairros_RJ</field_to_use>
     <target_field>bairros_rj_str</target_field>
@@ -2787,8 +2736,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Fora do Estado do Rio de Janeiro</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2804,13 +2753,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>cbo2002_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>CBO_2002_Ocupação</field_to_use>
     <target_field>cbo2002_str</target_field>
@@ -13153,8 +13102,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Auxiliar Geral de Conservacao de Vias Permanentes (Exceto Trilhos)</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -13170,13 +13119,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>cnae10_class_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>CNAE_1.0_Classe</field_to_use>
     <target_field>cnae10_class_str</target_field>
@@ -15639,8 +15588,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Organismos Internacionais e Outras Instituições Extraterritoriais</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -15656,13 +15605,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>cnae20_class_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>CNAE_2.0_Classe</field_to_use>
     <target_field>cnae20_class_str</target_field>
@@ -18373,8 +18322,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Organismos Internacionais e Outras Instituições Extraterritoriais</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -18390,13 +18339,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>cnae20_subclass_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>CNAE_2.0_Subclas</field_to_use>
     <target_field>cnae20_subclass_str</target_field>
@@ -23719,8 +23668,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Organismos Internacionais e Outras Instituições Extraterritoriais</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -23736,13 +23685,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>empr_jan_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Faixa_Empr_Início_Jan</field_to_use>
     <target_field>empr_jan_str</target_field>
@@ -23785,8 +23734,8 @@ COM VALORES INCOERENTES</note>
         <target_value>1000 ou mais</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -23802,22 +23751,22 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>file_input_2019 ajuste 2</name>
     <type>TextFileInput</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <accept_filenames>N</accept_filenames>
     <passing_through_fields>N</passing_through_fields>
-    <accept_field/>
-    <accept_stepname/>
+    <accept_field />
+    <accept_stepname />
     <separator>;</separator>
     <enclosure>"</enclosure>
     <enclosure_breaks>N</enclosure_breaks>
-    <escapechar/>
+    <escapechar />
     <header>Y</header>
     <nr_headerlines>1</nr_headerlines>
     <footer>N</footer>
@@ -23829,18 +23778,18 @@ COM VALORES INCOERENTES</note>
     <nr_lines_doc_header>0</nr_lines_doc_header>
     <noempty>Y</noempty>
     <include>N</include>
-    <include_field/>
+    <include_field />
     <rownum>N</rownum>
     <rownumByFile>N</rownumByFile>
-    <rownum_field/>
+    <rownum_field />
     <format>mixed</format>
-    <encoding/>
+    <encoding />
     <length>Characters</length>
     <add_to_result_filenames>Y</add_to_result_filenames>
     <file>
       <name>${Internal.Transformation.Filename.Directory}\entrada</name>
       <filemask>CAGEDEST_AJUSTES_.*2019\.txt</filemask>
-      <exclude_filemask/>
+      <exclude_filemask />
       <file_required>N</file_required>
       <include_subfolders>N</include_subfolders>
       <type>CSV</type>
@@ -23857,7 +23806,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23872,7 +23821,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23887,7 +23836,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23897,12 +23846,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Ano_Movimentação</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23912,12 +23861,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>CBO_94_Ocupação</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23932,7 +23881,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23947,7 +23896,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23962,7 +23911,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23977,7 +23926,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -23992,7 +23941,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24007,7 +23956,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24022,7 +23971,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24037,7 +23986,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24052,7 +24001,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24067,7 +24016,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24082,7 +24031,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24097,7 +24046,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24112,7 +24061,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24127,7 +24076,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24142,7 +24091,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24157,7 +24106,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24167,12 +24116,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Bairros_SP</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24182,12 +24131,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Bairros_Fortaleza</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24197,12 +24146,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Bairros_RJ</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24212,12 +24161,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Distritos_SP</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24227,12 +24176,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Regiões_Adm_DF</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24247,7 +24196,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24262,7 +24211,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24272,12 +24221,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Adm_RJ</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24287,12 +24236,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Adm_SP</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24302,12 +24251,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Corede</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24317,12 +24266,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Corede_04</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24332,12 +24281,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Gov_SP</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24347,12 +24296,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Senac_PR</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24362,12 +24311,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Senai_PR</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24377,12 +24326,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Senai_SP</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24392,12 +24341,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Sub_Região_Senai_PR</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24407,12 +24356,12 @@ COM VALORES INCOERENTES</note>
       <field>
         <name>Região_Metro_MTE</name>
         <type>String</type>
-        <format/>
+        <format />
         <currency>$</currency>
         <decimal>.</decimal>
         <group>,</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24427,7 +24376,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24442,7 +24391,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24457,7 +24406,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24472,7 +24421,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24487,7 +24436,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24502,7 +24451,7 @@ COM VALORES INCOERENTES</note>
         <decimal>,</decimal>
         <group>.</group>
         <nullif>-</nullif>
-        <ifnull/>
+        <ifnull />
         <position>-1</position>
         <length>-1</length>
         <precision>-1</precision>
@@ -24513,30 +24462,30 @@ COM VALORES INCOERENTES</note>
     <limit>0</limit>
     <error_ignored>Y</error_ignored>
     <skip_bad_files>N</skip_bad_files>
-    <file_error_field/>
-    <file_error_message_field/>
+    <file_error_field />
+    <file_error_message_field />
     <error_line_skipped>N</error_line_skipped>
     <error_count_field>num_errors</error_count_field>
     <error_fields_field>field_errors</error_fields_field>
     <error_text_field>error_text</error_text_field>
-    <bad_line_files_destination_directory/>
+    <bad_line_files_destination_directory />
     <bad_line_files_extension>warning</bad_line_files_extension>
-    <error_line_files_destination_directory/>
+    <error_line_files_destination_directory />
     <error_line_files_extension>error</error_line_files_extension>
-    <line_number_files_destination_directory/>
+    <line_number_files_destination_directory />
     <line_number_files_extension>line</line_number_files_extension>
     <date_format_lenient>Y</date_format_lenient>
     <date_format_locale>pt_BR</date_format_locale>
     <shortFileFieldName>short_filename</shortFileFieldName>
-    <pathFieldName/>
-    <hiddenFieldName/>
-    <lastModificationTimeFieldName/>
-    <uriNameFieldName/>
-    <rootUriNameFieldName/>
-    <extensionFieldName/>
-    <sizeFieldName/>
-    <attributes/>
-    <cluster_schema/>
+    <pathFieldName />
+    <hiddenFieldName />
+    <lastModificationTimeFieldName />
+    <uriNameFieldName />
+    <rootUriNameFieldName />
+    <extensionFieldName />
+    <sizeFieldName />
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24552,13 +24501,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>filter_rows_RJ</name>
     <type>FilterRows</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <send_true_to>Null if</send_true_to>
     <send_false_to>Stream lookup</send_false_to>
@@ -24570,7 +24519,7 @@ COM VALORES INCOERENTES</note>
             <negated>N</negated>
             <leftvalue>UF</leftvalue>
             <function>=</function>
-            <rightvalue/>
+            <rightvalue />
             <value>
               <name>constant</name>
               <type>Integer</type>
@@ -24584,8 +24533,8 @@ COM VALORES INCOERENTES</note>
         </conditions>
       </condition>
     </compare>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24601,13 +24550,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>grau_instr_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Grau_Instrução</field_to_use>
     <target_field>grau_instr_str</target_field>
@@ -24658,8 +24607,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Doutorado</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24675,13 +24624,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>ibge_subsetor_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>IBGE_Subsetor</field_to_use>
     <target_field>ibge_subsetor_str</target_field>
@@ -24788,8 +24737,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Agricultura, silvicultura, criaçao de animais, extrativismo vegetal</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24805,13 +24754,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>ind_aprendiz_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Ind_Aprendiz</field_to_use>
     <target_field>ind_aprendiz_str</target_field>
@@ -24826,8 +24775,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Sim</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24843,13 +24792,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>ind_trab_interm_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Ind_Trab_Intermitente</field_to_use>
     <target_field>ind_trab_interm_str</target_field>
@@ -24864,8 +24813,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Sim</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24881,13 +24830,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>ind_trab_parcial_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Ind_Trab_Parcial</field_to_use>
     <target_field>ind_trab_parcial_str</target_field>
@@ -24902,8 +24851,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Sim</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -24919,13 +24868,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>mesoregiao_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Mesorregião</field_to_use>
     <target_field>mesoregiao_str</target_field>
@@ -25480,8 +25429,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Distrito Federal</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -25497,13 +25446,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>microregiao_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Microrregião</field_to_use>
     <target_field>microregiao_str</target_field>
@@ -27742,8 +27691,8 @@ COM VALORES INCOERENTES</note>
         <target_value>BRASÍLIA</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -27759,13 +27708,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>output_caged_est_rj</name>
     <type>TableOutput</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <connection>CONN_POSTGRE_GEOSERVER_DS</connection>
     <schema>caged</schema>
@@ -27776,14 +27725,14 @@ COM VALORES INCOERENTES</note>
     <use_batch>N</use_batch>
     <specify_fields>Y</specify_fields>
     <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
+    <partitioning_field />
     <partitioning_daily>N</partitioning_daily>
     <partitioning_monthly>Y</partitioning_monthly>
     <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
+    <tablename_field />
     <tablename_in_table>Y</tablename_in_table>
     <return_keys>N</return_keys>
-    <return_field/>
+    <return_field />
     <fields>
       <field>
         <column_name>adm_desl</column_name>
@@ -27898,8 +27847,8 @@ COM VALORES INCOERENTES</note>
         <stream_name>tipo_mov_desag_str</stream_name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -27915,13 +27864,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>port_defic_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Ind_Portador_Defic</field_to_use>
     <target_field>port_defic_str</target_field>
@@ -27936,8 +27885,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Sim</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -27953,13 +27902,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>raca_cor_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Raça_Cor</field_to_use>
     <target_field>raca_cor_str</target_field>
@@ -27990,8 +27939,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Não identificada</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28007,13 +27956,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>regiao_adm_rj_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Região_Adm_RJ</field_to_use>
     <target_field>regiao_adm_rj_str</target_field>
@@ -28148,8 +28097,8 @@ COM VALORES INCOERENTES</note>
         <target_value>OUTROS RIO</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28165,13 +28114,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>saldo_mov_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Saldo_Mov</field_to_use>
     <target_field>saldo_mov_str</target_field>
@@ -28186,8 +28135,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Desligamento</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28203,13 +28152,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>sexo_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Sexo</field_to_use>
     <target_field>sexo_str</target_field>
@@ -28224,8 +28173,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Feminino</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28239,15 +28188,15 @@ COM VALORES INCOERENTES</note>
     </GUI>
   </step>
   <step>
-    <name>string>int-number</name>
+    <name>string&gt;int-number</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <select_unspecified>N</select_unspecified>
@@ -28257,16 +28206,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Tempo_Emprego</name>
@@ -28274,16 +28223,16 @@ COM VALORES INCOERENTES</note>
         <type>Number</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Bairros_RJ</name>
@@ -28291,16 +28240,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Mesorregião</name>
@@ -28308,16 +28257,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Microrregião</name>
@@ -28325,16 +28274,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Região_Adm_RJ</name>
@@ -28342,16 +28291,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Grau_Instrução</name>
@@ -28359,16 +28308,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Tipo_Defic</name>
@@ -28376,16 +28325,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>Raça_Cor</name>
@@ -28393,16 +28342,16 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
       <meta>
         <name>IBGE_Subsetor</name>
@@ -28410,20 +28359,20 @@ COM VALORES INCOERENTES</note>
         <type>Integer</type>
         <length>-2</length>
         <precision>-2</precision>
-        <conversion_mask/>
+        <conversion_mask />
         <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
+        <date_format_locale />
+        <date_format_timezone />
         <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
+        <encoding />
+        <decimal_symbol />
+        <grouping_symbol />
+        <currency_symbol />
+        <storage_type />
       </meta>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28439,13 +28388,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>tipo_defic_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Tipo_Defic</field_to_use>
     <target_field>tipo_defic_str</target_field>
@@ -28480,8 +28429,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Não identificada</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28497,13 +28446,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>tipo_estab_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Tipo_Estab</field_to_use>
     <target_field>tipo_estab_str</target_field>
@@ -28522,8 +28471,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Não identificado</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28539,13 +28488,13 @@ COM VALORES INCOERENTES</note>
   <step>
     <name>tipo_mov_desag_str</name>
     <type>ValueMapper</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <field_to_use>Tipo_Mov_Desagregado</field_to_use>
     <target_field>tipo_mov_desag_str</target_field>
@@ -28608,8 +28557,8 @@ COM VALORES INCOERENTES</note>
         <target_value>Desliamento por Acordo Empregado e Empregador</target_value>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -28627,5 +28576,5 @@ COM VALORES INCOERENTES</note>
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>
   <slave_transformation>N</slave_transformation>
-  <attributes/>
+  <attributes />
 </transformation>

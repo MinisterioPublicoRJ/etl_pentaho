@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <transformation>
   <info>
     <name>MSG_EXEC_SUCESSO</name>
-    <description/>
-    <extended_description/>
-    <trans_version/>
+    <description />
+    <extended_description />
+    <trans_version />
     <trans_type>Normal</trans_type>
     <trans_status>0</trans_status>
     <directory>/</directory>
@@ -15,8 +15,8 @@
         <connection>${ETLLOG_LOG_CONNECTION}</connection>
         <schema>${ETLLOG_LOG_SCHEMA}</schema>
         <table>${ETLLOG_TRANSFORMATION_LOG_TABLE_NAME}</table>
-        <size_limit_lines/>
-        <interval/>
+        <size_limit_lines />
+        <interval />
         <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
         <field>
           <id>ID_BATCH</id>
@@ -42,37 +42,37 @@
           <id>LINES_READ</id>
           <enabled>Y</enabled>
           <name>LINES_READ</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_WRITTEN</id>
           <enabled>Y</enabled>
           <name>LINES_WRITTEN</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_UPDATED</id>
           <enabled>Y</enabled>
           <name>LINES_UPDATED</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_INPUT</id>
           <enabled>Y</enabled>
           <name>LINES_INPUT</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_OUTPUT</id>
           <enabled>Y</enabled>
           <name>LINES_OUTPUT</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_REJECTED</id>
           <enabled>Y</enabled>
           <name>LINES_REJECTED</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>ERRORS</id>
@@ -130,7 +130,7 @@
         <schema>${ETLLOG_LOG_SCHEMA}</schema>
         <table>${ETLLOG_PERFORMANCE_LOG_TABLE_NAME}</table>
         <interval>${ETLLOG_LOG_LINE_TIMEOUT}</interval>
-        <timeout_days/>
+        <timeout_days />
         <field>
           <id>ID_BATCH</id>
           <enabled>Y</enabled>
@@ -402,9 +402,9 @@
       </metrics-log-table>
     </log>
     <maxdate>
-      <connection/>
-      <table/>
-      <field/>
+      <connection />
+      <table />
+      <field />
       <offset>0.0</offset>
       <maxdiff>0.0</maxdiff>
     </maxdate>
@@ -415,7 +415,7 @@
     <feedback_shown>Y</feedback_shown>
     <feedback_size>50000</feedback_size>
     <using_thread_priorities>Y</using_thread_priorities>
-    <shared_objects_file/>
+    <shared_objects_file />
     <capture_step_performance>N</capture_step_performance>
     <step_performance_capturing_delay>1000</step_performance_capturing_delay>
     <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
@@ -461,22 +461,22 @@
   <step>
     <name>Generate rows</name>
     <type>RowGenerator</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <name>errorname</name>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>error test</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -488,8 +488,8 @@
     <interval_in_ms>5000</interval_in_ms>
     <row_time_field>now</row_time_field>
     <last_time_field>FiveSecondsAgo</last_time_field>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -505,13 +505,13 @@
   <step>
     <name>Get rows from result</name>
     <type>RowsFromResult</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -521,8 +521,8 @@
         <precision>-1</precision>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -538,23 +538,23 @@
   <step>
     <name>Get variables</name>
     <type>GetVariable</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <name>ETL_JOB</name>
         <variable>${ETL_JOB}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -563,10 +563,10 @@
         <name>email_dest</name>
         <variable>${email_dest}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -575,10 +575,10 @@
         <name>email_cc</name>
         <variable>${email_cc}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -587,10 +587,10 @@
         <name>sender_name</name>
         <variable>${sender_name}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -599,10 +599,10 @@
         <name>sender_mail</name>
         <variable>${sender_mail}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -611,10 +611,10 @@
         <name>smtp_server</name>
         <variable>${smtp_server}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -623,10 +623,10 @@
         <name>smtp_port</name>
         <variable>${smtp_port}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -635,10 +635,10 @@
         <name>mail_encoding</name>
         <variable>${mail_encoding}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -647,10 +647,10 @@
         <name>sucess_mail_subject</name>
         <variable>${sucess_mail_subject}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -659,10 +659,10 @@
         <name>sucess_mail_msg</name>
         <variable>${sucess_mail_msg}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -671,10 +671,10 @@
         <name>error_mail_subject</name>
         <variable>${error_mail_subject}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -683,10 +683,10 @@
         <name>error_mail_msg</name>
         <variable>${error_mail_msg}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -695,10 +695,10 @@
         <name>email_auth_user</name>
         <variable>${email_auth_user}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
@@ -707,17 +707,17 @@
         <name>email_auth_pass</name>
         <variable>${email_auth_pass}</variable>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <length>-1</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -733,20 +733,20 @@
   <step>
     <name>Mail SUCESSO</name>
     <type>Mail</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <server>smtp_server</server>
     <port>smtp_port</port>
     <destination>email_dest</destination>
-    <destinationCc/>
-    <destinationBCc/>
-    <replyToAddresses/>
+    <destinationCc />
+    <destinationBCc />
+    <replyToAddresses />
     <replyto>sender_mail</replyto>
     <replytoname>sender_name</replytoname>
     <subject>sucess_mail_subject</subject>
@@ -755,23 +755,23 @@
     <zipFilenameDynamic>N</zipFilenameDynamic>
     <isFilenameDynamic>N</isFilenameDynamic>
     <attachContentFromField>N</attachContentFromField>
-    <attachContentField/>
-    <attachContentFileNameField/>
-    <dynamicFieldname/>
-    <dynamicWildcard/>
-    <dynamicZipFilename/>
-    <sourcefilefoldername/>
-    <sourcewildcard/>
-    <contact_person/>
-    <contact_phone/>
+    <attachContentField />
+    <attachContentFileNameField />
+    <dynamicFieldname />
+    <dynamicWildcard />
+    <dynamicZipFilename />
+    <sourcefilefoldername />
+    <sourcewildcard />
+    <contact_person />
+    <contact_phone />
     <comment>sucess_mail_msg</comment>
     <include_files>N</include_files>
     <zip_files>N</zip_files>
-    <zip_name/>
+    <zip_name />
     <zip_limit_size>0</zip_limit_size>
     <use_auth>N</use_auth>
     <use_secure_auth>N</use_secure_auth>
-    <auth_user/>
+    <auth_user />
     <auth_password>Encrypted </auth_password>
     <only_comment>N</only_comment>
     <use_HTML>Y</use_HTML>
@@ -783,8 +783,8 @@
     <secureconnectiontype>SSL</secureconnectiontype>
     <embeddedimages>
       </embeddedimages>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -800,13 +800,13 @@
   <step>
     <name>Write to log</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -857,8 +857,8 @@
         <name>email_auth_pass</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -876,5 +876,5 @@
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>
   <slave_transformation>N</slave_transformation>
-  <attributes/>
+  <attributes />
 </transformation>

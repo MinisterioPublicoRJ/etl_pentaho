@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <job>
   <name>JOB processa_periodo</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -13,69 +13,18 @@
   <parameters>
     <parameter>
       <name>ANOMES</name>
-      <default_value/>
-      <description/>
+      <default_value />
+      <description />
     </parameter>
   </parameters>
-  <connection>
-    <name>CONN_POSTGRE_GEOSERVER_DS</name>
-    <server/>
-    <type>POSTGRESQL</type>
-    <access>JNDI</access>
-    <database>${POSTGRES_DS_NAME}</database>
-    <port>1521</port>
-    <username/>
-    <password>Encrypted </password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
-    <attributes>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>IS_CLUSTERED</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>PORT_NUMBER</code>
-        <attribute>1521</attribute>
-      </attribute>
-      <attribute>
-        <code>PRESERVE_RESERVED_WORD_CASE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>QUOTE_ALL_FIELDS</code>
-        <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
-        <attribute>Y</attribute>
-      </attribute>
-      <attribute>
-        <code>USE_POOLING</code>
-        <attribute>N</attribute>
-      </attribute>
-    </attributes>
-  </connection>
   <slaveservers>
     </slaveservers>
   <job-log-table>
     <connection>${ETLLOG_LOG_CONNECTION}</connection>
     <schema>${ETLLOG_LOG_SCHEMA}</schema>
     <table>${ETLLOG_JOBLOGTABLE_LOG_TABLE}</table>
-    <size_limit_lines/>
-    <interval/>
+    <size_limit_lines />
+    <interval />
     <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_JOB</id>
@@ -341,13 +290,13 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
+      <attributes />
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -363,29 +312,29 @@
       <nr>0</nr>
       <xloc>50</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Success</name>
-      <description/>
+      <description />
       <type>SUCCESS</type>
-      <attributes/>
+      <attributes />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>900</xloc>
       <yloc>50</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>de_para_scnes</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/de_para_scnes.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -398,7 +347,7 @@
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>Y</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -413,17 +362,17 @@
       <nr>0</nr>
       <xloc>575</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>caged ajustes</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
+      <attributes />
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/caged_ajustes.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -436,7 +385,7 @@
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>Y</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -451,13 +400,13 @@
       <nr>0</nr>
       <xloc>675</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>refresh_mviews</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
+      <attributes />
       <sql>REFRESH MATERIALIZED VIEW lupa.caged_admitidos WITH DATA;
 REFRESH MATERIALIZED VIEW lupa.caged_admitidos_proporcao_atual WITH DATA;
 REFRESH MATERIALIZED VIEW lupa.caged_cbo_admitidos WITH DATA;
@@ -476,7 +425,7 @@ REFRESH MATERIALIZED VIEW lupa.caged_tipo_mov_desag_admitidos WITH DATA;
 REFRESH MATERIALIZED VIEW lupa.caged_tipo_mov_desag_desligados WITH DATA;</sql>
       <useVariableSubstitution>F</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>CONN_POSTGRE_GEOSERVER_DS</connection>
       <parallel>N</parallel>
@@ -484,26 +433,26 @@ REFRESH MATERIALIZED VIEW lupa.caged_tipo_mov_desag_desligados WITH DATA;</sql>
       <nr>0</nr>
       <xloc>775</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>Abort job</name>
-      <description/>
+      <description />
       <type>ABORT</type>
-      <attributes/>
-      <message/>
+      <attributes />
+      <message />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>375</xloc>
       <yloc>425</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_fim_periodo</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>N</createParentFolder>
       <appendFile>Y</appendFile>
@@ -511,19 +460,19 @@ REFRESH MATERIALIZED VIEW lupa.caged_tipo_mov_desag_desligados WITH DATA;</sql>
 ###### FINALIZANDO PERIODO ######
 
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>900</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>log_inicio_periodo</name>
-      <description/>
+      <description />
       <type>WRITE_TO_FILE</type>
-      <attributes/>
+      <attributes />
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>N</createParentFolder>
       <appendFile>Y</appendFile>
@@ -531,20 +480,20 @@ REFRESH MATERIALIZED VIEW lupa.caged_tipo_mov_desag_desligados WITH DATA;</sql>
 ###### INICIANDO PERIODO ######
 
 </content>
-      <encoding/>
+      <encoding />
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>175</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
     <entry>
       <name>datasus_cnes_download.py</name>
-      <description/>
+      <description />
       <type>SHELL</type>
-      <attributes/>
-      <filename/>
+      <attributes />
+      <filename />
       <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
       <arg_from_previous>N</arg_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -562,7 +511,7 @@ REFRESH MATERIALIZED VIEW lupa.caged_tipo_mov_desag_desligados WITH DATA;</sql>
       <nr>0</nr>
       <xloc>375</xloc>
       <yloc>150</yloc>
-      <attributes_kjc/>
+      <attributes_kjc />
     </entry>
   </entries>
   <hops>

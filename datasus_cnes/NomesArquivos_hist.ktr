@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <transformation>
   <info>
     <name>TRANSF NomesArquivos_hist</name>
-    <description/>
-    <extended_description/>
-    <trans_version/>
+    <description />
+    <extended_description />
+    <trans_version />
     <trans_type>Normal</trans_type>
     <trans_status>0</trans_status>
     <directory>/</directory>
@@ -15,8 +15,8 @@
         <connection>${ETLLOG_LOG_CONNECTION}</connection>
         <schema>${ETLLOG_LOG_SCHEMA}</schema>
         <table>${ETLLOG_TRANSFORMATION_LOG_TABLE_NAME}</table>
-        <size_limit_lines/>
-        <interval/>
+        <size_limit_lines />
+        <interval />
         <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
         <field>
           <id>ID_BATCH</id>
@@ -42,37 +42,37 @@
           <id>LINES_READ</id>
           <enabled>Y</enabled>
           <name>LINES_READ</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_WRITTEN</id>
           <enabled>Y</enabled>
           <name>LINES_WRITTEN</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_UPDATED</id>
           <enabled>Y</enabled>
           <name>LINES_UPDATED</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_INPUT</id>
           <enabled>Y</enabled>
           <name>LINES_INPUT</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_OUTPUT</id>
           <enabled>Y</enabled>
           <name>LINES_OUTPUT</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>LINES_REJECTED</id>
           <enabled>Y</enabled>
           <name>LINES_REJECTED</name>
-          <subject/>
+          <subject />
         </field>
         <field>
           <id>ERRORS</id>
@@ -129,7 +129,7 @@
         <connection>${ETLLOG_LOG_CONNECTION}</connection>
         <schema>${ETLLOG_LOG_SCHEMA}</schema>
         <table>${ETLLOG_PERFORMANCE_LOG_TABLE_NAME}</table>
-        <interval/>
+        <interval />
         <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
         <field>
           <id>ID_BATCH</id>
@@ -402,9 +402,9 @@
       </metrics-log-table>
     </log>
     <maxdate>
-      <connection/>
-      <table/>
-      <field/>
+      <connection />
+      <table />
+      <field />
       <offset>0.0</offset>
       <maxdiff>0.0</maxdiff>
     </maxdate>
@@ -415,7 +415,7 @@
     <feedback_shown>Y</feedback_shown>
     <feedback_size>50000</feedback_size>
     <using_thread_priorities>Y</using_thread_priorities>
-    <shared_objects_file/>
+    <shared_objects_file />
     <capture_step_performance>N</capture_step_performance>
     <step_performance_capturing_delay>1000</step_performance_capturing_delay>
     <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
@@ -571,107 +571,107 @@
   <step>
     <name>Calculator 1</name>
     <type>Calculator</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <failIfNoFile>Y</failIfNoFile>
     <calculation>
       <field_name>um</field_name>
       <calc_type>CONSTANT</calc_type>
       <field_a>1</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>1</value_length>
       <value_precision>0</value_precision>
       <remove>Y</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>ano_atual</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
       <field_a>sysdate</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>4</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>mes_atual</field_name>
       <calc_type>MONTH_OF_DATE</calc_type>
       <field_a>sysdate</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>2</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>dt_mes_anterior</field_name>
       <calc_type>ADD_MONTHS</calc_type>
       <field_a>sysdate</field_a>
       <field_b>meses</field_b>
-      <field_c/>
+      <field_c />
       <value_type>Date</value_type>
       <value_length>-1</value_length>
       <value_precision>-1</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>mes_anterior</field_name>
       <calc_type>MONTH_OF_DATE</calc_type>
       <field_a>dt_mes_anterior</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>2</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>ano_anterior</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
       <field_a>dt_mes_anterior</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>4</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -687,92 +687,92 @@
   <step>
     <name>Calculator 2</name>
     <type>Calculator</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <failIfNoFile>Y</failIfNoFile>
     <calculation>
       <field_name>um</field_name>
       <calc_type>CONSTANT</calc_type>
       <field_a>1</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>1</value_length>
       <value_precision>0</value_precision>
       <remove>Y</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>ano_atual</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
       <field_a>sysdate</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>4</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>mes_atual</field_name>
       <calc_type>MONTH_OF_DATE</calc_type>
       <field_a>sysdate</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>2</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>dt_ano_anterior</field_name>
       <calc_type>ADD_MONTHS</calc_type>
       <field_a>sysdate</field_a>
       <field_b>meses2</field_b>
-      <field_c/>
+      <field_c />
       <value_type>Date</value_type>
       <value_length>-1</value_length>
       <value_precision>-1</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>ano_anterior</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
       <field_a>dt_ano_anterior</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>4</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -788,107 +788,107 @@
   <step>
     <name>Calculator 3</name>
     <type>Calculator</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <failIfNoFile>Y</failIfNoFile>
     <calculation>
       <field_name>um</field_name>
       <calc_type>CONSTANT</calc_type>
       <field_a>1</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>1</value_length>
       <value_precision>0</value_precision>
       <remove>Y</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>ano_atual</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
       <field_a>sysdate</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>4</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>mes_atual</field_name>
       <calc_type>MONTH_OF_DATE</calc_type>
       <field_a>sysdate</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>2</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>dt_mes_anterior</field_name>
       <calc_type>ADD_MONTHS</calc_type>
       <field_a>sysdate</field_a>
       <field_b>meses3</field_b>
-      <field_c/>
+      <field_c />
       <value_type>Date</value_type>
       <value_length>-1</value_length>
       <value_precision>-1</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>mes_anterior</field_name>
       <calc_type>MONTH_OF_DATE</calc_type>
       <field_a>dt_mes_anterior</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>2</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
     <calculation>
       <field_name>ano_anterior</field_name>
       <calc_type>YEAR_OF_DATE</calc_type>
       <field_a>dt_mes_anterior</field_a>
-      <field_b/>
-      <field_c/>
+      <field_b />
+      <field_c />
       <value_type>Integer</value_type>
       <value_length>4</value_length>
       <value_precision>0</value_precision>
       <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
+      <conversion_mask />
+      <decimal_symbol />
+      <grouping_symbol />
+      <currency_symbol />
     </calculation>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -904,26 +904,26 @@
   <step>
     <name>Concat fields 3</name>
     <type>ConcatFields</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
-    <separator/>
-    <enclosure/>
+    <separator />
+    <enclosure />
     <enclosure_forced>N</enclosure_forced>
     <enclosure_fix_disabled>N</enclosure_fix_disabled>
     <header>N</header>
     <footer>N</footer>
     <format>DOS</format>
     <compression>None</compression>
-    <encoding/>
-    <endedLine/>
+    <encoding />
+    <endedLine />
     <fileNameInField>N</fileNameInField>
-    <fileNameField/>
+    <fileNameField />
     <create_parent_folder>Y</create_parent_folder>
     <file>
       <name>file</name>
@@ -936,7 +936,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
+      <date_time_format />
       <add_to_result_filenames>Y</add_to_result_filenames>
       <pad>N</pad>
       <fast_dump>N</fast_dump>
@@ -946,11 +946,11 @@
       <field>
         <name>ano_anterior</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
         <trim_type>both</trim_type>
         <length>4</length>
         <precision>-1</precision>
@@ -958,11 +958,11 @@
       <field>
         <name>mes_anterior</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
         <trim_type>both</trim_type>
         <length>2</length>
         <precision>-1</precision>
@@ -973,8 +973,8 @@
       <targetFieldLength>0</targetFieldLength>
       <removeSelectedFields>N</removeSelectedFields>
     </ConcatFields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -990,26 +990,26 @@
   <step>
     <name>Concat fields 3 2</name>
     <type>ConcatFields</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
-    <separator/>
-    <enclosure/>
+    <separator />
+    <enclosure />
     <enclosure_forced>N</enclosure_forced>
     <enclosure_fix_disabled>N</enclosure_fix_disabled>
     <header>N</header>
     <footer>N</footer>
     <format>DOS</format>
     <compression>None</compression>
-    <encoding/>
-    <endedLine/>
+    <encoding />
+    <endedLine />
     <fileNameInField>N</fileNameInField>
-    <fileNameField/>
+    <fileNameField />
     <create_parent_folder>Y</create_parent_folder>
     <file>
       <name>file</name>
@@ -1022,7 +1022,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <SpecifyFormat>N</SpecifyFormat>
-      <date_time_format/>
+      <date_time_format />
       <add_to_result_filenames>Y</add_to_result_filenames>
       <pad>N</pad>
       <fast_dump>N</fast_dump>
@@ -1032,11 +1032,11 @@
       <field>
         <name>ano_atual</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
         <trim_type>both</trim_type>
         <length>4</length>
         <precision>-1</precision>
@@ -1044,11 +1044,11 @@
       <field>
         <name>mes_atual</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
+        <nullif />
         <trim_type>both</trim_type>
         <length>2</length>
         <precision>-1</precision>
@@ -1059,8 +1059,8 @@
       <targetFieldLength>0</targetFieldLength>
       <removeSelectedFields>N</removeSelectedFields>
     </ConcatFields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1076,16 +1076,16 @@
   <step>
     <name>Copy rows to result</name>
     <type>RowsToResult</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1101,16 +1101,16 @@
   <step>
     <name>Filter rows</name>
     <type>FilterRows</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <send_true_to>Select values 4</send_true_to>
-    <send_false_to/>
+    <send_false_to />
     <compare>
       <condition>
         <negated>Y</negated>
@@ -1119,8 +1119,8 @@
         <rightvalue>ano_mes_corrente</rightvalue>
       </condition>
     </compare>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1136,13 +1136,13 @@
   <step>
     <name>Get system info 1</name>
     <type>SystemInfo</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1150,8 +1150,8 @@
         <type>system date (fixed)</type>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1167,13 +1167,13 @@
   <step>
     <name>Get system info 2</name>
     <type>SystemInfo</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1181,8 +1181,8 @@
         <type>system date (fixed)</type>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1198,13 +1198,13 @@
   <step>
     <name>Get system info 3</name>
     <type>SystemInfo</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1212,8 +1212,8 @@
         <type>system date (fixed)</type>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1229,13 +1229,13 @@
   <step>
     <name>Replace in string 6</name>
     <type>ReplaceString</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1243,9 +1243,9 @@
         <out_stream_name>ano_mes</out_stream_name>
         <use_regex>yes</use_regex>
         <replace_string>\s+</replace_string>
-        <replace_by_string/>
+        <replace_by_string />
         <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
+        <replace_field_by_string />
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
         <is_unicode>no</is_unicode>
@@ -1255,16 +1255,16 @@
         <out_stream_name>ano_mes_corrente</out_stream_name>
         <use_regex>yes</use_regex>
         <replace_string>\s+</replace_string>
-        <replace_by_string/>
+        <replace_by_string />
         <set_empty_string>N</set_empty_string>
-        <replace_field_by_string/>
+        <replace_field_by_string />
         <whole_word>no</whole_word>
         <case_sensitive>no</case_sensitive>
         <is_unicode>no</is_unicode>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1280,13 +1280,13 @@
   <step>
     <name>Select values 1</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1306,8 +1306,8 @@
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1323,13 +1323,13 @@
   <step>
     <name>Select values 2</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1349,8 +1349,8 @@
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1366,13 +1366,13 @@
   <step>
     <name>Select values 3</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1392,8 +1392,8 @@
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1409,13 +1409,13 @@
   <step>
     <name>Select values 4</name>
     <type>SelectValues</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
@@ -1447,8 +1447,8 @@
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1464,20 +1464,20 @@
   <step>
     <name>Sort rows</name>
     <type>SortRows</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <directory>%%java.io.tmpdir%%</directory>
     <prefix>out</prefix>
     <sort_size>1000000</sort_size>
-    <free_memory/>
+    <free_memory />
     <compress>N</compress>
-    <compress_variable/>
+    <compress_variable />
     <unique_rows>N</unique_rows>
     <fields>
       <field>
@@ -1497,8 +1497,8 @@
         <presorted>N</presorted>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1514,18 +1514,18 @@
   <step>
     <name>Unique rows</name>
     <type>Unique</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <count_rows>N</count_rows>
-    <count_field/>
+    <count_field />
     <reject_duplicate_row>N</reject_duplicate_row>
-    <error_description/>
+    <error_description />
     <fields>
       <field>
         <name>ano_mes</name>
@@ -1536,8 +1536,8 @@
         <case_insensitive>Y</case_insensitive>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1553,13 +1553,13 @@
   <step>
     <name>Write to log 1</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -1592,8 +1592,8 @@
         <name>ano_anterior</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1609,13 +1609,13 @@
   <step>
     <name>Write to log 2</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -1648,8 +1648,8 @@
         <name>ano_anterior</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1665,13 +1665,13 @@
   <step>
     <name>Write to log 3</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -1704,8 +1704,8 @@
         <name>ano_anterior</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1721,13 +1721,13 @@
   <step>
     <name>Write to log 4</name>
     <type>WriteToLog</type>
-    <description/>
+    <description />
     <distribute>Y</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <loglevel>log_level_basic</loglevel>
     <displayHeader>Y</displayHeader>
@@ -1742,8 +1742,8 @@
         <name>ano_mes_corrente</name>
       </field>
     </fields>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1759,22 +1759,22 @@
   <step>
     <name>dt_inicio_carga 1</name>
     <type>RowGenerator</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <name>dt_inicio</name>
         <type>Date</type>
         <format>yyyy-MM-dd</format>
-        <currency/>
-        <decimal/>
-        <group/>
+        <currency />
+        <decimal />
+        <group />
         <nullif>2020-09-01</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1783,10 +1783,10 @@
       <field>
         <name>separador</name>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>-</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1795,10 +1795,10 @@
       <field>
         <name>mes_intervalo</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>1</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1807,10 +1807,10 @@
       <field>
         <name>menosmeses</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>-1</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1822,8 +1822,8 @@
     <interval_in_ms>5000</interval_in_ms>
     <row_time_field>now</row_time_field>
     <last_time_field>FiveSecondsAgo</last_time_field>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1839,22 +1839,22 @@
   <step>
     <name>dt_inicio_carga 2</name>
     <type>RowGenerator</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <name>dt_inicio</name>
         <type>Date</type>
         <format>yyyy-MM-dd</format>
-        <currency/>
-        <decimal/>
-        <group/>
+        <currency />
+        <decimal />
+        <group />
         <nullif>2020-09-01</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1863,10 +1863,10 @@
       <field>
         <name>separador</name>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>-</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1875,10 +1875,10 @@
       <field>
         <name>mes_intervalo</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>12</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1887,10 +1887,10 @@
       <field>
         <name>menosmeses</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>-12</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1899,10 +1899,10 @@
       <field>
         <name>mes_anterior</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>12</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1914,8 +1914,8 @@
     <interval_in_ms>5000</interval_in_ms>
     <row_time_field>now</row_time_field>
     <last_time_field>FiveSecondsAgo</last_time_field>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -1931,22 +1931,22 @@
   <step>
     <name>dt_inicio_carga 3</name>
     <type>RowGenerator</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <fields>
       <field>
         <name>dt_inicio</name>
         <type>Date</type>
         <format>yyyy-MM-dd</format>
-        <currency/>
-        <decimal/>
-        <group/>
+        <currency />
+        <decimal />
+        <group />
         <nullif>2020-09-01</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1955,10 +1955,10 @@
       <field>
         <name>separador</name>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>-</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1967,10 +1967,10 @@
       <field>
         <name>mes_intervalo</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>6</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1979,10 +1979,10 @@
       <field>
         <name>menosmeses</name>
         <type>Integer</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>-6</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -1991,10 +1991,10 @@
       <field>
         <name>extensao</name>
         <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
+        <format />
+        <currency />
+        <decimal />
+        <group />
         <nullif>.ZIP</nullif>
         <length>-1</length>
         <precision>-1</precision>
@@ -2006,8 +2006,8 @@
     <interval_in_ms>5000</interval_in_ms>
     <row_time_field>now</row_time_field>
     <last_time_field>FiveSecondsAgo</last_time_field>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2023,26 +2023,26 @@
   <step>
     <name>meses 1</name>
     <type>Sequence</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <valuename>meses</valuename>
     <use_database>N</use_database>
-    <connection/>
-    <schema/>
+    <connection />
+    <schema />
     <seqname>SEQ_</seqname>
     <use_counter>Y</use_counter>
-    <counter_name/>
+    <counter_name />
     <start_at>0</start_at>
     <increment_by>-1</increment_by>
     <max_value>6</max_value>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2058,26 +2058,26 @@
   <step>
     <name>meses 2</name>
     <type>Sequence</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <valuename>meses2</valuename>
     <use_database>N</use_database>
-    <connection/>
-    <schema/>
+    <connection />
+    <schema />
     <seqname>SEQ_</seqname>
     <use_counter>Y</use_counter>
-    <counter_name/>
+    <counter_name />
     <start_at>-12</start_at>
     <increment_by>-12</increment_by>
     <max_value>3</max_value>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2093,26 +2093,26 @@
   <step>
     <name>meses 3</name>
     <type>Sequence</type>
-    <description/>
+    <description />
     <distribute>N</distribute>
-    <custom_distribution/>
+    <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
-      <schema_name/>
+      <schema_name />
     </partitioning>
     <valuename>meses3</valuename>
     <use_database>N</use_database>
-    <connection/>
-    <schema/>
+    <connection />
+    <schema />
     <seqname>SEQ_</seqname>
     <use_counter>Y</use_counter>
-    <counter_name/>
+    <counter_name />
     <start_at>-6</start_at>
     <increment_by>-6</increment_by>
     <max_value>5</max_value>
-    <attributes/>
-    <cluster_schema/>
+    <attributes />
+    <cluster_schema />
     <remotesteps>
       <input>
       </input>
@@ -2130,5 +2130,5 @@
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>
   <slave_transformation>N</slave_transformation>
-  <attributes/>
+  <attributes />
 </transformation>
