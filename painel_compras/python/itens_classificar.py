@@ -45,22 +45,22 @@ def build_file_rules_classify_items(file_name_input='sql_1_rules_tested.sql',
             new_file_content = 'delete from comprasrj.regras_classificacao_itens;\n'
             id_ordem = 100
             value_1 = 'ordem'
-            value_2 = 'tp_item'
+            value_2 = '1'
             value_3 = 'descricao'
             value_4 = 'sql_declaracao'
             for l in all_lines:
                 if len(l) > 0 and '--' not in l:
                     value_1 = id_ordem
-                    if 'select 1 as tp_item,' in l:
+                    if 'set tp_item = 1,' in l:
                         value_2 = 1
                         value_3 = 'produto'
-                    elif 'select 2 as tp_item,' in l:
+                    elif 'set tp_item = 2,' in l:
                         value_2 = 2
                         value_3 = 'servico'
-                    if 'select 3 as tp_item,' in l:
+                    if 'set tp_item = 3,' in l:
                         value_2 = 3
                         value_3 = 'despesa'
-                    value_4 = l.replace(';', '')
+                    value_4 = l.replace(';', '').replace('__AUTO_NUMERAR_ORDEM__', '%s' % id_ordem)
                     sql_1 = "insert into comprasrj.regras_classificacao_itens (ordem, tp_item, descricao, sql_declaracao) values (%s, %s, '%s', '%s');"
                     sql_cmd = sql_1 % (value_1, value_2, value_3, value_4)
                     new_file_content = new_file_content + sql_cmd + '\n'
