@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <transformation>
   <info>
-    <name>UTIL MSG_EXEC_ERRO</name>
+    <name>ANP_grava_planilha</name>
     <description />
     <extended_description />
     <trans_version />
@@ -428,9 +428,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/12/17 15:19:35.732</created_date>
+    <created_date>2021/02/04 16:32:14.440</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/12/17 15:19:35.732</modified_date>
+    <modified_date>2021/02/04 16:32:14.440</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -439,33 +439,28 @@
   <order>
     <hop>
       <from>Get rows from result</from>
-      <to>Get variables</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>Get variables</from>
-      <to>Write to log</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>Generate rows</from>
-      <to>Get variables</to>
+      <to>Select values periodo zips</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get variables</from>
-      <to>Mail ERRO</to>
-      <enabled>N</enabled>
+      <from>Select values periodo zips</from>
+      <to>Copy rows to result</to>
+      <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get variables</from>
-      <to>Write to log 2</to>
+      <from>Select values periodo zips</from>
+      <to>Microsoft Excel writer</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Select values periodo zips</from>
+      <to>Write to log write to excel</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Generate rows</name>
-    <type>RowGenerator</type>
+    <name>Copy rows to result</name>
+    <type>RowsToResult</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -474,25 +469,6 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <fields>
-      <field>
-        <name>errorname</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <nullif>error test</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-    </fields>
-    <limit>1</limit>
-    <never_ending>N</never_ending>
-    <interval_in_ms>5000</interval_in_ms>
-    <row_time_field>now</row_time_field>
-    <last_time_field>FiveSecondsAgo</last_time_field>
     <attributes />
     <cluster_schema />
     <remotesteps>
@@ -502,8 +478,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>100</xloc>
-      <yloc>150</yloc>
+      <xloc>800</xloc>
+      <yloc>275</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -511,7 +487,7 @@
     <name>Get rows from result</name>
     <type>RowsFromResult</type>
     <description />
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution />
     <copies>1</copies>
     <partitioning>
@@ -520,7 +496,13 @@
     </partitioning>
     <fields>
       <field>
-        <name>errornm</name>
+        <name>periodo</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>short_filename</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -535,14 +517,104 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>100</xloc>
+      <xloc>225</xloc>
       <yloc>275</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Get variables</name>
-    <type>GetVariable</type>
+    <name>Microsoft Excel writer</name>
+    <type>TypeExitExcelWriterStep</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <header>N</header>
+    <footer>N</footer>
+    <makeSheetActive>Y</makeSheetActive>
+    <rowWritingMethod>push</rowWritingMethod>
+    <startingCell>A1</startingCell>
+    <appendOmitHeader>N</appendOmitHeader>
+    <appendOffset>0</appendOffset>
+    <appendEmpty>0</appendEmpty>
+    <rowWritingMethod>push</rowWritingMethod>
+    <forceFormulaRecalculation>N</forceFormulaRecalculation>
+    <leaveExistingStylesUnchanged>Y</leaveExistingStylesUnchanged>
+    <appendLines>Y</appendLines>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <file>
+      <name>${Internal.Entry.Current.Directory}\de_para_datas_anp</name>
+      <extention>xlsx</extention>
+      <do_not_open_newfile_init>Y</do_not_open_newfile_init>
+      <split>N</split>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <SpecifyFormat>N</SpecifyFormat>
+      <date_time_format />
+      <sheetname>Plan1</sheetname>
+      <autosizecolums>N</autosizecolums>
+      <stream_data>N</stream_data>
+      <protect_sheet>N</protect_sheet>
+      <password>Encrypted </password>
+      <protected_by />
+      <splitevery>0</splitevery>
+      <if_file_exists>reuse</if_file_exists>
+      <if_sheet_exists>reuse</if_sheet_exists>
+    </file>
+    <template>
+      <enabled>N</enabled>
+      <sheet_enabled>N</sheet_enabled>
+      <filename>template.xls</filename>
+      <sheetname />
+      <hidden>N</hidden>
+    </template>
+    <fields>
+      <field>
+        <name>short_filename</name>
+        <type>String</type>
+        <format />
+        <title />
+        <titleStyleCell />
+        <styleCell />
+        <commentField />
+        <commentAuthorField />
+        <formula>N</formula>
+        <hyperlinkField />
+      </field>
+      <field>
+        <name>periodo</name>
+        <type>String</type>
+        <format />
+        <title />
+        <titleStyleCell />
+        <styleCell />
+        <commentField />
+        <commentAuthorField />
+        <formula>N</formula>
+        <hyperlinkField />
+      </field>
+    </fields>
+    <attributes />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>550</xloc>
+      <yloc>425</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Select values periodo zips</name>
+    <type>SelectValues</type>
     <description />
     <distribute>N</distribute>
     <custom_distribution />
@@ -553,197 +625,12 @@
     </partitioning>
     <fields>
       <field>
-        <name>ETL_JOB</name>
-        <variable>${ETL_JOB}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <name>periodo</name>
       </field>
       <field>
-        <name>email_dest</name>
-        <variable>${MAIL_DEST}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
+        <name>short_filename</name>
       </field>
-      <field>
-        <name>email_cc</name>
-        <variable>${MAIL_CC}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sender_name</name>
-        <variable>ETL ${ETL_JOB}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sender_mail</name>
-        <variable>${MAIL_SENDER}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>smtp_server</name>
-        <variable>${SMTP_SERVER}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>smtp_port</name>
-        <variable>${SMTP_PORT}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>mail_encoding</name>
-        <variable>${mail_encoding}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sucess_mail_subject</name>
-        <variable>${sucess_mail_subject}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sucess_mail_msg</name>
-        <variable>${sucess_mail_msg}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>error_mail_subject</name>
-        <variable>${MAIL_ERROR_SUBJECT} transf 1</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>error_mail_msg</name>
-        <variable>${error_mail_msg}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>email_auth_user</name>
-        <variable>${email_auth_user}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>email_auth_pass</name>
-        <variable>${email_auth_pass}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>transname</name>
-        <variable>${TRANSNAME}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>status</name>
-        <variable>${STATUS}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
+      <select_unspecified>N</select_unspecified>
     </fields>
     <attributes />
     <cluster_schema />
@@ -754,80 +641,13 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>275</xloc>
-      <yloc>225</yloc>
+      <xloc>550</xloc>
+      <yloc>275</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Mail ERRO</name>
-    <type>Mail</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <server>smtp_server</server>
-    <port>smtp_port</port>
-    <destination>email_dest</destination>
-    <destinationCc />
-    <destinationBCc />
-    <replyToAddresses />
-    <replyto>sender_mail</replyto>
-    <replytoname>sender_name</replytoname>
-    <subject>error_mail_subject</subject>
-    <include_date>Y</include_date>
-    <include_subfolders>N</include_subfolders>
-    <zipFilenameDynamic>N</zipFilenameDynamic>
-    <isFilenameDynamic>N</isFilenameDynamic>
-    <attachContentFromField>N</attachContentFromField>
-    <attachContentField />
-    <attachContentFileNameField />
-    <dynamicFieldname />
-    <dynamicWildcard />
-    <dynamicZipFilename />
-    <sourcefilefoldername />
-    <sourcewildcard />
-    <contact_person />
-    <contact_phone />
-    <comment>error_mail_msg</comment>
-    <include_files>N</include_files>
-    <zip_files>N</zip_files>
-    <zip_name />
-    <zip_limit_size>0</zip_limit_size>
-    <use_auth>N</use_auth>
-    <use_secure_auth>N</use_secure_auth>
-    <auth_user>email_auth_user</auth_user>
-    <auth_password>Encrypted </auth_password>
-    <only_comment>N</only_comment>
-    <use_HTML>Y</use_HTML>
-    <use_Priority>N</use_Priority>
-    <encoding>UTF-8</encoding>
-    <priority>normal</priority>
-    <importance>normal</importance>
-    <sensitivity>normal</sensitivity>
-    <secureconnectiontype>SSL</secureconnectiontype>
-    <embeddedimages>
-      </embeddedimages>
-    <attributes />
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>600</xloc>
-      <yloc>225</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Write to log</name>
+    <name>Write to log write to excel</name>
     <type>WriteToLog</type>
     <description />
     <distribute>Y</distribute>
@@ -841,49 +661,13 @@
     <displayHeader>Y</displayHeader>
     <limitRows>N</limitRows>
     <limitRowsNumber>0</limitRowsNumber>
-    <logmessage>msg erro</logmessage>
+    <logmessage>write to excel: &gt;&gt;&gt;</logmessage>
     <fields>
       <field>
-        <name>ETL_JOB</name>
+        <name>short_filename</name>
       </field>
       <field>
-        <name>email_dest</name>
-      </field>
-      <field>
-        <name>email_cc</name>
-      </field>
-      <field>
-        <name>sender_name</name>
-      </field>
-      <field>
-        <name>sender_mail</name>
-      </field>
-      <field>
-        <name>smtp_server</name>
-      </field>
-      <field>
-        <name>smtp_port</name>
-      </field>
-      <field>
-        <name>mail_encoding</name>
-      </field>
-      <field>
-        <name>sucess_mail_subject</name>
-      </field>
-      <field>
-        <name>sucess_mail_msg</name>
-      </field>
-      <field>
-        <name>error_mail_subject</name>
-      </field>
-      <field>
-        <name>error_mail_msg</name>
-      </field>
-      <field>
-        <name>email_auth_user</name>
-      </field>
-      <field>
-        <name>email_auth_pass</name>
+        <name>periodo</name>
       </field>
     </fields>
     <attributes />
@@ -895,49 +679,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>275</xloc>
-      <yloc>425</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Write to log 2</name>
-    <type>WriteToLog</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <loglevel>log_level_basic</loglevel>
-    <displayHeader>Y</displayHeader>
-    <limitRows>N</limitRows>
-    <limitRowsNumber>0</limitRowsNumber>
-    <logmessage>msg erro - LOG</logmessage>
-    <fields>
-      <field>
-        <name>transname</name>
-      </field>
-      <field>
-        <name>status</name>
-      </field>
-      <field>
-        <name>ETL_JOB</name>
-      </field>
-    </fields>
-    <attributes />
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>300</xloc>
-      <yloc>75</yloc>
+      <xloc>550</xloc>
+      <yloc>150</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

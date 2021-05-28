@@ -8,3 +8,10 @@ painel_compras/doc/create_table.txt
 log/
 tmp/
 .DS_Store
+*classified*.*
+*.xlsx
+*.txt
+*.mail
+*.zip
+*.csv
+*.xls

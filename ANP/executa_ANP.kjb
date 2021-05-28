@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <job>
-  <name>JOB UTIL MSG_EXEC_SUCESSO</name>
+  <name>executa_ANP</name>
   <description />
   <extended_description />
   <job_version />
@@ -284,7 +284,7 @@
       <name>ROOT_CHANNEL_ID</name>
     </field>
   </channel-log-table>
-  <pass_batchid>N</pass_batchid>
+  <pass_batchid>Y</pass_batchid>
   <shared_objects_file />
   <entries>
     <entry>
@@ -305,98 +305,189 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>32</xloc>
-      <yloc>224</yloc>
+      <xloc>125</xloc>
+      <yloc>450</yloc>
       <attributes_kjc />
     </entry>
     <entry>
-      <name>UTIL MSG_EXEC_SUCESSO</name>
+      <name>config_properties</name>
+      <description>Set variables</description>
+      <type>SET_VARIABLES</type>
+      <attributes />
+      <replacevars>N</replacevars>
+      <filename>${Internal.Entry.Current.Directory}\config.properties</filename>
+      <file_variable_type>CURRENT_JOB</file_variable_type>
+      <fields>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>325</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc />
+    </entry>
+    <entry>
+      <name>log_inic_job</name>
       <description />
-      <type>TRANS</type>
+      <type>WRITE_TO_FILE</type>
+      <attributes />
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>.**************************************.
+----------------------------------------
+###### INICIANDO JOB executa ANP ######
+----------------------------------------
+.
+-&gt;
+</content>
+      <encoding>UTF-8</encoding>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>550</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc />
+    </entry>
+    <entry>
+      <name>JOB UTIL MSG_EXEC_SUCESSO</name>
+      <description />
+      <type>JOB</type>
       <attributes />
       <specification_method>filename</specification_method>
-      <trans_object_id />
-      <filename>${Internal.Entry.Current.Directory}\MSG_EXEC_SUCESSO.ktr</filename>
-      <transname />
+      <job_object_id />
+      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_SUCESSO.kjb</filename>
+      <jobname />
+      <directory />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile />
-      <logext />
+      <set_logfile>Y</set_logfile>
+      <logfile>${ETL_LOG_FILE}</logfile>
+      <logext>txt</logext>
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
       <slave_server_name />
-      <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>Y</create_parent_folder>
+      <pass_export>N</pass_export>
       <run_configuration>Pentaho local</run_configuration>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
+      <set_append_logfile>Y</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>200</xloc>
-      <yloc>325</yloc>
+      <xloc>1325</xloc>
+      <yloc>225</yloc>
       <attributes_kjc />
     </entry>
     <entry>
-      <name>email SUCESSO</name>
+      <name>JOB UTIL MSG_EXEC_ERRO</name>
       <description />
-      <type>MAIL</type>
+      <type>JOB</type>
       <attributes />
-      <server>${SMTP_SERVER}</server>
-      <port>${SMTP_PORT}</port>
-      <destination>${MAIL_DEST_SUCESSO}</destination>
-      <destinationCc>${MAIL_CC_SUCESSO}</destinationCc>
-      <destinationBCc />
-      <replyto>${MAIL_SENDER}</replyto>
-      <replytoname>ETL ${ETL_JOB}</replytoname>
-      <subject>${MAIL_SUCESS_SUBJECT}</subject>
-      <include_date>Y</include_date>
-      <contact_person />
-      <contact_phone />
-      <comment>Job ${ETL_JOB} executado com sucesso.</comment>
-      <include_files>N</include_files>
-      <zip_files>Y</zip_files>
-      <zip_name />
-      <use_auth>N</use_auth>
-      <use_secure_auth>N</use_secure_auth>
-      <auth_user />
-      <auth_password>Encrypted </auth_password>
-      <only_comment>N</only_comment>
-      <use_HTML>Y</use_HTML>
-      <use_Priority>N</use_Priority>
-      <encoding>UTF-8</encoding>
-      <priority>normal</priority>
-      <importance>normal</importance>
-      <sensitivity>normal</sensitivity>
-      <secureconnectiontype>SSL</secureconnectiontype>
-      <replyToAddresses>${MAIL_REPLY_TO}</replyToAddresses>
-      <filetypes>
-        <filetype>LOG</filetype>
-      </filetypes>
-      <embeddedimages>
-      </embeddedimages>
+      <specification_method>filename</specification_method>
+      <job_object_id />
+      <filename>${ETL_UTIL_DIR}\MSG_EXEC\MSG_EXEC_ERRO.kjb</filename>
+      <jobname />
+      <directory />
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>Y</set_logfile>
+      <logfile>${ETL_LOG_FILE}</logfile>
+      <logext>txt</logext>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <slave_server_name />
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>Y</create_parent_folder>
+      <pass_export>N</pass_export>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <set_append_logfile>Y</set_append_logfile>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>192</xloc>
-      <yloc>224</yloc>
+      <xloc>1325</xloc>
+      <yloc>675</yloc>
+      <attributes_kjc />
+    </entry>
+    <entry>
+      <name>JOB_PRINCIPAL_TEMPLATE</name>
+      <description />
+      <type>JOB</type>
+      <attributes />
+      <specification_method>filename</specification_method>
+      <job_object_id />
+      <filename>${Internal.Entry.Current.Directory}\ANP.kjb</filename>
+      <jobname />
+      <directory />
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>Y</set_logfile>
+      <logfile>${ETL_LOG_FILE}</logfile>
+      <logext>txt</logext>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <slave_server_name />
+      <wait_until_finished>Y</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <expand_remote_job>N</expand_remote_job>
+      <create_parent_folder>Y</create_parent_folder>
+      <pass_export>N</pass_export>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <set_append_logfile>Y</set_append_logfile>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>900</xloc>
+      <yloc>450</yloc>
+      <attributes_kjc />
+    </entry>
+    <entry>
+      <name>log_fim_job</name>
+      <description />
+      <type>WRITE_TO_FILE</type>
+      <attributes />
+      <filename>${ETL_LOG_FILE}.txt</filename>
+      <createParentFolder>Y</createParentFolder>
+      <appendFile>Y</appendFile>
+      <content>&lt;-
+.
+------------------------------------------
+###### FINALIZANDO JOB executa ANP ######
+------------------------------------------
+.*****************************************.
+</content>
+      <encoding>UTF-8</encoding>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1325</xloc>
+      <yloc>450</yloc>
       <attributes_kjc />
     </entry>
   </entries>
   <hops>
     <hop>
       <from>Start</from>
-      <to>email SUCESSO</to>
+      <to>config_properties</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -404,16 +495,73 @@
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>Start</from>
-      <to>UTIL MSG_EXEC_SUCESSO</to>
+      <from>config_properties</from>
+      <to>log_inic_job</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>N</enabled>
+      <enabled>Y</enabled>
       <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>log_inic_job</from>
+      <to>JOB_PRINCIPAL_TEMPLATE</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>JOB_PRINCIPAL_TEMPLATE</from>
+      <to>JOB UTIL MSG_EXEC_SUCESSO</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>JOB_PRINCIPAL_TEMPLATE</from>
+      <to>JOB UTIL MSG_EXEC_ERRO</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>JOB_PRINCIPAL_TEMPLATE</from>
+      <to>log_fim_job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
       <unconditional>Y</unconditional>
     </hop>
   </hops>
   <notepads>
+    <notepad>
+      <note>executa_ANP</note>
+      <xloc>384</xloc>
+      <yloc>16</yloc>
+      <width>241</width>
+      <heigth>64</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>20</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>255</backgroundcolorgreen>
+      <backgroundcolorblue>128</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <attributes>
     <group>

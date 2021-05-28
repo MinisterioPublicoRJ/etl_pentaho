@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <transformation>
   <info>
-    <name>MSG_EXEC_SUCESSO</name>
+    <name>UTIL MSG_EXEC_SUCESSO</name>
     <description />
     <extended_description />
     <trans_version />

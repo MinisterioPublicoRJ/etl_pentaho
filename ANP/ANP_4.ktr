@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <transformation>
   <info>
-    <name>UTIL MSG_EXEC_ERRO</name>
+    <name>ANP_4</name>
     <description />
     <extended_description />
     <trans_version />
@@ -428,44 +428,106 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2020/12/17 15:19:35.732</created_date>
+    <created_date>2021/02/04 16:32:14.440</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2020/12/17 15:19:35.732</modified_date>
+    <modified_date>2021/02/04 16:32:14.440</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
+    <notepad>
+      <note> Só insere processos para postos do RJ</note>
+      <xloc>300</xloc>
+      <yloc>275</yloc>
+      <width>365</width>
+      <heigth>33</heigth>
+      <fontname>Arial</fontname>
+      <fontsize>10</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>205</backgroundcolorgreen>
+      <backgroundcolorblue>112</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
+    <notepad>
+      <note>ANP</note>
+      <xloc>525</xloc>
+      <yloc>100</yloc>
+      <width>89</width>
+      <heigth>64</heigth>
+      <fontname>Segoe UI</fontname>
+      <fontsize>20</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>255</backgroundcolorgreen>
+      <backgroundcolorblue>128</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <order>
     <hop>
-      <from>Get rows from result</from>
-      <to>Get variables</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>Get variables</from>
-      <to>Write to log</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>Generate rows</from>
-      <to>Get variables</to>
+      <from>Filter rows</from>
+      <to>dt_carga</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get variables</from>
-      <to>Mail ERRO</to>
-      <enabled>N</enabled>
+      <from>Get periodo_extracao</from>
+      <to>processo_posto output</to>
+      <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Get variables</from>
-      <to>Write to log 2</to>
+      <from>Get periodo_extracao</from>
+      <to>processo_posto output 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>SELECT num_cnpj</from>
+      <to>Stream lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Stream lookup</from>
+      <to>Filter rows</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>dt_carga</from>
+      <to>Get periodo_extracao</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>processo_posto</from>
+      <to>Stream lookup</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>processo_posto output</from>
+      <to>Erro Insert processo_posto</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>processo_posto output 2</from>
+      <to>Erro Insert processo_posto 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
   <step>
-    <name>Generate rows</name>
-    <type>RowGenerator</type>
+    <name>Erro Insert processo_posto</name>
+    <type>WriteToLog</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -474,25 +536,46 @@
       <method>none</method>
       <schema_name />
     </partitioning>
+    <loglevel>log_level_basic</loglevel>
+    <displayHeader>Y</displayHeader>
+    <limitRows>N</limitRows>
+    <limitRowsNumber>0</limitRowsNumber>
+    <logmessage>Erro no Insert de processo_posto</logmessage>
     <fields>
       <field>
-        <name>errorname</name>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <nullif>error test</nullif>
-        <length>-1</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
+        <name>seq_processo_posto</name>
+      </field>
+      <field>
+        <name>num_cnpj</name>
+      </field>
+      <field>
+        <name>num_processo</name>
+      </field>
+      <field>
+        <name>num_df</name>
+      </field>
+      <field>
+        <name>dat_transito_julgado</name>
+      </field>
+      <field>
+        <name>dsc_decisao_definitiva</name>
+      </field>
+      <field>
+        <name>val_multa_1_instancia</name>
+      </field>
+      <field>
+        <name>dsc_outras_penal_1_inst</name>
+      </field>
+      <field>
+        <name>val_multa_2_instancia</name>
+      </field>
+      <field>
+        <name>dsc_outras_penal_2_inst</name>
+      </field>
+      <field>
+        <name>dsc_dispositivo_legal</name>
       </field>
     </fields>
-    <limit>1</limit>
-    <never_ending>N</never_ending>
-    <interval_in_ms>5000</interval_in_ms>
-    <row_time_field>now</row_time_field>
-    <last_time_field>FiveSecondsAgo</last_time_field>
     <attributes />
     <cluster_schema />
     <remotesteps>
@@ -502,28 +585,60 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>100</xloc>
-      <yloc>150</yloc>
+      <xloc>1125</xloc>
+      <yloc>200</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Get rows from result</name>
-    <type>RowsFromResult</type>
+    <name>Erro Insert processo_posto 2</name>
+    <type>WriteToLog</type>
     <description />
-    <distribute>N</distribute>
+    <distribute>Y</distribute>
     <custom_distribution />
     <copies>1</copies>
     <partitioning>
       <method>none</method>
       <schema_name />
     </partitioning>
+    <loglevel>log_level_basic</loglevel>
+    <displayHeader>Y</displayHeader>
+    <limitRows>N</limitRows>
+    <limitRowsNumber>0</limitRowsNumber>
+    <logmessage>Erro no Insert de processo_posto no GISDB</logmessage>
     <fields>
       <field>
-        <name>errornm</name>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
+        <name>seq_processo_posto</name>
+      </field>
+      <field>
+        <name>num_cnpj</name>
+      </field>
+      <field>
+        <name>num_processo</name>
+      </field>
+      <field>
+        <name>num_df</name>
+      </field>
+      <field>
+        <name>dat_transito_julgado</name>
+      </field>
+      <field>
+        <name>dsc_decisao_definitiva</name>
+      </field>
+      <field>
+        <name>val_multa_1_instancia</name>
+      </field>
+      <field>
+        <name>dsc_outras_penal_1_inst</name>
+      </field>
+      <field>
+        <name>val_multa_2_instancia</name>
+      </field>
+      <field>
+        <name>dsc_outras_penal_2_inst</name>
+      </field>
+      <field>
+        <name>dsc_dispositivo_legal</name>
       </field>
     </fields>
     <attributes />
@@ -535,13 +650,57 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>100</xloc>
-      <yloc>275</yloc>
+      <xloc>1125</xloc>
+      <yloc>375</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Get variables</name>
+    <name>Filter rows</name>
+    <type>FilterRows</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <send_true_to>dt_carga</send_true_to>
+    <send_false_to />
+    <compare>
+      <condition>
+        <negated>N</negated>
+        <leftvalue>cnpj_rj</leftvalue>
+        <function>IS NOT NULL</function>
+        <rightvalue />
+        <value>
+          <name>constant</name>
+          <type>String</type>
+          <text>RJ</text>
+          <length>-1</length>
+          <precision>-1</precision>
+          <isnull>N</isnull>
+          <mask />
+        </value>
+      </condition>
+    </compare>
+    <attributes />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>475</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Get periodo_extracao</name>
     <type>GetVariable</type>
     <description />
     <distribute>N</distribute>
@@ -553,10 +712,10 @@
     </partitioning>
     <fields>
       <field>
-        <name>ETL_JOB</name>
-        <variable>${ETL_JOB}</variable>
-        <type>String</type>
-        <format />
+        <name>dt_inic_extracao</name>
+        <variable>${DT_INIC_EXTRACAO}</variable>
+        <type>Date</type>
+        <format>dd/MM/yyyy</format>
         <currency />
         <decimal />
         <group />
@@ -565,178 +724,10 @@
         <trim_type>none</trim_type>
       </field>
       <field>
-        <name>email_dest</name>
-        <variable>${MAIL_DEST}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>email_cc</name>
-        <variable>${MAIL_CC}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sender_name</name>
-        <variable>ETL ${ETL_JOB}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sender_mail</name>
-        <variable>${MAIL_SENDER}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>smtp_server</name>
-        <variable>${SMTP_SERVER}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>smtp_port</name>
-        <variable>${SMTP_PORT}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>mail_encoding</name>
-        <variable>${mail_encoding}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sucess_mail_subject</name>
-        <variable>${sucess_mail_subject}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>sucess_mail_msg</name>
-        <variable>${sucess_mail_msg}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>error_mail_subject</name>
-        <variable>${MAIL_ERROR_SUBJECT} transf 1</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>error_mail_msg</name>
-        <variable>${error_mail_msg}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>email_auth_user</name>
-        <variable>${email_auth_user}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>email_auth_pass</name>
-        <variable>${email_auth_pass}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>transname</name>
-        <variable>${TRANSNAME}</variable>
-        <type>String</type>
-        <format />
-        <currency />
-        <decimal />
-        <group />
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-      </field>
-      <field>
-        <name>status</name>
-        <variable>${STATUS}</variable>
-        <type>String</type>
-        <format />
+        <name>dt_fim_extracao</name>
+        <variable>${DT_FIM_EXTRACAO}</variable>
+        <type>Date</type>
+        <format>dd/MM/yyyy</format>
         <currency />
         <decimal />
         <group />
@@ -754,14 +745,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>275</xloc>
-      <yloc>225</yloc>
+      <xloc>800</xloc>
+      <yloc>200</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Mail ERRO</name>
-    <type>Mail</type>
+    <name>SELECT num_cnpj</name>
+    <type>TableInput</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -770,48 +761,13 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <server>smtp_server</server>
-    <port>smtp_port</port>
-    <destination>email_dest</destination>
-    <destinationCc />
-    <destinationBCc />
-    <replyToAddresses />
-    <replyto>sender_mail</replyto>
-    <replytoname>sender_name</replytoname>
-    <subject>error_mail_subject</subject>
-    <include_date>Y</include_date>
-    <include_subfolders>N</include_subfolders>
-    <zipFilenameDynamic>N</zipFilenameDynamic>
-    <isFilenameDynamic>N</isFilenameDynamic>
-    <attachContentFromField>N</attachContentFromField>
-    <attachContentField />
-    <attachContentFileNameField />
-    <dynamicFieldname />
-    <dynamicWildcard />
-    <dynamicZipFilename />
-    <sourcefilefoldername />
-    <sourcewildcard />
-    <contact_person />
-    <contact_phone />
-    <comment>error_mail_msg</comment>
-    <include_files>N</include_files>
-    <zip_files>N</zip_files>
-    <zip_name />
-    <zip_limit_size>0</zip_limit_size>
-    <use_auth>N</use_auth>
-    <use_secure_auth>N</use_secure_auth>
-    <auth_user>email_auth_user</auth_user>
-    <auth_password>Encrypted </auth_password>
-    <only_comment>N</only_comment>
-    <use_HTML>Y</use_HTML>
-    <use_Priority>N</use_Priority>
-    <encoding>UTF-8</encoding>
-    <priority>normal</priority>
-    <importance>normal</importance>
-    <sensitivity>normal</sensitivity>
-    <secureconnectiontype>SSL</secureconnectiontype>
-    <embeddedimages>
-      </embeddedimages>
+    <connection>CONN_POSTGRE_GEOSERVER_DS</connection>
+    <sql>SELECT num_cnpj FROM anp.posto_dados_cadastrais</sql>
+    <limit>0</limit>
+    <lookup />
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <attributes />
     <cluster_schema />
     <remotesteps>
@@ -821,14 +777,14 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>600</xloc>
-      <yloc>225</yloc>
+      <xloc>150</xloc>
+      <yloc>325</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Write to log</name>
-    <type>WriteToLog</type>
+    <name>Stream lookup</name>
+    <type>StreamLookup</type>
     <description />
     <distribute>Y</distribute>
     <custom_distribution />
@@ -837,96 +793,23 @@
       <method>none</method>
       <schema_name />
     </partitioning>
-    <loglevel>log_level_basic</loglevel>
-    <displayHeader>Y</displayHeader>
-    <limitRows>N</limitRows>
-    <limitRowsNumber>0</limitRowsNumber>
-    <logmessage>msg erro</logmessage>
-    <fields>
-      <field>
-        <name>ETL_JOB</name>
-      </field>
-      <field>
-        <name>email_dest</name>
-      </field>
-      <field>
-        <name>email_cc</name>
-      </field>
-      <field>
-        <name>sender_name</name>
-      </field>
-      <field>
-        <name>sender_mail</name>
-      </field>
-      <field>
-        <name>smtp_server</name>
-      </field>
-      <field>
-        <name>smtp_port</name>
-      </field>
-      <field>
-        <name>mail_encoding</name>
-      </field>
-      <field>
-        <name>sucess_mail_subject</name>
-      </field>
-      <field>
-        <name>sucess_mail_msg</name>
-      </field>
-      <field>
-        <name>error_mail_subject</name>
-      </field>
-      <field>
-        <name>error_mail_msg</name>
-      </field>
-      <field>
-        <name>email_auth_user</name>
-      </field>
-      <field>
-        <name>email_auth_pass</name>
-      </field>
-    </fields>
-    <attributes />
-    <cluster_schema />
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>275</xloc>
-      <yloc>425</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Write to log 2</name>
-    <type>WriteToLog</type>
-    <description />
-    <distribute>Y</distribute>
-    <custom_distribution />
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name />
-    </partitioning>
-    <loglevel>log_level_basic</loglevel>
-    <displayHeader>Y</displayHeader>
-    <limitRows>N</limitRows>
-    <limitRowsNumber>0</limitRowsNumber>
-    <logmessage>msg erro - LOG</logmessage>
-    <fields>
-      <field>
-        <name>transname</name>
-      </field>
-      <field>
-        <name>status</name>
-      </field>
-      <field>
-        <name>ETL_JOB</name>
-      </field>
-    </fields>
+    <from>SELECT num_cnpj</from>
+    <input_sorted>N</input_sorted>
+    <preserve_memory>Y</preserve_memory>
+    <sorted_list>N</sorted_list>
+    <integer_pair>N</integer_pair>
+    <lookup>
+      <key>
+        <name>num_cnpj</name>
+        <field>num_cnpj</field>
+      </key>
+      <value>
+        <name>num_cnpj</name>
+        <rename>cnpj_rj</rename>
+        <default />
+        <type>None</type>
+      </value>
+    </lookup>
     <attributes />
     <cluster_schema />
     <remotesteps>
@@ -937,11 +820,435 @@
     </remotesteps>
     <GUI>
       <xloc>300</xloc>
-      <yloc>75</yloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>dt_carga</name>
+    <type>SystemInfo</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <fields>
+      <field>
+        <name>dt_carga</name>
+        <type>system date (fixed)</type>
+      </field>
+    </fields>
+    <attributes />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>625</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>processo_posto</name>
+    <type>FixedInput</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <filename>${Internal.Entry.Current.Directory}\TXT_04_PROCESSO_POSTO.TXT</filename>
+    <line_width>4520</line_width>
+    <header>N</header>
+    <buffer_size>50000</buffer_size>
+    <lazy_conversion>Y</lazy_conversion>
+    <line_feed>Y</line_feed>
+    <parallel>N</parallel>
+    <file_type>NONE</file_type>
+    <encoding>ISO-8859-1</encoding>
+    <add_to_result_filenames>N</add_to_result_filenames>
+    <fields>
+      <field>
+        <name>seq_processo_posto</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>10</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>num_cnpj</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>14</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>num_processo</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>23</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>num_df</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>30</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>dat_transito_julgado</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>8</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>dsc_decisao_definitiva</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>3</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>val_multa_1_instancia</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>16</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>dsc_outras_penal_1_inst</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>200</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>val_multa_2_instancia</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>16</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>dsc_outras_penal_2_inst</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>200</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+      <field>
+        <name>dsc_dispositivo_legal</name>
+        <type>String</type>
+        <format />
+        <trim_type>both</trim_type>
+        <currency />
+        <decimal />
+        <group />
+        <width>4000</width>
+        <length>-1</length>
+        <precision>-1</precision>
+      </field>
+    </fields>
+    <attributes />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>150</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>processo_posto output</name>
+    <type>TableOutput</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>CONN_POSTGRE_GEOSERVER_DS</connection>
+    <schema>anp</schema>
+    <table>processo_posto</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field />
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field />
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field />
+    <fields>
+      <field>
+        <column_name>seq_processo_posto</column_name>
+        <stream_name>seq_processo_posto</stream_name>
+      </field>
+      <field>
+        <column_name>num_cnpj</column_name>
+        <stream_name>num_cnpj</stream_name>
+      </field>
+      <field>
+        <column_name>num_processo</column_name>
+        <stream_name>num_processo</stream_name>
+      </field>
+      <field>
+        <column_name>num_df</column_name>
+        <stream_name>num_df</stream_name>
+      </field>
+      <field>
+        <column_name>dat_transito_julgado</column_name>
+        <stream_name>dat_transito_julgado</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_decisao_definitiva</column_name>
+        <stream_name>dsc_decisao_definitiva</stream_name>
+      </field>
+      <field>
+        <column_name>val_multa_1_instancia</column_name>
+        <stream_name>val_multa_1_instancia</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_outras_penal_1_inst</column_name>
+        <stream_name>dsc_outras_penal_1_inst</stream_name>
+      </field>
+      <field>
+        <column_name>val_multa_2_instancia</column_name>
+        <stream_name>val_multa_2_instancia</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_outras_penal_2_inst</column_name>
+        <stream_name>dsc_outras_penal_2_inst</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_dispositivo_legal</column_name>
+        <stream_name>dsc_dispositivo_legal</stream_name>
+      </field>
+      <field>
+        <column_name>dt_carga</column_name>
+        <stream_name>dt_carga</stream_name>
+      </field>
+      <field>
+        <column_name>dt_inic_extracao</column_name>
+        <stream_name>dt_inic_extracao</stream_name>
+      </field>
+      <field>
+        <column_name>dt_fim_extracao</column_name>
+        <stream_name>dt_fim_extracao</stream_name>
+      </field>
+    </fields>
+    <attributes />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>950</xloc>
+      <yloc>200</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>processo_posto output 2</name>
+    <type>TableOutput</type>
+    <description />
+    <distribute>Y</distribute>
+    <custom_distribution />
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name />
+    </partitioning>
+    <connection>CONN_GISDB_ANP_DS</connection>
+    <schema>anp</schema>
+    <table>processo_posto</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field />
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field />
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field />
+    <fields>
+      <field>
+        <column_name>seq_processo_posto</column_name>
+        <stream_name>seq_processo_posto</stream_name>
+      </field>
+      <field>
+        <column_name>num_cnpj</column_name>
+        <stream_name>num_cnpj</stream_name>
+      </field>
+      <field>
+        <column_name>num_processo</column_name>
+        <stream_name>num_processo</stream_name>
+      </field>
+      <field>
+        <column_name>num_df</column_name>
+        <stream_name>num_df</stream_name>
+      </field>
+      <field>
+        <column_name>dat_transito_julgado</column_name>
+        <stream_name>dat_transito_julgado</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_decisao_definitiva</column_name>
+        <stream_name>dsc_decisao_definitiva</stream_name>
+      </field>
+      <field>
+        <column_name>val_multa_1_instancia</column_name>
+        <stream_name>val_multa_1_instancia</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_outras_penal_1_inst</column_name>
+        <stream_name>dsc_outras_penal_1_inst</stream_name>
+      </field>
+      <field>
+        <column_name>val_multa_2_instancia</column_name>
+        <stream_name>val_multa_2_instancia</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_outras_penal_2_inst</column_name>
+        <stream_name>dsc_outras_penal_2_inst</stream_name>
+      </field>
+      <field>
+        <column_name>dsc_dispositivo_legal</column_name>
+        <stream_name>dsc_dispositivo_legal</stream_name>
+      </field>
+      <field>
+        <column_name>dt_carga</column_name>
+        <stream_name>dt_carga</stream_name>
+      </field>
+      <field>
+        <column_name>dt_inic_extracao</column_name>
+        <stream_name>dt_inic_extracao</stream_name>
+      </field>
+      <field>
+        <column_name>dt_fim_extracao</column_name>
+        <stream_name>dt_fim_extracao</stream_name>
+      </field>
+    </fields>
+    <attributes />
+    <cluster_schema />
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>950</xloc>
+      <yloc>375</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step_error_handling>
+    <error>
+      <source_step>processo_posto output</source_step>
+      <target_step>Erro Insert processo_posto</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename />
+      <descriptions_valuename />
+      <fields_valuename />
+      <codes_valuename />
+      <max_errors />
+      <max_pct_errors />
+      <min_pct_rows />
+    </error>
+    <error>
+      <source_step>processo_posto output 2</source_step>
+      <target_step>Erro Insert processo_posto 2</target_step>
+      <is_enabled>Y</is_enabled>
+      <nr_valuename />
+      <descriptions_valuename />
+      <fields_valuename />
+      <codes_valuename />
+      <max_errors />
+      <max_pct_errors />
+      <min_pct_rows />
+    </error>
   </step_error_handling>
   <slave-step-copy-partition-distribution>
   </slave-step-copy-partition-distribution>
