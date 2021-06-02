@@ -1,5 +1,5 @@
 import logging
-import os
+import os, time
 from datetime import datetime, timezone
 
 import mpmapas_commons as commons
@@ -32,8 +32,8 @@ def build_file_rules_classify_items(file_name_input='sql_1_rules_tested.sql',
                                     file_name_output='sql_2_insert_rules.sql'):
     if os.path.isfile(file_name_input):
         print("let's try to build sql commands for item classification rules")
-        print("File input:", file_name_input)
-        print("File output:", file_name_output)
+        print("File input: file_name_input='%s'" % file_name_input)
+        print("File output: file_name_output='%s'" % file_name_output)
         with open(file_name_input, 'r') as fr:
             file_content = fr.read()
         if len(file_content) > 0:
@@ -45,23 +45,23 @@ def build_file_rules_classify_items(file_name_input='sql_1_rules_tested.sql',
             new_file_content = 'delete from comprasrj.regras_classificacao_itens;\n'
             id_ordem = 100
             value_1 = 'ordem'
-            value_2 = '1'
+            value_2 = 'produto'
             value_3 = 'descricao'
             value_4 = 'sql_declaracao'
             for l in all_lines:
                 if len(l) > 0 and '--' not in l:
                     value_1 = id_ordem
-                    if 'set tp_item = 1,' in l:
-                        value_2 = 1
+                    if ('set tp_item = %sproduto%s,' % (c3, c3)) in l:
+                        value_2 = 'produto'
                         value_3 = 'produto'
-                    elif 'set tp_item = 2,' in l:
-                        value_2 = 2
+                    elif ('set tp_item = %sservico%s,' % (c3, c3)) in l:
+                        value_2 = 'servico'
                         value_3 = 'servico'
-                    if 'set tp_item = 3,' in l:
-                        value_2 = 3
+                    if ('set tp_item = %sdespesa%s,' % (c3, c3)) in l:
+                        value_2 = 'despesa'
                         value_3 = 'despesa'
                     value_4 = l.replace(';', '').replace('__AUTO_NUMERAR_ORDEM__', '%s' % id_ordem)
-                    sql_1 = "insert into comprasrj.regras_classificacao_itens (ordem, tp_item, descricao, sql_declaracao) values (%s, %s, '%s', '%s');"
+                    sql_1 = "insert into comprasrj.regras_classificacao_itens (ordem, tp_item, descricao, sql_declaracao) values (%s, '%s', '%s', '%s');"
                     sql_cmd = sql_1 % (value_1, value_2, value_3, value_4)
                     new_file_content = new_file_content + sql_cmd + '\n'
                     id_ordem = id_ordem + 100
@@ -119,109 +119,25 @@ def classificar():
     logger.info('Starting %s - classificar.' % configs.settings.ETL_JOB)
     dt_now = datetime.now(timezone.utc)
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
-    logger.info('Load table - df.')
-    df_itens_a_classificar = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
-        configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj', table_name='itens_a_classificar')[
-        'table']
-    logger.info('count itens_a_classificar rows: %s' % len(df_itens_a_classificar))
-
-    select_tipo_itens = 'SELECT ti.id_tipo as id_tipo, ti.fk_tipo_primario as fk_tipo_primario, ti.tp_item as tp_item ' \
-                        'from comprasrj.tipo_item ti'
-    df_tipo_itens = pd.DataFrame(db_opengeo.execute_select(select_tipo_itens, result_mode='all'),
-                                 columns=['id_tipo', 'fk_tipo_primario', 'tp_item'])
-
-    select_tipo_classificacao = 'SELECT tc.id_tipo as id_tipo, tc.fk_tipo_primario as fk_tipo_primario, ' \
-                                'tc.tp_classificacao as tp_classificacao FROM comprasrj.tipo_classificacao tc ' \
-                                'where tc.tp_classificacao = \'regras\''
-    df_tipo_classificacao = pd.DataFrame(db_opengeo.execute_select(select_tipo_classificacao, result_mode='all'),
-                                         columns=['id_tipo', 'fk_tipo_primario', 'tp_classificacao'])
-
-    rule_sqls = 'SELECT r.ordem as ordem, r.descricao as descricao, r.tp_item as tp_item, r.sql_declaracao as sql_declaracao ' \
+    logger.info('Load table - df_rules_sql.')
+    rule_sqls = 'SELECT r.id as id, r.ordem as ordem, r.descricao as descricao, r.tp_item as tp_item, ' \
+                'r.sql_declaracao as sql_declaracao, r.cod_autorizacao as cod_autorizacao ' \
                 'FROM comprasrj.regras_classificacao_itens r order by r.ordem;'
-    sql_list_cmds: list[dict[str, str]] = []
     df_rules_sql = pd.DataFrame(db_opengeo.execute_select(rule_sqls, result_mode='all'),
-                                columns=['ordem', 'descricao', 'tp_item', 'sql_declaracao'])
-
-    # in selection rules we will start with rules that are not composed and have no exceptions,
-    # these items will be classified with 1 sql command
-    # simple_rules_sql = 'select r.tp_item as tp_item, r.operador as operador, ' \
-    #                    'r.palavras_expressao as palavras_expressao ' + \
-    #                    'from comprasrj.regras_classificacao_itens r ' + \
-    #                    'where r.composta = false order by r.ordem'
-    # sql_list_cmds: list[dict[str, str]] = []
-    # df_simple_rules = pd.DataFrame(db_opengeo.execute_select(simple_rules_sql, result_mode='all'),
-    #                                columns=['tp_item', 'operador', 'palavras_expressao'])
-
-    # for index, row in df_simple_rules.iterrows():
-    #     sql_list_cmds.append({'tp_item': row.tp_item,
-    #                           'sql': "un_item %s '_P3RC3NT_%s_P3RC3NT_' " % (row.operador, row.palavras_expressao)})
-
+                                columns=['id', 'ordem', 'descricao', 'tp_item', 'sql_declaracao', 'cod_autorizacao'])
     for index, row in df_rules_sql.iterrows():
-        sql_list_cmds.append({'ordem': row.ordem, 'descricao': row.descricao,
-                              'tp_item': row.tp_item, 'sql': row.sql_declaracao})
-
-    # now let's get other rules composed
-    # composed_rules_sql = 'select r.tp_item as tp_item, r.operador as operador, ' \
-    #                      'r.palavras_expressao as palavras_expressao, ' \
-    #                      'r.proximo_operador as proximo_operador, ' + \
-    #                      'r.proxima_ordem as proxima_ordem, r.id as id ' + \
-    #                      'from comprasrj.regras_classificacao_itens r ' + \
-    #                      'where r.composta = true ' + \
-    #                      'order by r.ordem '
-    # df_composed_rules = pd.DataFrame(db_opengeo.execute_select(composed_rules_sql, result_mode='all'),
-    #                                  columns=['tp_item', 'operador', 'palavras_expressao', 'proximo_operador',
-    #                                           'proxima_ordem', 'id'])
-    # sql_dict_cmds_composed = {}
-    #
-    # if len(df_composed_rules) > 0:
-    #     tp_item = -1
-    #     composed_cmd = ''
-    #     for index, row in df_composed_rules.iterrows():
-    #         if not tp_item == row.tp_item:
-    #             tp_item = row.tp_item
-    #             sql_dict_cmds_composed[tp_item] = []
-    #             composed_cmd = ''
-    #         if int(row.proxima_ordem) == 0:
-    #             composed_cmd += "un_item %s '_P3RC3NT_%s_P3RC3NT_' " % (row.operador, row.palavras_expressao)
-    #             sql_dict_cmds_composed[tp_item].append(composed_cmd)
-    #         else:
-    #             composed_cmd += "un_item %s '_P3RC3NT_%s_P3RC3NT_' %s " % (
-    #                 row.operador, row.palavras_expressao, row.proximo_operador)
-    #
-    # for tp_iten in sql_dict_cmds_composed:
-    #     sql_list_cmds.append({'tp_item': tp_iten, 'sql': sql_dict_cmds_composed[tp_iten][0]})
-
-    if len(sql_list_cmds) > 0:
-        sql_select = "select un_item from comprasrj.itens_a_classificar "
-        for cmds in sql_list_cmds:
-            sql_cmds = cmds['sql'].replace('_P3RC3NT_', '%').replace('_QU0T3_', '\"').replace('_AP0STR0PH3_', '\'')
-            # let's check if there are items to classify with rules previously defined
-            df_itens_to_classify = pd.DataFrame(db_opengeo.execute_select(sql_cmds, result_mode='all'),
-                                                columns=['tp_item', 'descricao', 'un_item'])
-            tipo_item = df_tipo_itens.loc[df_tipo_itens['id_tipo'] == int(cmds['tp_item'])]
-            if not tipo_item['fk_tipo_primario'].empty and tipo_item['fk_tipo_primario'].iloc[0] > 0:
-                df_itens_to_classify['fk_tp_item'] = tipo_item['fk_tipo_primario'].iloc[0]
+        if row.cod_autorizacao is None: # TODO: 
+            logger.info('Invalid authorization code for executing SQL statement [rule id = %s, ordem = %s].' % (row.id, row.ordem))
+        else:
+            sql_cmd = row.sql_declaracao.replace('_P3RC3NT_', '%').replace('_QU0T3_', '\"').replace('_AP0STR0PH3_', '\'')
+            if len(sql_cmd) > 0:
+                t0 = time.time()
+                logger.info('Starting execution SQL statement for [rule id = %s, ordem = %s].' % (row.id, row.ordem))
+                db_opengeo.execute_select(sql_cmd, result_mode=None)
+                t1 = time.time()
+                logger.info('Finishing execution SQL statement for [rule id = %s, ordem = %s]. It took %s sec' % (row.id, row.ordem, int(t1-t0)))
             else:
-                df_itens_to_classify['fk_tp_item'] = tipo_item['id_tipo'].iloc[0]
-            df_itens_to_classify['fk_tp_classificacao'] = df_tipo_classificacao['id_tipo'].iloc[0]
-            # df_itens_to_classify['descricao'] = cmds['descricao']
-
-            df_itens_to_classify['dt_ult_atualiz'] = dt_now
-            df_itens_to_classify = df_itens_to_classify.drop(['tp_item'], axis='columns')
-            if len(df_itens_to_classify) > 0:  # now we will update ITEM type classification
-                list_flds_itens_to_classify = df_itens_to_classify.columns.values
-                insert_sql_itens_to_classify, insert_template_itens_to_classify = db_opengeo.insert_values_sql(
-                    schema_name='comprasrj', table_name='itens_classificados',
-                    list_flds=list_flds_itens_to_classify, unique_field='un_item', pk_field='id')
-                db_opengeo.execute_values_insert(
-                    sql=insert_sql_itens_to_classify, template=insert_template_itens_to_classify,
-                    df_values_to_execute=df_itens_to_classify, fetch=True)
-                # refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
-                # db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
-        logger.info('Starting REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
-        refresh_mview_sql = "REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar;"
-        db_opengeo.execute_select(refresh_mview_sql, result_mode=None)
-        logger.info('Finishing REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
+                logger.info('Error: empty SQL statement for [rule id = %s, ordem = %s].' % (row.id, row.ordem))
     logger.info('Finish %s - classificar.' % configs.settings.ETL_JOB)
 
 
