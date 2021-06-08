@@ -256,13 +256,12 @@ def check_table_checksum(configs, jndi_name, schema_name, table_name):
     return checksumid_changed
 
 
-def carga_gate():
-    logger.info('carga_gate...')
+def carga_painel_comprasrj():
+    logger.info('carga_painel_comprasrj...')
     """
-        Import do GATE:
-        importar as tabelas stage.ComprasRJ_Compra, stage.ComprasRJ_Contrato e stage.ComprasRJ_ItemContrato do GATE 
-        para atualizar as novas tabelas comprasrj.compra, item_contrato e comprasrj.contrato 
-        do opengeo com novos registros;
+        Import para o schema comrpasrj:
+        importar as tabelas compra, contrato e item_contrato para o schema comprasrj 
+        para atualizar com novos registros;
     """
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
     result_df_item_contrato = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
@@ -274,16 +273,55 @@ def carga_gate():
     server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
 
+    # result_df_item_contrato = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+    #     configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='itens_contratos')['table']
+    # result_df_contrato = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+    #     configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='contratos')['table']
+    # result_df_compra = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+    #     configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='outras_compras')['table']
+    # server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+    #     configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
+
+    result_df_catalogo = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='catalogo')['table']
+
+    if isinstance(result_df_catalogo, pd.DataFrame) and not result_df_catalogo.empty:
+        # carga catalogo
+        values_for_fillna_catalogo = {'id_tipo': 0, 'id_familia': 0, 'id_classe': 0, 'id_artigo': 0, 'id_item': 0, }
+        result_df_catalogo = result_df_catalogo.fillna(value=values_for_fillna_catalogo).rename(
+            str.lower, axis='columns')
+        result_df_catalogo['checksumid'] = commons.generate_checksum(result_df_catalogo)
+        result_df_catalogo['un_familia'] = unaccent_df(df=result_df_catalogo, col='familia')
+        result_df_catalogo['un_classe'] = unaccent_df(df=result_df_catalogo, col='classe')
+        result_df_catalogo['un_artigo'] = unaccent_df(df=result_df_catalogo, col='artigo')
+        result_df_catalogo['un_descricao_item'] = unaccent_df(df=result_df_catalogo, col='descricao_item')
+        result_df_catalogo['DT_ULT_VER_GATE'] = dt_now
+        if 'dt_extracao' not in result_df_catalogo.columns.values:
+            result_df_catalogo['dt_extracao'] = dt_now
+        list_flds_catalogo = result_df_catalogo.columns.values
+        trunc_comprasrj_catalogo_sql = "TRUNCATE TABLE comprasrj.catalogo CONTINUE IDENTITY CASCADE"
+        db_opengeo.execute_select(trunc_comprasrj_catalogo_sql, result_mode=None)
+        insert_sql_catalogo, insert_template_catalogo = db_opengeo.insert_values_sql(schema_name='comprasrj',
+                                                                                     table_name='catalogo',
+                                                                                     list_flds=list_flds_catalogo,
+                                                                                     unique_field='id',
+                                                                                     pk_field='id')
+        db_opengeo.execute_values_insert(sql=insert_sql_catalogo,
+                                         template=insert_template_catalogo,
+                                         df_values_to_execute=result_df_catalogo,
+                                         fetch=True, server_encoding=server_encoding)
+
     if isinstance(result_df_item_contrato, pd.DataFrame) and not result_df_item_contrato.empty:
-        # carga gate item_contrato
+        # carga item_contrato
         values_for_fillna_item_contrato = {'QTD': 0, 'QTD_ADITIV_SUPR': 0, 'VL_UNIT': 0.0, 'VL_UNIT_ADITIV_SUPR': 0.0}
         result_df_item_contrato = result_df_item_contrato.fillna(value=values_for_fillna_item_contrato).rename(
             str.upper, axis='columns')
         result_df_item_contrato['CHECKSUMID'] = commons.generate_checksum(result_df_item_contrato)
         result_df_item_contrato['un_item'] = unaccent_df(df=result_df_item_contrato, col='ITEM')
         result_df_item_contrato['DT_ULT_ATUALIZ'] = dt_now
-        result_df_item_contrato['DT_EXTRACAO'] = dt_now
         result_df_item_contrato['DT_ULT_VER_GATE'] = dt_now
+        if 'DT_EXTRACAO' not in result_df_item_contrato.columns.values:
+            result_df_item_contrato['DT_EXTRACAO'] = dt_now
         list_flds_item_contrato = result_df_item_contrato.columns.values
         trunc_comprasrj_item_contrato_sql = "TRUNCATE TABLE comprasrj.item_contrato CONTINUE IDENTITY CASCADE"
         db_opengeo.execute_select(trunc_comprasrj_item_contrato_sql, result_mode=None)
@@ -302,15 +340,16 @@ def carga_gate():
         logger.info('Finishing REFRESH MATERIALIZED VIEW comprasrj.itens_a_classificar.')
 
     if isinstance(result_df_contrato, pd.DataFrame) and not result_df_contrato.empty:
-        # carga gate contrato
+        # carga contrato
         values_for_fillna_contrato = {'VL_ESTIMADO': 0.0, 'VL_EMPENHADO': 0.0, 'VL_EXECUTADO': 0.0, 'VL_PAGO': 0.0}
         result_df_contrato = result_df_contrato.fillna(value=values_for_fillna_contrato).rename(str.upper,
                                                                                                 axis='columns')
         result_df_contrato['CHECKSUMID'] = commons.generate_checksum(result_df_contrato)
         result_df_contrato['un_objeto'] = unaccent_df(df=result_df_contrato, col='OBJETO')
         result_df_contrato['DT_ULT_ATUALIZ'] = dt_now
-        result_df_contrato['DT_EXTRACAO'] = dt_now
         result_df_contrato['DT_ULT_VER_GATE'] = dt_now
+        if 'DT_EXTRACAO' not in result_df_contrato.columns.values:
+            result_df_contrato['DT_EXTRACAO'] = dt_now
         list_flds_contrato = result_df_contrato.columns.values
         trunc_comprasrj_contrato_sql = "TRUNCATE TABLE comprasrj.contrato CONTINUE IDENTITY RESTRICT"
         db_opengeo.execute_select(trunc_comprasrj_contrato_sql, result_mode=None)
@@ -325,7 +364,7 @@ def carga_gate():
                                          fetch=True, server_encoding=server_encoding)
 
     if isinstance(result_df_compra, pd.DataFrame) and not result_df_compra.empty:
-        # carga gate compra
+        # carga compra
         values_for_fillna_compra = {'VL_UNITARIO': 0.0, 'VL_PROCESSO': 0.0, 'QTD': 0}
         result_df_compra = result_df_compra.fillna(value=values_for_fillna_compra).rename(str.upper,
                                                                                           axis='columns')
@@ -334,8 +373,9 @@ def carga_gate():
         result_df_compra['un_item'] = unaccent_df(df=result_df_compra, col='ITEM')
         result_df_compra['un_unid'] = unaccent_df(df=result_df_compra, col='UNID')
         result_df_compra['DT_ULT_ATUALIZ'] = dt_now
-        result_df_compra['DT_EXTRACAO'] = dt_now
         result_df_compra['DT_ULT_VER_GATE'] = dt_now
+        if 'DT_EXTRACAO' not in result_df_compra.columns.values:
+            result_df_compra['DT_EXTRACAO'] = dt_now
         list_flds_compra = result_df_compra.columns.values
         trunc_comprasrj_compra_sql = "TRUNCATE TABLE comprasrj.compra CONTINUE IDENTITY RESTRICT"
         db_opengeo.execute_select(trunc_comprasrj_compra_sql, result_mode=None)
@@ -373,7 +413,7 @@ def carga_gate():
                                              df_values_to_execute=df_obj_item,
                                              fetch=True, server_encoding=server_encoding)
 
-    logger.info('fim carga_gate...')
+    logger.info('fim carga_painel_comprasrj...')
 
 
 def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
@@ -391,7 +431,7 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
             ['ID', 'un_objeto', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
             axis='columns')
         df_item_contrato = df_item_contrato.drop(
-            ['ID', 'un_item', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'], axis='columns')
+            ['ID', 'un_item', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_ULT_VER_GATE'], axis='columns')
         # Left join de comprasrj.item_contrato com comprasrj.contrato na coluna CONTRATACAO;
         df_compras_itens_por_contrato = pd.merge(df_contrato, df_item_contrato, how="left", on='CONTRATACAO',
                                                  suffixes=(None, '_Y'))
@@ -410,7 +450,8 @@ def gerar_compras_itens_por_contrato(df_contrato, df_item_contrato):
         df_compras_itens_por_contrato['DT_ULT_ATUALIZ'] = dt_now
         df_compras_itens_por_contrato['DT_ULT_VER_GATE'] = dt_now
         # TODO: !! rever essa data extracao. a ideia é ser a data do GATE ou a data de importacao do GATE
-        df_compras_itens_por_contrato['DT_EXTRACAO'] = dt_now
+        if 'DT_EXTRACAO' not in df_compras_itens_por_contrato.columns.values:
+            df_compras_itens_por_contrato['DT_EXTRACAO'] = dt_now
 
         if isinstance(df_compras_itens_por_contrato, pd.DataFrame) and not df_compras_itens_por_contrato.empty:
             db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME],
@@ -451,7 +492,7 @@ def gerar_contratos_agregados(df_contrato):
             VL_PAGO: SOMA;
         """
         df_contrato = df_contrato.drop(
-            ['ID', 'un_objeto', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_EXTRACAO', 'DT_ULT_VER_GATE'],
+            ['ID', 'un_objeto', 'CHECKSUMID', 'DT_ULT_ATUALIZ', 'DT_ULT_VER_GATE'],
             axis='columns')
         group_valor_total_de_contratos = df_contrato.groupby(['CONTRATACAO'])
         count_orgao = df_contrato.groupby(['CONTRATACAO', 'ORGAO']).size().to_frame(name='COUNT_ORGAO')
@@ -513,7 +554,8 @@ def gerar_contratos_agregados(df_contrato):
         df_contratos_agregados['DT_ULT_ATUALIZ'] = dt_now
         df_contratos_agregados['DT_ULT_VER_GATE'] = dt_now
         # TODO: !! rever essa data extracao. a ideia é ser a data do GATE ou a data de importacao do GATE
-        df_contratos_agregados['DT_EXTRACAO'] = dt_now
+        if 'DT_EXTRACAO' not in df_contratos_agregados.columns.values:
+            df_contratos_agregados['DT_EXTRACAO'] = dt_now
 
         if isinstance(df_contratos_agregados, pd.DataFrame) and not df_contratos_agregados.empty:
             db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME],
@@ -630,7 +672,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
             # checking_changes_tables_structure_1(json_table_info_1, json_table_info_3)
             # checking_changes_tables_structure_1(json_table_info_2, json_table_info_4)
 
-            carga_gate()
+            carga_painel_comprasrj()
 
             df_contrato = dbcommons.load_table(configs=configs, jndi_name=jdbc_opengeo.jndi_name,
                                                schema_name=schema_opengeo, table_name=table_contrato_opengeo)['table']

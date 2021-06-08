@@ -1,5 +1,6 @@
 import logging
-import os, time
+import os
+import time
 from datetime import datetime, timezone
 
 import mpmapas_commons as commons
@@ -126,16 +127,19 @@ def classificar():
     df_rules_sql = pd.DataFrame(db_opengeo.execute_select(rule_sqls, result_mode='all'),
                                 columns=['id', 'ordem', 'descricao', 'tp_item', 'sql_declaracao', 'cod_autorizacao'])
     for index, row in df_rules_sql.iterrows():
-        if row.cod_autorizacao is None: # TODO: 
-            logger.info('Invalid authorization code for executing SQL statement [rule id = %s, ordem = %s].' % (row.id, row.ordem))
+        if row.cod_autorizacao is None:  # TODO:
+            logger.info('Invalid authorization code for executing SQL statement [rule id = %s, ordem = %s].' % (
+                row.id, row.ordem))
         else:
-            sql_cmd = row.sql_declaracao.replace('_P3RC3NT_', '%').replace('_QU0T3_', '\"').replace('_AP0STR0PH3_', '\'')
+            sql_cmd = row.sql_declaracao.replace('_P3RC3NT_', '%').replace('_QU0T3_', '\"').replace('_AP0STR0PH3_',
+                                                                                                    '\'')
             if len(sql_cmd) > 0:
                 t0 = time.time()
                 logger.info('Starting execution SQL statement for [rule id = %s, ordem = %s].' % (row.id, row.ordem))
                 db_opengeo.execute_select(sql_cmd, result_mode=None)
                 t1 = time.time()
-                logger.info('Finishing execution SQL statement for [rule id = %s, ordem = %s]. It took %s sec' % (row.id, row.ordem, int(t1-t0)))
+                logger.info('Finishing execution SQL statement for [rule id = %s, ordem = %s]. It took %s sec' % (
+                    row.id, row.ordem, int(t1 - t0)))
             else:
                 logger.info('Error: empty SQL statement for [rule id = %s, ordem = %s].' % (row.id, row.ordem))
     logger.info('Finish %s - classificar.' % configs.settings.ETL_JOB)

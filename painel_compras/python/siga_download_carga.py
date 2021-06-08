@@ -11,11 +11,13 @@ import mpmapas_logger
 import pandas as pd
 import requests
 import unidecode
+from dateutil import tz
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasException
 
 os.environ["NLS_LANG"] = ".UTF8"
 dt_now = datetime.now(timezone.utc)
+dict_last_modified_date: dict = {}  # dict
 
 
 def normalize_text(text):
@@ -50,9 +52,10 @@ def download_file(urlstr, file_path, file_nam, mode='wb'):
     # with urllib.request.urlopen(urlstr) as response, open(file=file_path + file_nam, mode=mode) as out_file:
     #     shutil.copyfileobj(response, out_file)
     # urllib.request.urlretrieve(urlstr, file_path + file_nam)
-    r = requests.get(urlstr)
-    with open(file_path + file_nam, mode) as f:
-        f.write(r.content)
+    req = requests.get(urlstr)
+    with open(file_path + file_nam, mode) as file:
+        file.write(req.content)
+        dict_last_modified_date[file_nam] = req.headers['last-modified']
     logger.info('file saved at %s !' % file_nam)
 
 
@@ -72,22 +75,24 @@ def siga_download():
         download_file(urlstr=siga_urls[nome_arquivo], file_path=configs.folders.DOWNLOAD_DIR,
                       file_nam=nome_arquivo + '.zip', mode='wb')
         unzip_file(file_path=configs.folders.DOWNLOAD_DIR, file_name=nome_arquivo + '.zip')
+        last_modified_date = dict_last_modified_date[nome_arquivo + '.zip']
         for (dirpath, dirnames, filenames) in walk(configs.folders.DOWNLOAD_DIR):
             for filename in filenames:
                 if '.CSV' in filename:
-                    siga_carga(filepath=dirpath, filename=filename.replace('.CSV', ''), ext='.CSV')
+                    siga_carga(filepath=dirpath, filename=filename.replace('.CSV', ''), ext='.CSV',
+                               dt_extracao=last_modified_date)
     logger.warning('Finish SIGA downloads...')
 
 
-def siga_carga(filepath, filename, ext):
-    logger.warning('Start SIGA carga...')
+def siga_carga(filepath, filename, ext, dt_extracao):
+    logger.warning('Start SIGA carga file: %s...', filename)
     """
         Import csv do SIGA:
         importar os csvs baixados do SIGA para as suas respectivas tabelas 
     :param configs: configuracoes com a conexao de banco
     """
     dict_siga = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
-        configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='stage_comprasrj', table_name=str.lower(filename),
+        configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name=str.lower(filename),
                                      csv_source=filepath + filename + ext, csvEncoding='ISO-8859-1', csvDelimiter=';')
 
     result_df_siga = dict_siga['table'].rename(normalize_column_name, axis='columns')
@@ -97,10 +102,14 @@ def siga_carga(filepath, filename, ext):
         configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
     if isinstance(result_df_siga, pd.DataFrame) and not result_df_siga.empty:
         result_df_siga['dt_ult_atualiz'] = dt_now
-        result_df_siga['dt_extracao'] = dt_now
+        result_df_siga['dt_extracao'] = datetime.strptime(dt_extracao, '%a, %d %b %Y %H:%M:%S %Z').replace(
+            tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
         result_df_siga = result_df_siga.drop(['id'], axis='columns')
         list_flds_siga = result_df_siga.columns.values
-        insert_sql_siga, insert_template_siga = db_opengeo.insert_values_sql(schema_name='stage_comprasrj',
+        trunc_siga_sql = 'TRUNCATE TABLE %s.%s CONTINUE IDENTITY CASCADE' % (
+            'comprasrj_stage', normalize_table_name(filename))
+        db_opengeo.execute_select(trunc_siga_sql, result_mode=None)
+        insert_sql_siga, insert_template_siga = db_opengeo.insert_values_sql(schema_name='comprasrj_stage',
                                                                              table_name=normalize_table_name(filename),
                                                                              list_flds=list_flds_siga,
                                                                              unique_field='id', pk_field='id')
