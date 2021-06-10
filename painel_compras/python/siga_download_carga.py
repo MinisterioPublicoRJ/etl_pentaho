@@ -45,8 +45,9 @@ def normalize_column_name(text):
     return text
 
 
-def download_file(urlstr, file_path, file_nam, mode='wb'):
+def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
     logger.info('erasing dir: %s !' % file_path)
+    return_new_file = False
     [file.unlink() for file in Path(file_path).glob("*") if file.is_file()]
     logger.info('downloading url: %s !' % urlstr)
     # with urllib.request.urlopen(urlstr) as response, open(file=file_path + file_nam, mode=mode) as out_file:
@@ -54,9 +55,14 @@ def download_file(urlstr, file_path, file_nam, mode='wb'):
     # urllib.request.urlretrieve(urlstr, file_path + file_nam)
     req = requests.get(urlstr)
     with open(file_path + file_nam, mode) as file:
-        file.write(req.content)
-        dict_last_modified_date[file_nam] = req.headers['last-modified']
+        last_modified_date = datetime.strptime(req.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z').replace(
+            tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
+        if last_modified_date > last_date_to_check:
+            file.write(req.content)
+            dict_last_modified_date[file_nam] = last_modified_date
+            return_new_file = True
     logger.info('file saved at %s !' % file_nam)
+    return return_new_file
 
 
 def unzip_file(file_path, file_name):
@@ -67,20 +73,39 @@ def unzip_file(file_path, file_name):
     logger.info('unziped file to %s !' % file_path)
 
 
+def get_max_dt_extracao(table):
+    result = None
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
+    max_dt_extracao_sql = "select max(c.dt_extracao) as dt_extracao from comprasrj_stage.%s c" % table
+    max_dt_return = db_opengeo.execute_select(max_dt_extracao_sql, result_mode='all')
+    if max_dt_return and max_dt_return[0]:
+        result = max_dt_return[0][0].astimezone(tz.tzlocal())
+    return result
+
+
 def siga_download():
     logger.warning('Start SIGA downloads...')
     siga_urls = configs.settings.SIGA_URLS
-    for nome_arquivo in siga_urls:
+    siga_zips = configs.settings.SIGA_FILES
+    for siga_zip in siga_zips:
+        siga_url = siga_urls[str.lower(siga_zip)]
+        siga_csvs = siga_zips[str.upper(siga_zip)]
         Path(configs.folders.DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
-        download_file(urlstr=siga_urls[nome_arquivo], file_path=configs.folders.DOWNLOAD_DIR,
-                      file_nam=nome_arquivo + '.zip', mode='wb')
-        unzip_file(file_path=configs.folders.DOWNLOAD_DIR, file_name=nome_arquivo + '.zip')
-        last_modified_date = dict_last_modified_date[nome_arquivo + '.zip']
-        for (dirpath, dirnames, filenames) in walk(configs.folders.DOWNLOAD_DIR):
-            for filename in filenames:
-                if '.CSV' in filename:
-                    siga_carga(filepath=dirpath, filename=filename.replace('.CSV', ''), ext='.CSV',
-                               dt_extracao=last_modified_date)
+        max_dt_extracao = None
+        for csv in siga_csvs:
+            dt_extracao = get_max_dt_extracao(str.lower(csv))
+            if dt_extracao and ((not max_dt_extracao) or (dt_extracao > max_dt_extracao)):
+                max_dt_extracao = dt_extracao
+        new_file = download_file(urlstr=siga_url, file_path=configs.folders.DOWNLOAD_DIR,
+                                 file_nam=siga_zip + '.zip', last_date_to_check=max_dt_extracao, mode='wb')
+        if new_file:
+            unzip_file(file_path=configs.folders.DOWNLOAD_DIR, file_name=siga_zip + '.zip')
+            last_modified_date = dict_last_modified_date[siga_zip + '.zip']
+            for (dirpath, dirnames, filenames) in walk(configs.folders.DOWNLOAD_DIR):
+                for filename in filenames:
+                    if '.CSV' in filename and filename.split('.')[0] in siga_csvs:
+                        siga_carga(filepath=dirpath, filename=filename.replace('.CSV', ''), ext='.CSV',
+                                   dt_extracao=last_modified_date)
     logger.warning('Finish SIGA downloads...')
 
 
@@ -102,8 +127,7 @@ def siga_carga(filepath, filename, ext, dt_extracao):
         configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
     if isinstance(result_df_siga, pd.DataFrame) and not result_df_siga.empty:
         result_df_siga['dt_ult_atualiz'] = dt_now
-        result_df_siga['dt_extracao'] = datetime.strptime(dt_extracao, '%a, %d %b %Y %H:%M:%S %Z').replace(
-            tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
+        result_df_siga['dt_extracao'] = dt_extracao
         result_df_siga = result_df_siga.drop(['id'], axis='columns')
         list_flds_siga = result_df_siga.columns.values
         trunc_siga_sql = 'TRUNCATE TABLE %s.%s CONTINUE IDENTITY CASCADE' % (
