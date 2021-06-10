@@ -57,7 +57,7 @@ def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
     with open(file_path + file_nam, mode) as file:
         last_modified_date = datetime.strptime(req.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z').replace(
             tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
-        if last_modified_date > last_date_to_check:
+        if (not last_date_to_check) or (not last_modified_date) or (last_modified_date > last_date_to_check):
             file.write(req.content)
             dict_last_modified_date[file_nam] = last_modified_date
             return_new_file = True
@@ -78,7 +78,7 @@ def get_max_dt_extracao(table):
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
     max_dt_extracao_sql = "select max(c.dt_extracao) as dt_extracao from comprasrj_stage.%s c" % table
     max_dt_return = db_opengeo.execute_select(max_dt_extracao_sql, result_mode='all')
-    if max_dt_return and max_dt_return[0]:
+    if max_dt_return and max_dt_return[0] and max_dt_return[0][0]:
         result = max_dt_return[0][0].astimezone(tz.tzlocal())
     return result
 
