@@ -13,7 +13,11 @@ dt_now = datetime.now(timezone.utc)
 
 
 def safe_column_string_to_datetime(dataframe, column_name):
-    return [None if not col_val or col_val == 'NaN' else col_val for col_val in dataframe[column_name]]
+    return [None if not col_val or col_val == 'NaN' else datetime.strptime(col_val, '%d/%m/%Y') for col_val in dataframe[column_name]]
+
+
+def safe_column_string_to_date(dataframe, column_name):
+    return [None if not col_val or col_val == 'NaN' else datetime.strptime(col_val, '%d/%m/%Y').date() for col_val in dataframe[column_name]]
 
 
 def safe_column_string_to_int(dataframe, column_name):
@@ -83,9 +87,11 @@ def carga_painel_comprasrj():
             'valor_total_pago_r': 'VL_PAGO',
             'dt_extracao': 'DT_EXTRACAO'
         }).drop(['id', 'dt_ult_atualiz'], axis='columns')
-        result_df_contrato['DT_INICIO'] = safe_column_string_to_datetime(dataframe=result_df_contrato,
+        result_df_contrato['DT_CONTRATACAO'] = safe_column_string_to_date(dataframe=result_df_contrato,
+                                                                         column_name='DT_CONTRATACAO')
+        result_df_contrato['DT_INICIO'] = safe_column_string_to_date(dataframe=result_df_contrato,
                                                                          column_name='DT_INICIO')
-        result_df_contrato['DT_FIM'] = safe_column_string_to_datetime(dataframe=result_df_contrato,
+        result_df_contrato['DT_FIM'] = safe_column_string_to_date(dataframe=result_df_contrato,
                                                                       column_name='DT_FIM')
         result_df_contrato['VL_ESTIMADO'] = safe_column_string_to_float(dataframe=result_df_contrato,
                                                                         column_name='VL_ESTIMADO')
@@ -116,6 +122,8 @@ def carga_painel_comprasrj():
             'vl_unitario_r': 'VL_UNITARIO',
             'dt_extracao': 'DT_EXTRACAO'
         }).drop(['id', 'dt_ult_atualiz'], axis='columns')
+        result_df_compra['DT_APROVACAO'] = safe_column_string_to_date(dataframe=result_df_compra,
+                                                                      column_name='DT_APROVACAO')
         result_df_compra['QTD'] = safe_column_string_to_int(dataframe=result_df_compra, column_name='QTD')
         result_df_compra['VL_PROCESSO'] = safe_column_string_to_float(dataframe=result_df_compra,
                                                                       column_name='VL_PROCESSO')
