@@ -85,6 +85,7 @@ def get_max_dt_extracao(table):
 
 def siga_download():
     logger.warning('Start SIGA downloads...')
+    result_new_data = False
     siga_urls = configs.settings.SIGA_URLS
     siga_zips = configs.settings.SIGA_FILES
     for siga_zip in siga_zips:
@@ -99,6 +100,7 @@ def siga_download():
         new_file = download_file(urlstr=siga_url, file_path=configs.folders.DOWNLOAD_DIR,
                                  file_nam=siga_zip + '.zip', last_date_to_check=max_dt_extracao, mode='wb')
         if new_file:
+            result_new_data = new_file
             unzip_file(file_path=configs.folders.DOWNLOAD_DIR, file_name=siga_zip + '.zip')
             last_modified_date = dict_last_modified_date[siga_zip + '.zip']
             for (dirpath, dirnames, filenames) in walk(configs.folders.DOWNLOAD_DIR):
@@ -107,6 +109,7 @@ def siga_download():
                         siga_carga(filepath=dirpath, filename=filename.replace('.CSV', ''), ext='.CSV',
                                    dt_extracao=last_modified_date)
     logger.warning('Finish SIGA downloads...')
+    return result_new_data
 
 
 def siga_carga(filepath, filename, ext, dt_extracao):
@@ -147,7 +150,7 @@ def siga_carga(filepath, filename, ext, dt_extracao):
 def main():
     try:
         logger.info('Starting SIGA download e carga para o %s.' % configs.settings.ETL_JOB)
-        siga_download()
+        return siga_download()
     except MPMapasException as c_err:
         logger.exception(c_err)
         exit(c_err.msg)
@@ -160,12 +163,14 @@ def main():
 
 global configs, logger
 
-if __name__ == '__main__':
+if __name__ == '__main__' or __name__ == 'siga_download_carga':
     try:
         configs = commons.read_config('../etc/settings.yml')
-        mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
+        if __name__ == '__main__':
+            mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
         logger = logging.getLogger(configs.settings.ETL_JOB)
-        main()
+        if __name__ == '__main__':
+            main()
     except Exception as excpt:
-        logging.exception('Fatal error in __main__')
+        logging.exception('Fatal error in %s' % __name__)
         exit(excpt)

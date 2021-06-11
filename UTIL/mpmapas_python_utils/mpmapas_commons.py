@@ -3,6 +3,7 @@ import csv
 import hashlib
 import logging
 import os
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -10,6 +11,7 @@ from urllib.parse import urlparse
 import cchardet
 import chardet
 import pandas as pd
+import unidecode
 import yaml
 from db_utils import mpmapas_db_commons
 from mpmapas_exceptions import MPMapasErrorEtlStillRunning
@@ -129,6 +131,27 @@ def read_config(settings_path: str):
     elif settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]:
         jdbcproperties.load(open(configs[settings_env]['JDBC_PROPERTIES_FILE']))
     return Configs(configs, jdbcproperties, etl_env)
+
+
+# def translate_str(text):
+#     if text and type(text) == str:
+#         text = text.replace('AQUISIAO', 'AQUISICAO')
+#     return text
+
+
+def normalize_str(text):
+    if text and type(text) == str:
+        text = str.upper(text)
+        text = unicodedata.normalize(u'NFKD', text).encode('ascii', 'ignore').decode('utf8')
+        text = ''.join(ch for ch in unicodedata.normalize('NFKD', text) if not unicodedata.combining(ch))
+        text = unidecode.unidecode(text.strip().strip('.,;:!?@#$%&*/\\<>(){}[]~^´`¨-_+°ºª¹²³£¢¬\'\"').strip())
+        text = str.upper(text)
+    return text
+
+
+def unaccent_df(df, col):
+    # return df.apply(lambda x: translate_str(normalize_str(x[col])), axis=1)
+    return df.apply(lambda x: normalize_str(x[col]), axis=1)
 
 
 def sanitize_encoding(enc):

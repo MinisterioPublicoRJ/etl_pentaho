@@ -370,7 +370,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1300</xloc>
+      <xloc>1000</xloc>
       <yloc>275</yloc>
       <attributes_kjc />
     </entry>
@@ -485,7 +485,7 @@ Ocorreu ERRO no JOB
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1400</xloc>
+      <xloc>1100</xloc>
       <yloc>275</yloc>
       <attributes_kjc />
     </entry>
@@ -525,117 +525,6 @@ Ocorreu ERRO no JOB
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
-    </entry>
-    <entry>
-      <name>Job_Alerta_Compras_RJ</name>
-      <description />
-      <type>JOB</type>
-      <attributes />
-      <specification_method>filename</specification_method>
-      <job_object_id />
-      <filename>E:\pentaho\etl\ALERTA_COMPRAS_RJ\ALERTA_COMPRAS_RJ.kjb</filename>
-      <jobname />
-      <directory />
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>N</set_logfile>
-      <logfile />
-      <logext />
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Nothing</loglevel>
-      <slave_server_name />
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <expand_remote_job>N</expand_remote_job>
-      <create_parent_folder>N</create_parent_folder>
-      <pass_export>N</pass_export>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <set_append_logfile>N</set_append_logfile>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>575</xloc>
-      <yloc>100</yloc>
-      <attributes_kjc />
-    </entry>
-    <entry>
-      <name>test_env.py</name>
-      <description />
-      <type>SHELL</type>
-      <attributes />
-      <filename />
-      <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
-      <arg_from_previous>N</arg_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <set_append_logfile>Y</set_append_logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <insertScript>Y</insertScript>
-      <script>${PYTHON_DIR} test_env.py</script>
-      <loglevel>Basic</loglevel>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>800</xloc>
-      <yloc>100</yloc>
-      <attributes_kjc />
-    </entry>
-    <entry>
-      <name>Simple evaluation</name>
-      <description />
-      <type>SIMPLE_EVAL</type>
-      <attributes />
-      <valuetype>variable</valuetype>
-      <fieldname />
-      <variablename>${PYTHON_PARAM}</variablename>
-      <fieldtype>string</fieldtype>
-      <mask />
-      <comparevalue>r</comparevalue>
-      <minvalue />
-      <maxvalue />
-      <successcondition>equal</successcondition>
-      <successnumbercondition>equal</successnumbercondition>
-      <successbooleancondition>false</successbooleancondition>
-      <successwhenvarset>N</successwhenvarset>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>1000</xloc>
-      <yloc>275</yloc>
-      <attributes_kjc />
-    </entry>
-    <entry>
-      <name>itens_classificar.py</name>
-      <description />
-      <type>SHELL</type>
-      <attributes />
-      <filename />
-      <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
-      <arg_from_previous>N</arg_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <set_logfile>Y</set_logfile>
-      <logfile>${ETL_LOG_FILE}</logfile>
-      <set_append_logfile>Y</set_append_logfile>
-      <logext>txt</logext>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <insertScript>Y</insertScript>
-      <script>${PYTHON_DIR} itens_classificar.py</script>
-      <loglevel>Basic</loglevel>
-      <parallel>N</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>1000</xloc>
-      <yloc>450</yloc>
       <attributes_kjc />
     </entry>
   </entries>
@@ -714,101 +603,11 @@ Ocorreu ERRO no JOB
     </hop>
     <hop>
       <from>Checa DB</from>
-      <to>Job_Alerta_Compras_RJ</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Job_Alerta_Compras_RJ</from>
-      <to>transf_painel_compras</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Checa DB</from>
       <to>transf_painel_compras</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>transf_painel_compras</from>
-      <to>test_env.py</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>test_env.py</from>
-      <to>painel_compras.py</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>test_env.py</from>
-      <to>log_fim_job</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>painel_compras.py</from>
-      <to>Simple evaluation</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Simple evaluation</from>
-      <to>itens_classificar.py</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Simple evaluation</from>
-      <to>log_fim_job</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>itens_classificar.py</from>
-      <to>log_fim_job</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>itens_classificar.py</from>
-      <to>log ERRO JOB</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>N</evaluation>
       <unconditional>N</unconditional>
     </hop>
     <hop>
@@ -819,6 +618,15 @@ Ocorreu ERRO no JOB
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>painel_compras.py</from>
+      <to>log_fim_job</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>

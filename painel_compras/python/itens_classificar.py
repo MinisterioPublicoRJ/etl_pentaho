@@ -147,10 +147,9 @@ def classificar():
 
 def main():
     try:
-        logger.info('Starting %s - Main.' % configs.settings.ETL_JOB)
+        logger.info('Starting classificacao de itens para o %s.' % configs.settings.ETL_JOB)
         classificar()
         itens_classificar()
-        logger.info('Finish %s - Main.' % configs.settings.ETL_JOB)
     except MPMapasDataBaseException as c_err:
         logger.exception(c_err)
         exit(c_err.error_code)
@@ -160,16 +159,20 @@ def main():
     except Exception as c_err:
         logger.exception('Fatal error in main')
         exit(c_err)
+    finally:
+        logger.info('Finishing classificacao de itens para o %s.' % configs.settings.ETL_JOB)
 
 
 global configs, logger
 
-if __name__ == '__main__':
+if __name__ == '__main__' or __name__ == 'itens_classificar':
     try:
         configs = commons.read_config('../etc/settings.yml')
-        mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
+        if __name__ == '__main__':
+            mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
         logger = logging.getLogger(configs.settings.ETL_JOB)
-        main()
+        if __name__ == '__main__':
+            main()
     except Exception as excpt:
-        logging.exception('Fatal error in __main__')
+        logging.exception('Fatal error in %s' % __name__)
         exit(excpt)
