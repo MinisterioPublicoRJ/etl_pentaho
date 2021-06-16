@@ -45,11 +45,15 @@ def normalize_column_name(text):
     return text
 
 
-def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
+def erase_dir(file_path):
     logger.info('erasing dir: %s !' % file_path)
-    return_new_file = False
     [file.unlink() for file in Path(file_path).glob("*") if file.is_file()]
+
+
+def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
     logger.info('downloading url: %s !' % urlstr)
+    erase_dir(file_path)
+    return_new_file = False
     # with urllib.request.urlopen(urlstr) as response, open(file=file_path + file_nam, mode=mode) as out_file:
     #     shutil.copyfileobj(response, out_file)
     # urllib.request.urlretrieve(urlstr, file_path + file_nam)
@@ -108,6 +112,7 @@ def siga_download():
                     if '.CSV' in filename and filename.split('.')[0] in siga_csvs:
                         siga_carga(filepath=dirpath, filename=filename.replace('.CSV', ''), ext='.CSV',
                                    dt_extracao=last_modified_date)
+    erase_dir(file_path=configs.folders.DOWNLOAD_DIR)
     logger.warning('Finish SIGA downloads...')
     return result_new_data
 

@@ -114,6 +114,7 @@ def read_config(settings_path: str):
     with open(settings_path) as file:
         configs: dict = yaml.load(file, Loader=yaml.FullLoader)  # dict
     jdbcproperties: Properties = Properties()  # Properties
+    jdbc_prop: Properties = Properties()  # Properties
     try:
         etl_env: str = os.environ['ETL_ENV']  # str
         if etl_env:
@@ -127,9 +128,13 @@ def read_config(settings_path: str):
         raise
 
     if 'settings' in configs and 'JDBC_PROPERTIES_FILE' in configs['settings']:
-        jdbcproperties.load(open(configs['settings']['JDBC_PROPERTIES_FILE']))
+        jdbc_prop.load(open(os.path.abspath(os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][0]] +
+                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
+        jdbcproperties.load(open(jdbc_prop['JDBC']))
     elif settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]:
-        jdbcproperties.load(open(configs[settings_env]['JDBC_PROPERTIES_FILE']))
+        jdbc_prop.load(open(os.path.abspath(os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][0]] +
+                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
+        jdbcproperties.load(open(jdbc_prop['JDBC']))
     return Configs(configs, jdbcproperties, etl_env)
 
 

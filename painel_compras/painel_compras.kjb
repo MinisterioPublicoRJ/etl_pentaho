@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <job>
   <name>painel_compras</name>
-  <description />
-  <extended_description />
-  <job_version />
+  <description/>
+  <extended_description/>
+  <job_version/>
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -14,7 +14,7 @@
     <parameter>
       <name>PYTHON_PARAM</name>
       <default_value>r</default_value>
-      <description />
+      <description/>
     </parameter>
   </parameters>
   <slaveservers>
@@ -23,8 +23,8 @@
     <connection>${ETLLOG_LOG_CONNECTION}</connection>
     <schema>${ETLLOG_LOG_SCHEMA}</schema>
     <table>${ETLLOG_JOBLOGTABLE_LOG_TABLE}</table>
-    <size_limit_lines />
-    <interval />
+    <size_limit_lines/>
+    <interval/>
     <timeout_days>${ETLLOG_LOG_LINE_TIMEOUT}</timeout_days>
     <field>
       <id>ID_JOB</id>
@@ -290,13 +290,13 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file />
+  <shared_objects_file/>
   <entries>
     <entry>
       <name>Start</name>
-      <description />
+      <description/>
       <type>SPECIAL</type>
-      <attributes />
+      <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -312,17 +312,17 @@
       <nr>0</nr>
       <xloc>75</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>transf_painel_compras</name>
-      <description />
+      <description/>
       <type>TRANS</type>
-      <attributes />
+      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id />
+      <trans_object_id/>
       <filename>${Internal.Entry.Current.Directory}/painel_compras.ktr</filename>
-      <transname />
+      <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -335,7 +335,7 @@
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name />
+      <slave_server_name/>
       <set_append_logfile>Y</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -350,13 +350,13 @@
       <nr>0</nr>
       <xloc>575</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>log_fim_job</name>
-      <description />
+      <description/>
       <type>WRITE_TO_FILE</type>
-      <attributes />
+      <attributes/>
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -366,19 +366,19 @@
 .---------------------------------------------.
 &lt;-&lt;-&lt;-
 </content>
-      <encoding />
+      <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1000</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>log_inic_job</name>
-      <description />
+      <description/>
       <type>WRITE_TO_FILE</type>
-      <attributes />
+      <attributes/>
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -387,28 +387,28 @@
 INICIANDO JOB PRINCIPAL painel compras
 -------------------------------
 .#############################.
--&gt;-&gt;-&gt;</content>
-      <encoding />
+->->-></content>
+      <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>200</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>Checa DB</name>
-      <description />
+      <description/>
       <type>CHECK_DB_CONNECTIONS</type>
-      <attributes />
+      <attributes/>
       <connections>
         <connection>
-          <name>CONN_POSTGRE_MPMAPAS_GEO</name>
+          <name>CONN_POSTGRE_MPMAPAS_GEO_JNDI</name>
           <waitfor>0</waitfor>
           <waittime>millisecond</waittime>
         </connection>
         <connection>
-          <name>CONN_POSTGRE_GATE_RO_NATIVE</name>
+          <name>CONN_POSTGRE_GATE_RO_JNDI</name>
           <waitfor>0</waitfor>
           <waittime>millisecond</waittime>
         </connection>
@@ -418,26 +418,26 @@ INICIANDO JOB PRINCIPAL painel compras
       <nr>0</nr>
       <xloc>350</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>Abort job Banco</name>
       <description>Abort job</description>
       <type>ABORT</type>
-      <attributes />
+      <attributes/>
       <message>Erro verificando conexões BD</message>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>125</xloc>
       <yloc>450</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>log ERRO BANCO</name>
-      <description />
+      <description/>
       <type>WRITE_TO_FILE</type>
-      <attributes />
+      <attributes/>
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -447,19 +447,19 @@ Ocorreu ERRO durante a verificacao das conexoes aos bancos de dados
 ###################################################################
 
 </content>
-      <encoding />
+      <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>350</xloc>
       <yloc>450</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>log ERRO JOB</name>
-      <description />
+      <description/>
       <type>WRITE_TO_FILE</type>
-      <attributes />
+      <attributes/>
       <filename>${ETL_LOG_FILE}.txt</filename>
       <createParentFolder>Y</createParentFolder>
       <appendFile>Y</appendFile>
@@ -469,45 +469,45 @@ Ocorreu ERRO no JOB
 ###################################################################
 
 </content>
-      <encoding />
+      <encoding/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>450</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>Success</name>
-      <description />
+      <description/>
       <type>SUCCESS</type>
-      <attributes />
+      <attributes/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1100</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>Abort job JOB</name>
-      <description />
+      <description/>
       <type>ABORT</type>
-      <attributes />
-      <message />
+      <attributes/>
+      <message/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>550</xloc>
       <yloc>450</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
     <entry>
       <name>painel_compras.py</name>
-      <description />
+      <description/>
       <type>SHELL</type>
-      <attributes />
-      <filename />
+      <attributes/>
+      <filename/>
       <work_directory>${Internal.Entry.Current.Directory}\python\</work_directory>
       <arg_from_previous>N</arg_from_previous>
       <exec_per_row>N</exec_per_row>
@@ -525,7 +525,7 @@ Ocorreu ERRO no JOB
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>275</yloc>
-      <attributes_kjc />
+      <attributes_kjc/>
     </entry>
   </entries>
   <hops>

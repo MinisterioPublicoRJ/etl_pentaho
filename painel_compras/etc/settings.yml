@@ -1,0 +1,24 @@
+settings:
+ ETL_JOB : 'painel_compras'
+ LOG_FILE_NAME: 'painel_compras.log'
+ FONTE_DADOS: 'SIGA'
+ JDBC_PROPERTIES_FILE: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ SIGA_URLS: {'ata_registro_preco': 'https://www.compras.rj.gov.br/arquivos/ATA_REGISTRO_PRECO.zip', 'compras_diretas': 'https://www.compras.rj.gov.br/arquivos/COMPRAS_DIRETAS.zip', 'catalogo': 'https://www.compras.rj.gov.br/arquivos/CATALOGO.zip', 'editais_e_licitacoes': 'https://www.compras.rj.gov.br/arquivos/EDITAIS_E_LICITACOES.zip', 'processo_eletronico_dispensa': 'https://www.compras.rj.gov.br/arquivos/PROCESSO_ELETRONICO_DISPENSA.zip', 'outras_compras': 'https://www.compras.rj.gov.br/arquivos/OUTRAS_COMPRAS.zip', 'fornecedores': 'https://www.compras.rj.gov.br/arquivos/FORNECEDORES.zip', 'sancoes': 'https://www.compras.rj.gov.br/arquivos/SANCOES.zip', 'contratos': 'https://www.compras.rj.gov.br/arquivos/CONTRATOS.zip', 'hist_precos': 'https://www.compras.rj.gov.br/arquivos/HIST_PRECOS.zip'}
+ SIGA_FILES: {'CATALOGO':['CATALOGO'], 'COMPRAS_DIRETAS':['COMPRAS_DIRETAS'], 'CONTRATOS':['CONTRATOS','ITENS_CONTRATOS']}
+settings_prod:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ DB_GATE_DS_NAME: 'postgres_hml_gate'
+ DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+ GATE_CSV_CONTRATO: ''
+ GATE_CSV_ITEM_CONTRATO: ''
+folders:
+ ETL_DIR: ../
+ CONFIG_DIR: ../etc/
+ LOG_DIR: ../var/log/
+ ENTRADA_DIR: ../var/tmp/entrada/
+ DOWNLOAD_DIR: ../var/tmp/download/
+ SAIDA_DIR: ../var/tmp/saida/
+ PYTHON_SCRIPT_DIR: ../python/
+ R_SCRIPT_DIR: ../script_R/
+ TEMP_DIR: ../var/tmp/
