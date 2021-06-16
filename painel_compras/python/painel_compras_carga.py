@@ -133,6 +133,11 @@ def carga_painel_comprasrj():
         result_df_catalogo = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
             configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='catalogo')[
             'table']
+        result_df_catalogo['id_tipo'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_tipo')
+        result_df_catalogo['id_familia'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_familia')
+        result_df_catalogo['id_classe'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_classe')
+        result_df_catalogo['id_artigo'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_artigo')
+        result_df_catalogo['id_item'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_item')
         server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
             configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
     elif 'GATE' in fonte_dados:
