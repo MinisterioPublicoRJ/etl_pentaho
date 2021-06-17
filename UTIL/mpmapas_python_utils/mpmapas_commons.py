@@ -143,6 +143,14 @@ def read_config(settings_path: str):
 #         text = text.replace('AQUISIAO', 'AQUISICAO')
 #     return text
 
+def normalize_text(text):
+    if text and type(text) == str:
+        remove_chars = '.,;:!?@#$%&*/\\<>(){}[]~^´`¨-+°ºª¹²³£¢¬\'\"'
+        text = text.translate(str.maketrans('', '', remove_chars)).replace('.csv', '')
+        text = unicodedata.normalize(u'NFKD', text).encode('ascii', 'ignore').decode('utf8')
+        text = ''.join(ch for ch in unicodedata.normalize('NFKD', text) if not unicodedata.combining(ch))
+        text = unidecode.unidecode(text.strip().strip(remove_chars).strip())
+    return text
 
 def normalize_str(text):
     if text and type(text) == str:
@@ -156,7 +164,8 @@ def normalize_str(text):
 
 def unaccent_df(df, col):
     # return df.apply(lambda x: translate_str(normalize_str(x[col])), axis=1)
-    return df.apply(lambda x: normalize_str(x[col]), axis=1)
+    # return df.apply(lambda x: normalize_str(x[col]), axis=1)
+    return df.apply(lambda x: normalize_text(x[col]), axis=1)
 
 
 def sanitize_encoding(enc):
