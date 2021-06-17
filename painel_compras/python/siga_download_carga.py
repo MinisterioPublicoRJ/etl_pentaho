@@ -77,6 +77,12 @@ def unzip_file(file_path, file_name):
     logger.info('unziped file to %s !' % file_path)
 
 
+def truncate_table(schema, table):
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
+    trunc_table_sql = "TRUNCATE TABLE %s.%s CONTINUE IDENTITY CASCADE" % (schema, table)
+    db_opengeo.execute_select(trunc_table_sql, result_mode=None)
+
+
 def get_max_dt_extracao(table):
     result = None
     db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
@@ -87,7 +93,7 @@ def get_max_dt_extracao(table):
     return result
 
 
-def siga_download():
+def siga_download(truncate_stage):
     logger.warning('Start SIGA downloads...')
     result_new_data = False
     siga_urls = configs.settings.SIGA_URLS
@@ -98,6 +104,8 @@ def siga_download():
         Path(configs.folders.DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
         max_dt_extracao = None
         for csv in siga_csvs:
+            if truncate_stage:
+                truncate_table('comprasrj_stage', str.lower(csv))
             dt_extracao = get_max_dt_extracao(str.lower(csv))
             if dt_extracao and ((not max_dt_extracao) or (dt_extracao > max_dt_extracao)):
                 max_dt_extracao = dt_extracao
@@ -152,10 +160,10 @@ def siga_carga(filepath, filename, ext, dt_extracao):
         logger.warning('Finish SIGA carga...')
 
 
-def main():
+def main(truncate_stage):
     try:
         logger.info('Starting SIGA download e carga para o %s.' % configs.settings.ETL_JOB)
-        return siga_download()
+        return siga_download(truncate_stage)
     except MPMapasException as c_err:
         logger.exception(c_err)
         exit(c_err.msg)

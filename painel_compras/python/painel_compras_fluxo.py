@@ -34,9 +34,9 @@ def update_tables_dt_ult_ver_gate(configs):
     update_dt_ult_ver_gate(configs=configs, schema_name='comprasrj', table_name='compras_itens_por_contrato')
 
 
-def check_atualizacao_bases_siga():
+def check_atualizacao_bases_siga(truncate_stage):
     logger.info('Starting check_atualizacao_bases_siga')
-    return siga_download_carga.main()
+    return siga_download_carga.main(truncate_stage)
 
 
 def check_atualizacao_bases_gate(run_painel_compras, diff_check_table, diff_count_table):
@@ -50,7 +50,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
         fonte_dados = configs.settings.FONTE_DADOS
 
         if 'SIGA' in fonte_dados:
-            run_painel_compras = check_atualizacao_bases_siga()
+            run_painel_compras = check_atualizacao_bases_siga(truncate_stage=diff_check_table)
         elif 'GATE' in fonte_dados:
             run_painel_compras = check_atualizacao_bases_gate(run_painel_compras, diff_check_table, diff_count_table)
 
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         for opt, arg in opts:
             if opt == '-h':
                 print('usage: ' + sys.argv[0] + ' [-r] --> to run painel_compras')
-                print('usage: ' + sys.argv[0] + ' [-t] --> to check diffent table data')
+                print('usage: ' + sys.argv[0] + ' [-t] --> to check diffent table data for gate or truncate tables from stage schema for siga')
                 print('usage: ' + sys.argv[0] + ' [-c] --> to check diffent row count')
                 sys.exit()
             elif opt in ["-r"]:
