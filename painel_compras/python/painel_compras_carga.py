@@ -13,11 +13,13 @@ dt_now = datetime.now(timezone.utc)
 
 
 def safe_column_string_to_datetime(dataframe, column_name):
-    return [None if not col_val or col_val == 'NaN' else datetime.strptime(col_val, '%d/%m/%Y') for col_val in dataframe[column_name]]
+    return [None if not col_val or col_val == 'NaN' else datetime.strptime(col_val, '%d/%m/%Y') for col_val in
+            dataframe[column_name]]
 
 
 def safe_column_string_to_date(dataframe, column_name):
-    return [None if not col_val or col_val == 'NaN' else datetime.strptime(col_val, '%d/%m/%Y').date() for col_val in dataframe[column_name]]
+    return [None if not col_val or col_val == 'NaN' else datetime.strptime(col_val, '%d/%m/%Y').date() for col_val in
+            dataframe[column_name]]
 
 
 def safe_column_string_to_int(dataframe, column_name):
@@ -30,6 +32,23 @@ def safe_column_string_to_float(dataframe, column_name):
                               dataframe[column_name]]
     return [None if not col_val or col_val == 'NaN' else col_val.replace('.', '', col_val.count('.') - 1) for col_val in
             dataframe[column_name]]
+
+
+def carga_dominio(conn, schema, table, df, server_encoding):
+    result_df = df.loc[:, ['id_' + table, table]].drop_duplicates().reset_index(drop=True).sort_values(
+        by=['id_' + table, table], axis=0, ascending=True)
+    list_flds = result_df.columns.values
+    trunc_sql = "TRUNCATE TABLE %s.%s CONTINUE IDENTITY CASCADE" % (schema, table)
+    conn.execute_select(trunc_sql, result_mode=None)
+    insert_sql, insert_template = conn.insert_values_sql(schema_name=schema,
+                                                         table_name=table,
+                                                         list_flds=list_flds,
+                                                         unique_field='id_' + table,
+                                                         pk_field='id')
+    conn.execute_values_insert(sql=insert_sql,
+                               template=insert_template,
+                               df_values_to_execute=result_df,
+                               fetch=True, server_encoding=server_encoding)
 
 
 def carga_painel_comprasrj():
@@ -88,11 +107,11 @@ def carga_painel_comprasrj():
             'dt_extracao': 'DT_EXTRACAO'
         }).drop(['id', 'dt_ult_atualiz'], axis='columns')
         result_df_contrato['DT_CONTRATACAO'] = safe_column_string_to_date(dataframe=result_df_contrato,
-                                                                         column_name='DT_CONTRATACAO')
+                                                                          column_name='DT_CONTRATACAO')
         result_df_contrato['DT_INICIO'] = safe_column_string_to_date(dataframe=result_df_contrato,
-                                                                         column_name='DT_INICIO')
+                                                                     column_name='DT_INICIO')
         result_df_contrato['DT_FIM'] = safe_column_string_to_date(dataframe=result_df_contrato,
-                                                                      column_name='DT_FIM')
+                                                                  column_name='DT_FIM')
         result_df_contrato['VL_ESTIMADO'] = safe_column_string_to_float(dataframe=result_df_contrato,
                                                                         column_name='VL_ESTIMADO')
         result_df_contrato['VL_EMPENHADO'] = safe_column_string_to_float(dataframe=result_df_contrato,
@@ -134,9 +153,12 @@ def carga_painel_comprasrj():
             configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='catalogo')[
             'table']
         result_df_catalogo['id_tipo'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_tipo')
-        result_df_catalogo['id_familia'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_familia')
-        result_df_catalogo['id_classe'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_classe')
-        result_df_catalogo['id_artigo'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_artigo')
+        result_df_catalogo['id_familia'] = safe_column_string_to_int(dataframe=result_df_catalogo,
+                                                                     column_name='id_familia')
+        result_df_catalogo['id_classe'] = safe_column_string_to_int(dataframe=result_df_catalogo,
+                                                                    column_name='id_classe')
+        result_df_catalogo['id_artigo'] = safe_column_string_to_int(dataframe=result_df_catalogo,
+                                                                    column_name='id_artigo')
         result_df_catalogo['id_item'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_item')
         server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
             configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
@@ -177,6 +199,13 @@ def carga_painel_comprasrj():
                                          template=insert_template_catalogo,
                                          df_values_to_execute=result_df_catalogo,
                                          fetch=True, server_encoding=server_encoding)
+
+        carga_dominio(conn=db_opengeo, schema='comprasrj', table='familia', df=result_df_catalogo,
+                      server_encoding=server_encoding)
+        carga_dominio(conn=db_opengeo, schema='comprasrj', table='classe', df=result_df_catalogo,
+                      server_encoding=server_encoding)
+        carga_dominio(conn=db_opengeo, schema='comprasrj', table='artigo', df=result_df_catalogo,
+                      server_encoding=server_encoding)
 
     if isinstance(result_df_item_contrato, pd.DataFrame) and not result_df_item_contrato.empty:
         # carga item_contrato
