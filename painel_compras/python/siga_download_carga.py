@@ -160,7 +160,7 @@ def siga_carga(filepath, filename, ext, dt_extracao):
         logger.warning('Finish SIGA carga...')
 
 
-def main(truncate_stage):
+def main(truncate_stage=False):
     try:
         logger.info('Starting SIGA download e carga para o %s.' % configs.settings.ETL_JOB)
         return siga_download(truncate_stage)
