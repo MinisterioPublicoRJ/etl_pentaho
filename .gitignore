@@ -12,3 +12,4 @@ tmp/
 *.zip
 *.csv
 *.xls
+.Rproj.user
