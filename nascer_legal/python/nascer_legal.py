@@ -109,41 +109,51 @@ class Survey:
 
     def preencher_questionario(self, questionario, survey):
         for pergunta in questionario.perguntas.values():
-            pergunta.resposta = survey[pergunta.cod_pergunta]
+            pergunta.resposta = survey[pergunta.cod_pergunta] if survey[pergunta.cod_pergunta] != '' else 'Sem Resposta'
         return questionario
 
     def preencher_email(self):
-        email_to = [dests.nome + '<' + dests.email + '>' for dests in self.estabelecimento.destinatarios if
+        email_to = [dests.email for dests in self.estabelecimento.destinatarios if
                     configs.settings.MAIL_TO]
-        email_cc = [des.nome + '<' + des.email + '>' for cc in self.estab_cc for des in cc.destinatarios if
+        email_cc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
                     cc.codigo != 0 and configs.settings.MAIL_TO]
-        email_bcc = [des.nome + '<' + des.email + '>' for cc in self.estab_cc for des in cc.destinatarios if
+        email_bcc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
                      cc.codigo == 0]
+        mail_from = configs.settings.MAIL_SENDER
         email_subject = 'Survey estabelecimento: %s respondente: %s data da resposta: %s' % (
             self.estabelecimento.unidade, self.respondente, self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'))
-        perguntas = '<br/><br/>'.join(
-            [pergunta.desc_pergunta + '<br/> Resposta:  ' + str(pergunta.resposta) for pergunta in
-             self.questionario.perguntas.values()])
+        perguntas_template = '''
+                                <br/> {pergunta}
+                            '''
+        respostas_template = '''
+                                <br/> Resposta:  {resposta}
+                                <br/><br/>
+                            '''
+        perguntas = ''.join(
+            [perguntas_template.format(pergunta=pergunta.desc_pergunta) +
+             respostas_template.format(resposta=str(pergunta.resposta))
+             for pergunta in self.questionario.perguntas.values()]
+        )
         email_body_html = '''
                             <html>
                               <head></head>
                               <body>
                                 <p>
-                                    Estabelecimento: %s <br/>
+                                    Estabelecimento: {estabelecimento} <br/>
                                     <br/>
-                                    Respondente: %s <br/>
+                                    Respondente: {respondente} <br/>
                                     <br/>
-                                    Data da resposta: %s <br/>
+                                    Data da resposta: {data_resposta} <br/>
                                     <br/>
-                                    <p>%s</p>
+                                    <p>{pergunstas_respostas}</p>
                                     <br/>
                                 </p>
                               </body>
                             </html>
-                            ''' % (
-            self.estabelecimento.unidade, self.respondente, self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'),
-            perguntas)
-        return Email(mail_from=configs.settings.MAIL_SENDER, mail_to=email_to, mail_cc=email_cc, mail_bcc=email_bcc,
+                            '''.format(estabelecimento=self.estabelecimento.unidade, respondente=self.respondente,
+                                       data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'),
+                                       pergunstas_respostas=perguntas)
+        return Email(mail_from=mail_from, mail_to=email_to, mail_cc=email_cc, mail_bcc=email_bcc,
                      mail_subject=email_subject, mail_body_html=email_body_html)
 
     @staticmethod
@@ -175,48 +185,48 @@ class Survey:
 
 def preencher_survey(df_survey_dest: pd.DataFrame, df_survey_perguntas: pd.DataFrame,
                      dict_tipo_survey: dict[str: pd.DataFrame]):
-    logger.info('Starting %s - preencher_survey.' % configs.settings.ETL_JOB)
-
     dict_estabelecimentos: dict[str: list[Estabelecimento]] = Estabelecimento.get_all_estabelecimentos(
         df_estabelec=df_survey_dest)
     dict_questionarios: dict[str: list[Questionario]] = Questionario.get_all_questionarios(df_surv=df_survey_perguntas)
     list_estalec_tipos = [key for key, _ in df_survey_perguntas.groupby(by=['tp_estalec'], axis='index')]
-
     list_surveys: list[Survey] = []
     for tipo in list_estalec_tipos:
         send_to = dict_questionarios[tipo].send_to
         dest_cart = {key: dict_estabelecimentos[key] for key in dict_estabelecimentos if key in send_to}
         quest_cart = dict_questionarios[tipo]
         df_survey = dict_tipo_survey[tipo]
-        Survey.get_surveys(list_surveys=list_surveys, tipo_survey=tipo, df_survey=df_survey, dict_dest=dest_cart,
+        Survey.get_surveys(list_surveys=list_surveys, tipo_survey=str(tipo), df_survey=df_survey, dict_dest=dest_cart,
                            quest=quest_cart)
-
-    logger.info('Finish %s - preencher_survey.' % configs.settings.ETL_JOB)
     return list_surveys
 
 
 def load_surveys():
     logger.info('Starting %s - load_surveys.' % configs.settings.ETL_JOB)
-    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_GISDB_DS_NAME], api=None)
     df_survey_perguntas = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
-                                               table_name='survey_nascer_legal_perguntas')[
-        'table']
+                                               table_name='survey_nascer_legal_perguntas')['table']
     df_survey_dest = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia', table_name='survey_email_dest')[
         'table']
     df_survey_cart = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
-                                          table_name='survey_nascer_legal_cart_3')[
-        'table']
+                                          table_name='survey_nascer_legal_cart_3')['table'].fillna(value='')
     df_survey_detran = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
-                                            table_name='survey_nascer_legal_detran')[
-        'table']
+                                            table_name='survey_nascer_legal_detran')['table'].fillna(value='')
     df_survey_hosp = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
-                                          table_name='survey_nascer_legal_hosp')[
-        'table']
+                                          table_name='survey_nascer_legal_hosp')['table'].fillna(value='')
+    df_survey_enviados = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
+                                              table_name='survey_nascer_legal_emails_enviados')['table']
+    # filtrar emails ja enviados
+    df_survey_hosp = df_survey_hosp[~df_survey_hosp['objectid'].isin(
+        df_survey_enviados.loc[df_survey_enviados['tp_survey'] == 'cnes']['id_survey'].values)]
+    df_survey_detran = df_survey_detran[~df_survey_detran['objectid'].isin(
+        df_survey_enviados.loc[df_survey_enviados['tp_survey'] == 'det']['id_survey'].values)]
+    df_survey_cart = df_survey_cart[~df_survey_cart['objectid'].isin(
+        df_survey_enviados.loc[df_survey_enviados['tp_survey'] == 'cart']['id_survey'].values)]
 
     list_surveys: list[Survey] = preencher_survey(df_survey_dest, df_survey_perguntas,
                                                   {'cart': df_survey_cart, 'cnes': df_survey_hosp,
@@ -227,25 +237,50 @@ def load_surveys():
 
 
 def send_emails(list_surveys: list[Survey]):
+    logger.info('Starting %s - send_emails.' % configs.settings.ETL_JOB)
     host = configs.settings.MAIL_SMTP_SERVER
     port = configs.settings.MAIL_SMTP_PORT
-    user = configs.settings.MAIL_SENDER
-
+    list_enviados = []
     with smtplib.SMTP(host, port) as smtp:
-        smtp.helo()
-        smtp.starttls()
-        smtp.ehlo()
+        smtp.ehlo('mprj.mp.br')
         for survey in list_surveys:
             smtp.sendmail(survey.email.email_msg['From'],
-                          survey.email.email_msg['To'] + survey.email.email_msg['Cc'] + survey.email.email_msg['Bcc'],
+                          str(survey.email.email_msg['To'] + survey.email.email_msg['Cc'] +
+                              survey.email.email_msg['Bcc']).split(','),
                           survey.email.email_msg.as_string())
+            nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
+                if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
+            list_enviados.append(
+                {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
+    logger.info('Finish %s - send_emails.' % configs.settings.ETL_JOB)
+    return list_enviados
+
+
+def update_envidos(list_enviados: list):
+    logger.info('Starting %s - update_envidos.' % configs.settings.ETL_JOB)
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_GISDB_DS_NAME], api=None)
+    server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_GISDB_DS_NAME].jndi_name)
+    df_enviados = pd.DataFrame(list_enviados)
+    list_flds_enviados = df_enviados.columns.values
+    insert_sql_enviados, insert_template_enviados = db_opengeo.insert_values_sql(schema_name='assistencia',
+                                                                                 table_name='survey_nascer_legal_emails_enviados',
+                                                                                 list_flds=list_flds_enviados,
+                                                                                 unique_field='objectid',
+                                                                                 pk_field='objectid')
+    db_opengeo.execute_values_insert(sql=insert_sql_enviados,
+                                     template=insert_template_enviados,
+                                     df_values_to_execute=df_enviados,
+                                     fetch=True, server_encoding=server_encoding)
+    logger.info('Finish %s - update_envidos.' % configs.settings.ETL_JOB)
 
 
 def main():
     try:
         logger.info('Starting %s.' % configs.settings.ETL_JOB)
         list_surveys: list[Survey] = load_surveys()
-        send_emails(list_surveys)
+        list_enviados = send_emails(list_surveys)
+        update_envidos(list_enviados)
 
     except MPMapasException as c_err:
         logger.exception(c_err)
