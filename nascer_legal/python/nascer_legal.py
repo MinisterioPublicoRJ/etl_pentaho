@@ -61,7 +61,11 @@ class Questionario:
     def __init__(self, tipo: str, send_to: list[str], perguntas: dict[str: Pergunta]):
         self.tipo = tipo
         self.send_to = send_to
-        self.perguntas = perguntas
+        self.perguntas: dict[str: Pergunta] = perguntas
+
+    def ordenar_perguntas(self):
+        self.perguntas = dict(sorted(self.perguntas.items(), key=lambda item: item[1].ordem_pergunta))
+
 
     @staticmethod
     def get_all_questionarios(df_surv: pd.DataFrame):
@@ -132,6 +136,8 @@ class Survey:
             template = file.readlines()
         respostas_template = ''.join(template)
 
+        self.questionario.ordenar_perguntas()
+
         perguntas = ''.join(
             [perguntas_template.format(pergunta=pergunta.desc_pergunta) +
              respostas_template.format(resposta=str(pergunta.resposta))
@@ -195,6 +201,8 @@ def load_surveys():
     df_survey_dest = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia', table_name='survey_email_dest')[
         'table']
+    # filtrar fl_ativo true
+    df_survey_dest = df_survey_dest.loc[df_survey_dest['fl_ativo']]
     df_survey_cart = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
                                           table_name='survey_nascer_legal_cart_3')['table'].fillna(value='')
