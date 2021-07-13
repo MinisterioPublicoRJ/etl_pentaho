@@ -122,35 +122,22 @@ class Survey:
         mail_from = configs.settings.MAIL_SENDER
         email_subject = 'Survey estabelecimento: %s respondente: %s data da resposta: %s' % (
             self.estabelecimento.unidade, self.respondente, self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'))
-        perguntas_template = '''
-                                <br/> {pergunta}
-                            '''
-        respostas_template = '''
-                                <br/> Resposta:  {resposta}
-                                <br/><br/>
-                            '''
+        with open(configs.folders.CONFIG_DIR + 'template_email.html', mode='r', encoding='utf-8') as file:
+            template = file.readlines()
+        email_template = ''.join(template)
+        with open(configs.folders.CONFIG_DIR + 'template_pergunta.html', mode='r', encoding='utf-8') as file:
+            template = file.readlines()
+        perguntas_template = ''.join(template)
+        with open(configs.folders.CONFIG_DIR + 'template_resposta.html', mode='r', encoding='utf-8') as file:
+            template = file.readlines()
+        respostas_template = ''.join(template)
+
         perguntas = ''.join(
             [perguntas_template.format(pergunta=pergunta.desc_pergunta) +
              respostas_template.format(resposta=str(pergunta.resposta))
              for pergunta in self.questionario.perguntas.values()]
         )
-        email_body_html = '''
-                            <html>
-                              <head></head>
-                              <body>
-                                <p>
-                                    Estabelecimento: {estabelecimento} <br/>
-                                    <br/>
-                                    Respondente: {respondente} <br/>
-                                    <br/>
-                                    Data da resposta: {data_resposta} <br/>
-                                    <br/>
-                                    <p>{pergunstas_respostas}</p>
-                                    <br/>
-                                </p>
-                              </body>
-                            </html>
-                            '''.format(estabelecimento=self.estabelecimento.unidade, respondente=self.respondente,
+        email_body_html = email_template.format(estabelecimento=self.estabelecimento.unidade, respondente=self.respondente,
                                        data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'),
                                        pergunstas_respostas=perguntas)
         return Email(mail_from=mail_from, mail_to=email_to, mail_cc=email_cc, mail_bcc=email_bcc,
