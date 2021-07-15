@@ -1,0 +1,33 @@
+settings:
+ ETL_JOB : 'ANP_CARTEL'
+ LOG_FILE_NAME: 'ANP_CARTEL.log'
+ JDBC_PROPERTIES_FILE: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ ANP_FILES: {
+   'combustiveis_automotivos_segundo_semestre_2020': {
+   'url': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2020-02.csv',
+   'filtro': '',
+   'tipo': 'csv', 'encoding': 'utf8', 'header': 0, 'delimiter': ';' },
+   'precos_combustiveis_semanal_municipios_2021': {
+    'url': 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal/semanal-municipios-2021.xlsx',
+    'filtro': { 'estado': [ 'RIO DE JANEIRO' ],
+                'produto': [ 'GASOLINA COMUM', ETANOL HIDRATADO ] },
+     'tipo': 'xlsx', 'encoding': '', 'header': 11, 'delimiter': '' }
+ }
+settings_prod:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+settings_dsv:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+folders:
+ ETL_DIR: ../
+ CONFIG_DIR: ../etc/
+ LOG_DIR: ../var/log/
+ ENTRADA_DIR: ../var/tmp/entrada/
+ DOWNLOAD_DIR: ../var/tmp/download/
+ SAIDA_DIR: ../var/tmp/saida/
+ PYTHON_SCRIPT_DIR: ../python/
+ R_SCRIPT_DIR: ../script_R/
+ TEMP_DIR: ../var/tmp/
