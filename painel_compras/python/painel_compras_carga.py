@@ -32,6 +32,23 @@ def safe_column_string_to_float(dataframe, column_name):
             dataframe[column_name]]
 
 
+def carga_dominio(conn, schema, table, df, server_encoding):
+    result_df = df.loc[:, ['id_' + table, table]].drop_duplicates().reset_index(drop=True).sort_values(
+        by=['id_' + table, table], axis=0, ascending=True)
+    list_flds = result_df.columns.values
+    trunc_sql = "TRUNCATE TABLE %s.%s CONTINUE IDENTITY CASCADE" % (schema, table)
+    conn.execute_select(trunc_sql, result_mode=None)
+    insert_sql, insert_template = conn.insert_values_sql(schema_name=schema,
+                                                         table_name=table,
+                                                         list_flds=list_flds,
+                                                         unique_field='id_' + table,
+                                                         pk_field='id')
+    conn.execute_values_insert(sql=insert_sql,
+                               template=insert_template,
+                               df_values_to_execute=result_df,
+                               fetch=True, server_encoding=server_encoding)
+
+
 def carga_painel_comprasrj():
     logger.info('carga_painel_comprasrj...')
     """
@@ -177,6 +194,13 @@ def carga_painel_comprasrj():
                                          template=insert_template_catalogo,
                                          df_values_to_execute=result_df_catalogo,
                                          fetch=True, server_encoding=server_encoding)
+
+        carga_dominio(conn=db_opengeo, schema='comprasrj', table='familia', df=result_df_catalogo,
+                      server_encoding=server_encoding)
+        carga_dominio(conn=db_opengeo, schema='comprasrj', table='classe', df=result_df_catalogo,
+                      server_encoding=server_encoding)
+        carga_dominio(conn=db_opengeo, schema='comprasrj', table='artigo', df=result_df_catalogo,
+                      server_encoding=server_encoding)
 
     if isinstance(result_df_item_contrato, pd.DataFrame) and not result_df_item_contrato.empty:
         # carga item_contrato
