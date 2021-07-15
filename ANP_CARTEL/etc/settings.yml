@@ -3,16 +3,35 @@ settings:
  LOG_FILE_NAME: 'ANP_CARTEL.log'
  JDBC_PROPERTIES_FILE: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
  ANP_FILES: {
-   'combustiveis_automotivos_segundo_semestre_2020': {
-   'url': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2020-02.csv',
-   'filtro': '',
-   'tipo': 'csv', 'encoding': 'utf8', 'header': 0, 'delimiter': ';' },
-   'precos_combustiveis_semanal_municipios_2021': {
-    'url': 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal/semanal-municipios-2021.xlsx',
-    'filtro': { 'estado': [ 'RIO DE JANEIRO' ],
-                'produto': [ 'GASOLINA COMUM', ETANOL HIDRATADO ] },
-     'tipo': 'xlsx', 'encoding': '', 'header': 11, 'delimiter': '' }
- }
+   'historico_preco_postos': {
+     'url':
+       [
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2020-01.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2020-02.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2019-01.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2019-02.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2018-01.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsas/ca/ca-2018-02.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsan/2021/dados-abertos-precos-2021-01-gasolina-etanol.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsan/2021/2021-02-gasolina-etanol.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsan/2021/2021-03-gasolina-etanol.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsan/2021/2021-04-gasolina-etanol.csv',
+           'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/arquivos/shpc/dsan/2021/2021-05-gasolina-etanol-1.csv'
+       ],
+     'filtro': { 'estado_sigla': [ 'RJ' ],
+                 'produto': [ 'GASOLINA', 'ETANOL' ] },
+     'tipo': 'csv', 'encoding': 'utf8', 'header': 0, 'delimiter': ';' },
+     'semanal_municipio': {
+       'url': ['https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal/semanal-municipios-2021-1.xlsx'],
+       'filtro': { 'estado': [ 'RIO DE JANEIRO' ],
+                   'produto': [ 'GASOLINA COMUM', 'ETANOL HIDRATADO' ] },
+       'tipo': 'xlsx', 'encoding': '', 'header': 11, 'delimiter': '' },
+     'precos_distribuicao': {
+       'url': ['https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/pdc/semanal/semanal-municipios-desde-ago2020-liquidos-22-06-21.xlsx'],
+       'filtro': { 'estado': [ 'RIO DE JANEIRO' ],
+                   'produto': [ 'GASOLINA C COMUM', 'ETANOL HIDRATADO COMUM' ] },
+       'tipo': 'xlsx', 'encoding': '', 'header': 8, 'delimiter': '' }
+   }
 settings_prod:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'

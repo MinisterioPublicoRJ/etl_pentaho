@@ -119,20 +119,20 @@ def anp_download():
     anp_files = configs.settings.ANP_FILES
     for anp_file_name in anp_files:
         Path(configs.folders.DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
-        new_file = download_file(urlstr=anp_files[anp_file_name]['url'], file_path=configs.folders.DOWNLOAD_DIR,
+        for url in anp_files[anp_file_name]['url']:
+            new_file = download_file(urlstr=url, file_path=configs.folders.DOWNLOAD_DIR,
                                  file_nam=anp_file_name + '.' + anp_files[anp_file_name]['tipo'],
                                  last_date_to_check=max_dt_extracao, mode='wb')
-        if new_file:
-            result_new_data = new_file
-            df = read_file(configs.folders.DOWNLOAD_DIR, anp_file_name, anp_files[anp_file_name]['tipo'],
-                           header=anp_files[anp_file_name]['header'], encoding=anp_files[anp_file_name]['encoding'],
-                           delimiter=anp_files[anp_file_name]['delimiter'])
-            if anp_files[anp_file_name]['filtro']:
-                for filtro_key in anp_files[anp_file_name]['filtro']:
-                    df = df[df[filtro_key].isin(anp_files[anp_file_name]['filtro'][filtro_key])]
-            anp_carga(df_carga=df, file_name=anp_file_name)
-
-    erase_dir(file_path=configs.folders.DOWNLOAD_DIR)
+            if new_file:
+                result_new_data = new_file
+                df = read_file(configs.folders.DOWNLOAD_DIR, anp_file_name, anp_files[anp_file_name]['tipo'],
+                               header=anp_files[anp_file_name]['header'], encoding=anp_files[anp_file_name]['encoding'],
+                               delimiter=anp_files[anp_file_name]['delimiter'])
+                if anp_files[anp_file_name]['filtro']:
+                    for filtro_key in anp_files[anp_file_name]['filtro']:
+                        df = df[df[filtro_key].isin(anp_files[anp_file_name]['filtro'][filtro_key])]
+                anp_carga(df_carga=df, file_name=anp_file_name)
+            erase_dir(file_path=configs.folders.DOWNLOAD_DIR)
     logger.warning('Finish ANP downloads...')
     return result_new_data
 
