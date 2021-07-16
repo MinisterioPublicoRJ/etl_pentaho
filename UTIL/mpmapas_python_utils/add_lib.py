@@ -2,28 +2,45 @@ import logging
 import os
 
 import mpmapas_commons as commons
+from mpmapas_exceptions import MPMapasException
 import mpmapas_logger
 
 os.environ["NLS_LANG"] = ".UTF8"
 
-configs: commons.Configs = commons.read_config('./etc/settings.yml')  # commons.Configs
-mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
-# logger = logging.getLogger(__name__)
-logger: logging.Logger = logging.getLogger('add_lib')  # logging.Logger
-logger.warning('Starting add_lib.')
 
-try:
-    FIND_MY_PACKAGES = """
-    import site
-    site.addsitedir(r'%s')
-    """ % configs.settings.MPMAPAS_PYTHON_UTILS
+def main():
+    try:
+        logger.info('Starting %s.' % configs.settings.ETL_JOB)
 
-    filename = os.path.join(configs.settings.PYTHON_SITE_PACKAGES, configs.settings.SITE_CUSTOM_FILE)
+        find_my_packages = """
+import site
+site.addsitedir(r'%s')
+        """ % configs.settings.MPMAPAS_PYTHON_UTILS
 
-    with open(filename, 'w') as outfile:
-        print(FIND_MY_PACKAGES, file=outfile)
-except Exception as err:
-    logger.exception('Error in add_lib')
-    exit(err)
+        filename = os.path.join(configs.settings.PYTHON_SITE_PACKAGES, configs.settings.SITE_CUSTOM_FILE)
 
-logger.warning('Finishing add_lib.')
+        with open(filename, 'w') as outfile:
+            print(find_my_packages, file=outfile)
+
+    except MPMapasException as c_err:
+        logger.exception(c_err)
+        exit(c_err.msg)
+    except Exception as c_err:
+        logger.exception('Fatal error in main')
+        exit(c_err)
+    finally:
+        logger.info('Finishing %s.' % configs.settings.ETL_JOB)
+
+
+global configs, logger
+
+if __name__ == '__main__':
+    try:
+        configs = commons.read_config('./etc/settings.yml')
+        mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
+        logger = logging.getLogger(configs.settings.ETL_JOB)
+
+        main()
+    except Exception as excpt:
+        logging.exception('Fatal error in %s' % __name__)
+        exit(excpt)

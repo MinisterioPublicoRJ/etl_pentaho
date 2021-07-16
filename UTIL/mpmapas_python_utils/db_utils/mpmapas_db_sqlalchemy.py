@@ -5,6 +5,7 @@ import os
 
 import pandas as pd
 import sqlalchemy
+from sqlalchemy.pool import NullPool
 
 os.environ["NLS_LANG"] = ".UTF8"
 logging = logging.getLogger('mpmapas_db_sqlalchemy')
@@ -21,9 +22,9 @@ class SqlalchemyDB:
         self.simple_jdbc = simple_jdbc
         self.engine = None
 
-    def create_engine(self, client_encoding='utf8'):
+    def create_engine(self, echo=True, client_encoding='utf8'):
         dbapi = None
-        if self.simple_jdbc.sgbd in ('postgresql'):
+        if self.simple_jdbc.sgbd in 'postgresql':
             dbapi = 'psycopg2'
         url_string = "{}+{}://{}:{}@{}:{}/{}".format(
             self.simple_jdbc.sgbd,
@@ -34,12 +35,13 @@ class SqlalchemyDB:
             self.simple_jdbc.port,
             self.simple_jdbc.database
         )
-        self.engine = sqlalchemy.create_engine(url=url_string, echo=True, future=True, client_encoding=client_encoding)
+        self.engine = sqlalchemy.create_engine(url=url_string, echo=echo, future=True, client_encoding=client_encoding,
+                                               poolclass=NullPool)
 
     def execute_bulk_insert_df(self, df, schema_name, table_name, encoding='‘utf-8', quoting=csv.QUOTE_ALL,
                                quotechar='"'):
         self.create_engine()
-        retorno = ''  # TODO: Gabriel, variable is unused!
+        retorno = ''
 
         raw_conn = self.engine.raw_connection()
         cursor = raw_conn.cursor()
@@ -56,4 +58,10 @@ class SqlalchemyDB:
                          columns=df_columns)
         raw_conn.commit()
         cursor.close()
-        return retorno  # TODO: Gabriel, variable is unused!
+        return retorno
+
+    def df_insert(self, df, schema_name, table_name, if_exists='append', index=False, index_label=None, chunksize=None,
+                  dtype=None, method=None, echo=True):
+        self.create_engine(echo=echo)
+        df.to_sql(table_name, con=self.engine, schema=schema_name, if_exists=if_exists, index=index,
+                  index_label=index_label, chunksize=chunksize, dtype=dtype, method=method)

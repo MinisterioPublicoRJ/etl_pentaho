@@ -1,14 +1,19 @@
-# -*- coding: utf-8 -*-
+import logging
 import os
-import csv
-import pandas as pd
-# import numpy as np
-# # -*- add python_utils to pythonpath commons -*- #
-# import sys
-# sys.path.append('E:/pentaho/etl/UTIL/python_utils/')
-# import commons
-# # -*- -------------------------------------- -*- #
+import unicodedata
+from datetime import datetime, timezone
+from pathlib import Path
+
 import mpmapas_commons as commons
+import mpmapas_logger
+import pandas as pd
+import requests
+import unidecode
+from mpmapas_exceptions import MPMapasException
+
+os.environ["NLS_LANG"] = ".UTF8"
+dt_now = datetime.now(timezone.utc)
+dict_last_modified_date: dict = {}  # dict
 
 
 def ascii_normalizer(text):
@@ -22,96 +27,140 @@ def ascii_normalizer(text):
     return text
 
 
-def download_file(urlstr, file_nam, mode='wb'):
-    import urllib.request
-    import shutil
-    try:
-        print('Starting download ... ' + file_nam + ' !')
-        with urllib.request.urlopen(urlstr) as response, open(file=file_nam, mode=mode) as out_file:
-            shutil.copyfileobj(response, out_file)
-            #meta = response.info()
-            #print(meta)
-    except urllib.error.HTTPError:
-        print('HTTP Error 404: URL Not Found: ' + urlstr)
-        raise Exception('HTTP Error 404')
-    #except:
-        #print("An exception occurred")
+def normalize_text(text):
+    if text and type(text) == str:
+        remove_chars = '.,;:!?@#$%&*/\\<>(){}[]~^´`¨-+°ºª¹²³£¢¬\'\"'
+        text = text.translate(str.maketrans('', '', remove_chars)).replace('.csv', '')
+        text = unicodedata.normalize(u'NFKD', text).encode('ascii', 'ignore').decode('utf8')
+        text = ''.join(ch for ch in unicodedata.normalize('NFKD', text) if not unicodedata.combining(ch))
+        text = unidecode.unidecode(text.strip().strip(remove_chars).strip())
+    return text
 
 
-def gravar_saida(df, file_pat, sep=';', decimal=',', na_rep='', quoting=csv.QUOTE_ALL, quotechar='"', encoding='utf-8'):
-    print('Gravando arquivo: ' + file_pat + ' ....')
-    df.to_csv(path_or_buf=file_pat, sep=sep, decimal=decimal, na_rep=na_rep, quoting=quoting, quotechar=quotechar, encoding=encoding)
+def normalize_table_name(text):
+    if text and type(text) == str:
+        text = str.lower(text)
+        text = normalize_text(text)
+    return text
 
 
-def read_file(csvs_columns, csvs, file_nam, file_extension, header=0, delimiter='\t'):
+def normalize_column_name(text):
+    if text and type(text) == str:
+        text = str.lower(text)
+        text = normalize_text(text)
+        text = text.replace(' ', '_')
+    return text
+
+
+def erase_dir(file_path):
+    logger.info('erasing dir: %s !' % file_path)
+    [file.unlink() for file in Path(file_path).glob("*") if file.is_file()]
+
+
+def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
+    logger.info('downloading url: %s !' % urlstr)
+    erase_dir(file_path)
+    req = requests.get(urlstr)
+    with open(file_path + file_nam, mode) as file:
+        file.write(req.content)
+        return_new_file = True
+    logger.info('file saved at %s !' % file_nam)
+    return return_new_file
+
+
+def truncate_table(schema, table):
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
+    trunc_table_sql = "TRUNCATE TABLE %s.%s CONTINUE IDENTITY CASCADE" % (schema, table)
+    db_opengeo.execute_select(trunc_table_sql, result_mode=None)
+
+
+def read_file(file_dir, file_nam, file_extension, header=0, encoding=None, delimiter=None):
     print('Lendo aquivo: ' + file_nam + file_extension + ' ....')
-    if file_extension == '.xlsx':
-        csvs[file_nam] = pd.read_excel(os.path.abspath(configs.folders.ENTRADA_DIR + file_nam + file_extension), na_values='-', keep_default_na=True, sheet_name=0, header=header).rename(ascii_normalizer, axis='columns')
-        csvs_columns[file_nam] = pd.Series(csvs[file_nam].columns.values)
-    elif file_extension == '.csv':
-        file_pat = os.path.abspath(configs.folders.ENTRADA_DIR + file_nam + file_extension)
-        file_encoding = commons.detect_encoding(file_pat)
-        delimiter = commons.detect_delimiter(file_pat, file_encoding)
-        csvs[file_nam] = pd.read_csv(filepath_or_buffer=file_pat, header=0, delimiter=delimiter, encoding=file_encoding, na_values='-', keep_default_na=True, dayfirst=True, decimal=',').rename(ascii_normalizer, axis='columns')
-        csvs_columns[file_nam] = pd.Series(csvs[file_nam].columns.values[0].split(';'))
-    return csvs, csvs_columns
+    # delimiter = '\t'
+    df_result = pd.DataFrame
+    if str.lower(file_extension) == 'xlsx':
+        df_result = pd.read_excel(os.path.abspath(file_dir + file_nam + '.' + file_extension), na_values='-',
+                                  keep_default_na=True, sheet_name=0, header=header).rename(ascii_normalizer,
+                                                                                            axis='columns')
+        for col in df_result.columns.values:
+            if 'unnamed' in col:
+                df_result = df_result.drop([col], axis='columns')
+    elif str.lower(file_extension) == 'csv':
+        file_pat = os.path.abspath(file_dir + file_nam + '.' + file_extension)
+        if not encoding:
+            encoding = commons.detect_encoding(file_pat)
+        if not delimiter:
+            delimiter = commons.detect_delimiter(file_pat, encoding)
+        df_result = pd.read_csv(filepath_or_buffer=file_pat, header=0, delimiter=delimiter, encoding=encoding,
+                                na_values='-', keep_default_na=True, dayfirst=True, decimal=',').rename(
+            ascii_normalizer, axis='columns')
+    return df_result
 
+
+def anp_carga(df_carga, file_name):
+    logger.warning('Start ANP carga file: %s...', file_name)
+    """
+        Import csv da ANP:
+        importar os csvs baixados da ANP para as suas respectivas tabelas 
+    """
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME],
+                                      api='sqlalchemy')
+    if isinstance(df_carga, pd.DataFrame) and not df_carga.empty:
+        df_carga['dt_ult_atualiz'] = dt_now
+        db_opengeo.df_insert(df=df_carga, schema_name='anp', table_name=file_name, if_exists='append', chunksize=1000,
+                             method='multi', echo=False)
+        logger.warning('Finish ANP carga...')
+
+
+def anp_download():
+    logger.warning('Start ANP downloads...')
+    result_new_data = False
+    max_dt_extracao = None
+    anp_files = configs.settings.ANP_FILES
+    for anp_file_name in anp_files:
+        Path(configs.folders.DOWNLOAD_DIR).mkdir(parents=True, exist_ok=True)
+        for url in anp_files[anp_file_name]['url']:
+            new_file = download_file(urlstr=url, file_path=configs.folders.DOWNLOAD_DIR,
+                                 file_nam=anp_file_name + '.' + anp_files[anp_file_name]['tipo'],
+                                 last_date_to_check=max_dt_extracao, mode='wb')
+            if new_file:
+                result_new_data = new_file
+                df = read_file(configs.folders.DOWNLOAD_DIR, anp_file_name, anp_files[anp_file_name]['tipo'],
+                               header=anp_files[anp_file_name]['header'], encoding=anp_files[anp_file_name]['encoding'],
+                               delimiter=anp_files[anp_file_name]['delimiter'])
+                if anp_files[anp_file_name]['filtro']:
+                    for filtro_key in anp_files[anp_file_name]['filtro']:
+                        df = df[df[filtro_key].isin(anp_files[anp_file_name]['filtro'][filtro_key])]
+                anp_carga(df_carga=df, file_name=anp_file_name)
+            erase_dir(file_path=configs.folders.DOWNLOAD_DIR)
+    logger.warning('Finish ANP downloads...')
+    return result_new_data
+
+
+def main():
+    try:
+        logger.info('Starting %s.' % configs.settings.ETL_JOB)
+        anp_download()
+
+    except MPMapasException as c_err:
+        logger.exception(c_err)
+        exit(c_err.msg)
+    except Exception as c_err:
+        logger.exception('Fatal error in main')
+        exit(c_err)
+    finally:
+        logger.info('Finishing %s.' % configs.settings.ETL_JOB)
+
+
+global configs, logger
 
 if __name__ == '__main__':
-    configs = commons.read_config('./configs/settings.yml')
-    print('Start --> '+configs.settings.ETL_JOB)
-    print('banco: ' + configs.settings.JDBC_PROPERTIES['mpmapas_geo'].jndi_name + ' - ' + configs.settings.JDBC_PROPERTIES['mpmapas_geo'].user)
-    print('Python DIR --> ' + configs.folders.PYTHON_SCRIPT_DIR)
-    print('Entrada DIR --> ' + configs.folders.ENTRADA_DIR)
+    try:
+        configs = commons.read_config('../etc/settings.yml')
+        mpmapas_logger.Logger.config_logger(configs, logghandler_file=True)
+        logger = logging.getLogger(configs.settings.ETL_JOB)
 
-    database = commons.get_database(configs.settings.JDBC_PROPERTIES['mpmapas_geo'])
-    print(database.bdtype)
-    print(database.simple_jdbc.hostname)
-    #result = database.execute_sql('select * from anp.historico_preco_postos')
-    list_flds = ['regiao_sigla', 'estado_sigla', 'municipio', 'revenda', 'cnpj_da_revenda', 'produto', 'data_da_coleta', 'valor_de_venda', 'valor_de_compra', 'unidade_de_medida', 'bandeira']
-    select_sql = database.select_sql('anp', 'historico_preco_postos', list_flds, '')
-    result = database.execute_sql(select_sql, result_mode='all')
-    result_df = pd.DataFrame(result, columns=list_flds)
-    print('-----------')
-    print(result_df)
-
-    # old_links
-    # file_urls = {'semanal_municipios_2021.xlsx': 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal-municipios-2021.xlsx',
-    #                 'semanal_municipios_desde_ago2020_liquidos.xlsx': 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/pdc/semanal-municipios-desde-ago2020-liquidos.xlsx',
-    #                 'precos_semanais_ultimas_4_semanas_diesel_gnv.csv': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/da/shpc/precos-semanais-ultimas-4-semanas-diesel-gnv.csv',
-    #                 'precos_semanais_ultimas_4_semanas_gasolina_etanol.csv': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/da/shpc/precos-semanais-ultimas-4-semanas-gasolina-etanol.csv',
-    #                 'precos_semanais_ultimas_4_semanas_glp.csv': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/da/shpc/precos-semanais-ultimas-4-semanas-glp.csv'
-    #              }
-
-    file_urls = {'semanal_municipios_2021.xlsx': 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis/shlp/semanal-municipios-2021.xlsx',
-                    'semanal_municipios_desde_ago2020_liquidos.xlsx': 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/pdc/semanal-municipios-desde-ago2020-liquidos.xlsx',
-                    'precos_semanais_ultimas_4_semanas_diesel_gnv.csv': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/da/shpc/qus/ultimas-4-semanas-diesel-gnv.csv',
-                    'precos_semanais_ultimas_4_semanas_gasolina_etanol.csv': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/da/shpc/qus/ultimas-4-semanas-gasolina-etanol.csv',
-                    'precos_semanais_ultimas_4_semanas_glp.csv': 'https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/da/shpc/qus/ultimas-4-semanas-glp.csv'
-                 }
-
-    # Download csvs
-    # for file_name, url in file_urls.items():
-    #     print('Downloading '+file_name+' ....')
-    #     download_file(url, configs.folders.ENTRADA_DIR + file_name)
-
-    # Read csvs
-    dict_csvs_columns = {}
-    dict_csvs = {}
-    read_file(dict_csvs_columns, dict_csvs, 'semanal_municipios_2021', '.xlsx', 11)
-    read_file(dict_csvs_columns, dict_csvs, 'semanal_municipios_desde_ago2020_liquidos', '.xlsx', 8)
-    read_file(dict_csvs_columns, dict_csvs, 'precos_semanais_ultimas_4_semanas_diesel_gnv', '.csv')
-    read_file(dict_csvs_columns, dict_csvs, 'precos_semanais_ultimas_4_semanas_gasolina_etanol', '.csv')
-    read_file(dict_csvs_columns, dict_csvs, 'precos_semanais_ultimas_4_semanas_glp', '.csv')
-
-    # Gravar csvs
-    for name, df_csv in dict_csvs.items():
-        file_path = os.path.abspath(configs.folders.SAIDA_DIR + name + '.csv')
-        gravar_saida(df_csv, file_path)
-
-    # Gravar csv df_columns
-    df_columns = pd.DataFrame.from_dict(dict_csvs_columns, orient='index')
-    df_columns = df_columns.transpose()
-    gravar_saida(pd.DataFrame.from_dict(df_columns), os.path.abspath(configs.folders.SAIDA_DIR + 'df_csvs_columns.csv'))
-
-    print('End --> ' + configs.settings.ETL_JOB)
+        main()
+    except Exception as excpt:
+        logging.exception('Fatal error in %s' % __name__)
+        exit(excpt)

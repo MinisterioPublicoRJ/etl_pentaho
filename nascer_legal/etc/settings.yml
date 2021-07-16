@@ -1,0 +1,28 @@
+settings:
+ ETL_JOB : 'nascer_legal'
+ LOG_FILE_NAME: 'nascer_legal.log'
+ JDBC_PROPERTIES_FILE: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ MAIL_SMTP_SERVER: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ MAIL_SMTP_PORT: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ MAIL_SENDER: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ MAIL_REPLY_TO: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ DB_GISDB_DS_NAME: 'gisdb_assistencia'
+ DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+settings_prod:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ MAIL_TO: False
+settings_dsv:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ MAIL_TO: False
+folders:
+ ETL_DIR: ../
+ CONFIG_DIR: ../etc/
+ LOG_DIR: ../var/log/
+ ENTRADA_DIR: ../var/tmp/entrada/
+ DOWNLOAD_DIR: ../var/tmp/download/
+ SAIDA_DIR: ../var/tmp/saida/
+ PYTHON_SCRIPT_DIR: ../python/
+ R_SCRIPT_DIR: ../script_R/
+ TEMP_DIR: ../var/tmp/

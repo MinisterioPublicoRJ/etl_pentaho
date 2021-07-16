@@ -28,7 +28,13 @@ class Settings:
                 exec("self.%s = configs['%s']['%s']" % (config, settings_env, config))
         if 'settings' in configs:
             for config in configs['settings']:
-                exec("self.%s = configs['settings']['%s']" % (config, config))
+                if 'ETL_CLASSIFIED' in configs['settings'][config] and 'PROP_CLASSIFIED' in configs['settings'][config]:
+                    classified_prop: Properties = Properties()
+                    classified_prop.load(open(os.path.abspath(os.environ[configs['settings'][config][0]] +
+                                                              os.environ[configs['settings'][config][1]])))
+                    exec("self.%s = '%s'" % (config, classified_prop[config]))
+                else:
+                    exec("self.%s = configs['settings']['%s']" % (config, config))
             if ('JDBC_PROPERTIES_FILE' in configs['settings']) or (
                     settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]):
                 self.JDBC_PROPERTIES: dict = Configs.dict_jdbc(jdbcproperties)
@@ -129,11 +135,11 @@ def read_config(settings_path: str):
 
     if 'settings' in configs and 'JDBC_PROPERTIES_FILE' in configs['settings']:
         jdbc_prop.load(open(os.path.abspath(os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][0]] +
-                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
+                                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     elif settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]:
         jdbc_prop.load(open(os.path.abspath(os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][0]] +
-                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
+                                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     return Configs(configs, jdbcproperties, etl_env)
 
@@ -151,6 +157,7 @@ def normalize_text(text):
         text = ''.join(ch for ch in unicodedata.normalize('NFKD', text) if not unicodedata.combining(ch))
         text = unidecode.unidecode(text.strip().strip(remove_chars).strip())
     return text
+
 
 def normalize_str(text):
     if text and type(text) == str:
