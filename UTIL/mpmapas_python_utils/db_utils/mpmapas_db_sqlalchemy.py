@@ -1,10 +1,9 @@
-import csv
-import io
 import logging
 import os
 
-import pandas as pd
 import sqlalchemy
+from sqlalchemy import MetaData
+from sqlalchemy import text
 from sqlalchemy.pool import NullPool
 
 os.environ["NLS_LANG"] = ".UTF8"
@@ -21,6 +20,7 @@ class SqlalchemyDB:
         self.database = simple_jdbc.database
         self.simple_jdbc = simple_jdbc
         self.engine = None
+        self.conn = None
 
     def create_engine(self, echo=True, client_encoding='utf8'):
         dbapi = None
@@ -38,30 +38,18 @@ class SqlalchemyDB:
         self.engine = sqlalchemy.create_engine(url=url_string, echo=echo, future=True, client_encoding=client_encoding,
                                                poolclass=NullPool)
 
-    def execute_bulk_insert_df(self, df, schema_name, table_name, encoding='‘utf-8', quoting=csv.QUOTE_ALL,
-                               quotechar='"'):
-        self.create_engine()
-        retorno = ''
-
-        raw_conn = self.engine.raw_connection()
-        cursor = raw_conn.cursor()
-        output = io.StringIO()
-        # for columns with uppercase name
-
-        df_columns = pd.Series(df.columns.values.tolist()).apply(lambda x: '"' + x + '"').tolist()
-        df.to_csv(output, sep=';', header=False, index=False, encoding=encoding)
-        # jump to start of stream
-        output.seek(0)
-        contents = output.getvalue()
-        # null values become ''
-        cursor.copy_from(file=output, table=schema_name + '.' + table_name, sep=';', null="", size=8192,
-                         columns=df_columns)
-        raw_conn.commit()
-        cursor.close()
-        return retorno
-
     def df_insert(self, df, schema_name, table_name, if_exists='append', index=False, index_label=None, chunksize=None,
-                  dtype=None, method=None, echo=True):
+                  dtype=None, method=None, echo=True, datestyle=None):
         self.create_engine(echo=echo)
-        df.to_sql(table_name, con=self.engine, schema=schema_name, if_exists=if_exists, index=index,
-                  index_label=index_label, chunksize=chunksize, dtype=dtype, method=method)
+        with self.engine.connect() as conn:
+            if dtype and not isinstance(dtype, dict):
+                meta = MetaData()
+                meta.bind = self.engine
+                meta.schema = schema_name
+                meta.reflect()
+                datatable = meta.tables[schema_name + '.' + table_name]
+                dtype = {c.name: c.type for c in datatable.columns}
+            if datestyle:
+                conn.execute(text("SET DateStyle='{dstyle}'".format(dstyle=datestyle)))
+            df.to_sql(table_name, con=self.engine, schema=schema_name, if_exists=if_exists, index=index,
+                      index_label=index_label, chunksize=chunksize, dtype=dtype, method=method)

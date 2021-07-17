@@ -103,12 +103,12 @@ def anp_carga(df_carga, file_name):
         Import csv da ANP:
         importar os csvs baixados da ANP para as suas respectivas tabelas 
     """
-    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME],
-                                      api='sqlalchemy')
     if isinstance(df_carga, pd.DataFrame) and not df_carga.empty:
         df_carga['dt_ult_atualiz'] = dt_now
+        db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME],
+                                          api='sqlalchemy')
         db_opengeo.df_insert(df=df_carga, schema_name='anp', table_name=file_name, if_exists='append', chunksize=1000,
-                             method='multi', echo=False)
+                             method='multi', echo=False, dtype=True, datestyle='dmy')
         logger.warning('Finish ANP carga...')
 
 
