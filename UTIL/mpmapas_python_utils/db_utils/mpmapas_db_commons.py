@@ -30,7 +30,7 @@ def show_server_encoding(configs, jndi_name):
 
 
 def load_table(configs, jndi_name, schema_name, table_name, columns=None, convert_data_types=False, result_mode='all',
-               csv_source=None, csvEncoding=None, csvDelimiter=None):
+               csv_source=None, csvEncoding=None, csvDelimiter=None, csvDecimal=None):
     """
         carregar a base <schema_name>.<table_name>
     :param configs: configuracoes com as conexao de banco
@@ -43,6 +43,7 @@ def load_table(configs, jndi_name, schema_name, table_name, columns=None, conver
     :param csv_source:
     :param csvEncoding
     :param csvDelimiter
+    :param csvDecimal
     :return: dataframe da tabela <schema_name>.<table_name>
     """
     database = commons.get_database(configs.settings.JDBC_PROPERTIES[jndi_name], api=None)
@@ -57,7 +58,10 @@ def load_table(configs, jndi_name, schema_name, table_name, columns=None, conver
                     database.simple_jdbc.sgbd: dict(zip(df_fields['column_name'], df_fields['data_type']))}
 
     if csv_source:
-        df_table = commons.read_csv(file_csv=csv_source, encoding=csvEncoding, delimiter=csvDelimiter)
+        if csvDecimal:
+            df_table = commons.read_csv(file_csv=csv_source, encoding=csvEncoding, delimiter=csvDelimiter, decimal=csvDecimal)
+        else:
+            df_table = commons.read_csv(file_csv=csv_source, encoding=csvEncoding, delimiter=csvDelimiter)
     else:
         select_sql = database.select_sql(schema_name=df_fields['table_schema'][0],
                                          table_name=df_fields['table_name'][0], list_flds=df_fields['column_name'])
