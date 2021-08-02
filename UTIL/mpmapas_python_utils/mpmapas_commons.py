@@ -2,7 +2,7 @@ import codecs
 import csv
 import hashlib
 import logging
-import os
+import os, subprocess
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,7 +14,7 @@ import pandas as pd
 import unidecode
 import yaml
 from db_utils import mpmapas_db_commons
-from mpmapas_exceptions import MPMapasErrorEtlStillRunning
+from mpmapas_exceptions import MPMapasErrorEtlStillRunning, MPMapasErrorFileNotFound
 from pyjavaproperties import Properties
 
 os.environ["NLS_LANG"] = ".UTF8"
@@ -28,7 +28,13 @@ class Settings:
                 exec("self.%s = configs['%s']['%s']" % (config, settings_env, config))
         if 'settings' in configs:
             for config in configs['settings']:
-                exec("self.%s = configs['settings']['%s']" % (config, config))
+                if 'ETL_CLASSIFIED' in configs['settings'][config] and 'PROP_CLASSIFIED' in configs['settings'][config]:
+                    classified_prop: Properties = Properties()
+                    classified_prop.load(open(os.path.abspath(os.environ[configs['settings'][config][0]] +
+                                                              os.environ[configs['settings'][config][1]])))
+                    exec("self.%s = '%s'" % (config, classified_prop[config]))
+                else:
+                    exec("self.%s = configs['settings']['%s']" % (config, config))
             if ('JDBC_PROPERTIES_FILE' in configs['settings']) or (
                     settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]):
                 self.JDBC_PROPERTIES: dict = Configs.dict_jdbc(jdbcproperties)
@@ -137,12 +143,14 @@ def read_config(settings_path: str):
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     return Configs(configs, jdbcproperties, etl_env)
 
+
 # TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_table_name(text):
     if text and type(text) == str:
         text = str.lower(text)
         text = normalize_text(text)
     return text
+
 
 # TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_column_name(text):
@@ -371,6 +379,19 @@ def read_csv(file_csv, header=0, na_values='-', decimal='.', dayfirst=True, enco
     return df
 
 
-def gravar_saida(df, file_csv, sep=';', decimal='.', na_rep='', quoting=csv.QUOTE_ALL, quotechar='"', encoding='utf-8'):
+def gravar_saida(df, file_csv, sep=';', decimal='.', na_rep='', quoting=csv.QUOTE_ALL, header=True, index=False, quotechar='"', encoding='utf-8', delete_file_if_exist = True):
+    if delete_file_if_exist and os.path.isfile(file_csv):
+        os.remove(file_csv)
     df.to_csv(path_or_buf=file_csv, sep=sep, decimal=decimal, na_rep=na_rep, quoting=quoting, quotechar=quotechar,
-              encoding=encoding)
+              encoding=encoding, header=header, index=index )
+
+
+def execute_r_script(logger, configs, file_script_r, folder_name, list_param=[]):
+    complete_name_file_script_r = os.path.abspath(folder_name) + os.sep + file_script_r
+    if os.path.isfile(complete_name_file_script_r):
+        logger.info('Starting run script R  [%s].' % complete_name_file_script_r)
+        # TODO: pesquisar como passar parâmetro para script R usando list_param
+        subprocess.call(['R', 'CMD', 'BATCH', complete_name_file_script_r])
+        logger.info('Finish script R run...')
+    else:
+        raise MPMapasErrorFileNotFound(etl_name=configs.settings.ETL_JOB, error_name='Script R file not found', abs_path=folder_name, file_name=file_script_r)
