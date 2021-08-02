@@ -137,12 +137,23 @@ def read_config(settings_path: str):
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     return Configs(configs, jdbcproperties, etl_env)
 
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
+def normalize_table_name(text):
+    if text and type(text) == str:
+        text = str.lower(text)
+        text = normalize_text(text)
+    return text
 
-# def translate_str(text):
-#     if text and type(text) == str:
-#         text = text.replace('AQUISIAO', 'AQUISICAO')
-#     return text
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
+def normalize_column_name(text):
+    if text and type(text) == str:
+        text = str.lower(text)
+        text = normalize_text(text)
+        text = text.replace(' ', '_')
+    return text
 
+
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_text(text):
     if text and type(text) == str:
         remove_chars = '.,;:!?@#$%&*/\\<>(){}[]~^´`¨-+°ºª¹²³£¢¬\'\"'
@@ -152,6 +163,8 @@ def normalize_text(text):
         text = unidecode.unidecode(text.strip().strip(remove_chars).strip())
     return text
 
+
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_str(text):
     if text and type(text) == str:
         text = str.upper(text)
@@ -162,6 +175,7 @@ def normalize_str(text):
     return text
 
 
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def unaccent_df(df, col):
     # return df.apply(lambda x: translate_str(normalize_str(x[col])), axis=1)
     # return df.apply(lambda x: normalize_str(x[col]), axis=1)
