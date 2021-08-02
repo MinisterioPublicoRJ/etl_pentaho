@@ -2,7 +2,7 @@ import codecs
 import csv
 import hashlib
 import logging
-import os
+import os, subprocess
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,7 +14,7 @@ import pandas as pd
 import unidecode
 import yaml
 from db_utils import mpmapas_db_commons
-from mpmapas_exceptions import MPMapasErrorEtlStillRunning
+from mpmapas_exceptions import MPMapasErrorEtlStillRunning, MPMapasErrorFileNotFound
 from pyjavaproperties import Properties
 
 os.environ["NLS_LANG"] = ".UTF8"
@@ -135,20 +135,33 @@ def read_config(settings_path: str):
 
     if 'settings' in configs and 'JDBC_PROPERTIES_FILE' in configs['settings']:
         jdbc_prop.load(open(os.path.abspath(os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][0]] +
-                                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
+                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     elif settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]:
         jdbc_prop.load(open(os.path.abspath(os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][0]] +
-                                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
+                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     return Configs(configs, jdbcproperties, etl_env)
 
 
-# def translate_str(text):
-#     if text and type(text) == str:
-#         text = text.replace('AQUISIAO', 'AQUISICAO')
-#     return text
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
+def normalize_table_name(text):
+    if text and type(text) == str:
+        text = str.lower(text)
+        text = normalize_text(text)
+    return text
 
+
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
+def normalize_column_name(text):
+    if text and type(text) == str:
+        text = str.lower(text)
+        text = normalize_text(text)
+        text = text.replace(' ', '_')
+    return text
+
+
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
 def normalize_text(text):
     if text and type(text) == str:
         remove_chars = '.,;:!?@#$%&*/\\<>(){}[]~^´`¨-+°ºª¹²³£¢¬\'\"'
@@ -157,7 +170,6 @@ def normalize_text(text):
         text = ''.join(ch for ch in unicodedata.normalize('NFKD', text) if not unicodedata.combining(ch))
         text = unidecode.unidecode(text.strip().strip(remove_chars).strip())
     return text
-
 
 def normalize_str(text):
     if text and type(text) == str:
@@ -169,6 +181,7 @@ def normalize_str(text):
     return text
 
 
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
 def unaccent_df(df, col):
     # return df.apply(lambda x: translate_str(normalize_str(x[col])), axis=1)
     # return df.apply(lambda x: normalize_str(x[col]), axis=1)
@@ -364,6 +377,19 @@ def read_csv(file_csv, header=0, na_values='-', decimal='.', dayfirst=True, enco
     return df
 
 
-def gravar_saida(df, file_csv, sep=';', decimal='.', na_rep='', quoting=csv.QUOTE_ALL, quotechar='"', encoding='utf-8'):
+def gravar_saida(df, file_csv, sep=';', decimal='.', na_rep='', quoting=csv.QUOTE_ALL, header=True, index=False, quotechar='"', encoding='utf-8', delete_file_if_exist = True):
+    if delete_file_if_exist and os.path.isfile(file_csv):
+        os.remove(file_csv)
     df.to_csv(path_or_buf=file_csv, sep=sep, decimal=decimal, na_rep=na_rep, quoting=quoting, quotechar=quotechar,
-              encoding=encoding)
+              encoding=encoding, header=header, index=index )
+
+
+def execute_r_script(logger, configs, file_script_r, folder_name, list_param=[]):
+    complete_name_file_script_r = os.path.abspath(folder_name) + os.sep + file_script_r
+    if os.path.isfile(complete_name_file_script_r):
+        logger.info('Starting run script R  [%s].' % complete_name_file_script_r)
+        # TODO: pesquisar como passar parâmetro para script R usando list_param
+        subprocess.call(['R', 'CMD', 'BATCH', complete_name_file_script_r])
+        logger.info('Finish script R run...')
+    else:
+        raise MPMapasErrorFileNotFound(etl_name=configs.settings.ETL_JOB, error_name='Script R file not found', abs_path=folder_name, file_name=file_script_r)
