@@ -30,7 +30,7 @@ register_adapter(numpy.int64, addapt_numpy_int64)
 def export_table_to_csv(obj_jdbc, table_name,
                         file_name, folder_name, schema_name='comprasrj'):
     df_result = None
-    complete_file_name = folder_name + os.sep + file_name
+    complete_file_name = folder_name + file_name
     logger.info('Starting [%s] - export_table_to_csv.' % complete_file_name)
     dict_table = dbcommons.load_table(configs=configs, jndi_name=obj_jdbc.jndi_name, schema_name=schema_name,
                                       table_name=table_name, csvEncoding='UTF-8',
@@ -52,7 +52,7 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
                         datetime_field='dt_ult_atualiz',
                         unique_field='id', pk_field='id', raise_error_if_file_does_not_exist=True):
     folder_name = os.path.abspath(folder_name)
-    complete_file_name = folder_name + os.sep + file_name
+    complete_file_name = folder_name + file_name
 
     logger.info('Starting [%s] - import_csv_to_table.' % complete_file_name)
 
@@ -113,17 +113,17 @@ def main():
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_produtos',
                             file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
+                            df_chk_already_loaded=df_out_ah, unique_field='id',
                             raise_error_if_file_does_not_exist=False)
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
                             file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
+                            df_chk_already_loaded=df_out_ah, unique_field='id',
                             raise_error_if_file_does_not_exist=False)
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_avaliacao',
                             file_name='alertas_contratos_avaliacao.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
+                            df_chk_already_loaded=df_out_ah, unique_field='id',
                             raise_error_if_file_does_not_exist=False)
 
     except MPMapasDataBaseException as c_err:
