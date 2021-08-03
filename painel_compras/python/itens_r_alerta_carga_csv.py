@@ -31,7 +31,8 @@ register_adapter(numpy.int64, addapt_numpy_int64)
 def export_table_to_csv(obj_jdbc, table_name,
                         file_name, folder_name, schema_name='comprasrj'):
     df_result = None
-    complete_file_name = folder_name + file_name
+    folder_name = os.path.abspath(folder_name)
+    complete_file_name = folder_name + os.sep + file_name
     logger.info('Starting [%s] - export_table_to_csv.' % complete_file_name)
     dict_table = dbcommons.load_table(configs=configs, jndi_name=obj_jdbc.jndi_name, schema_name=schema_name,
                                       table_name=table_name, csvEncoding='UTF-8',
@@ -53,7 +54,7 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
                         datetime_field='dt_ult_atualiz',
                         unique_field='id', pk_field='id', raise_error_if_file_does_not_exist=True):
     folder_name = os.path.abspath(folder_name)
-    complete_file_name = folder_name + file_name
+    complete_file_name = folder_name + os.sep + file_name
 
     logger.info('Starting [%s] - import_csv_to_table.' % complete_file_name)
 
@@ -86,7 +87,7 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
                                                   template=insert_template_statement,
                                                   df_values_to_execute=df_insert, fetch=False,
                                                   server_encoding=server_encoding)
-        logger.info('Finishing [%s] - import_csv_to_table.' % complete_file_name)
+        logger.info('Finishing import [%s] to [%s.%s] - import_csv_to_table.' % (file_name, schema_name, table_name))
     else:
         logger.info('Finishing NOK [%s] - import_csv_to_table.' % complete_file_name)
         if raise_error_if_file_does_not_exist:
