@@ -115,17 +115,17 @@ def main():
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_produtos',
                             file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='id',
+                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
                             file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='id',
+                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_avaliacao',
                             file_name='alertas_contratos_avaliacao.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='id',
+                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
     except MPMapasDataBaseException as c_err:
