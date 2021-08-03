@@ -96,7 +96,8 @@ if __name__ == '__main__':
         for opt, arg in opts:
             if opt == '-h':
                 print('usage: ' + sys.argv[0] + ' [-r] --> to run painel_compras')
-                print('usage: ' + sys.argv[0] + ' [-t] --> to check diffent table data for gate or truncate tables from stage schema for siga')
+                print('usage: ' + sys.argv[
+                    0] + ' [-t] --> to check diffent table data for gate or truncate tables from stage schema for siga')
                 print('usage: ' + sys.argv[0] + ' [-c] --> to check diffent row count')
                 sys.exit()
             elif opt in ["-r"]:
