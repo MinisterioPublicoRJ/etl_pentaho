@@ -76,7 +76,7 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
             df[datetime_field] = dt_now
             list_fields = df.columns.values
             # vamos separar registros que não foram enviados ainda
-            df_insert = df.loc[~df[datetime_field].isin(df_chk_already_loaded[datetime_field])]
+            df_insert = df.loc[~df[checksum_column].isin(df_chk_already_loaded[checksum_column])]
             if len(df_insert) > 0:
                 insert_sql_statement, insert_template_statement = db.insert_values_sql(schema_name=schema_name,
                                                                                        table_name=table_name,
