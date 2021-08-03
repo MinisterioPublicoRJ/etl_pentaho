@@ -1,6 +1,7 @@
 import logging
-import os
-from datetime import datetime
+import os, subprocess
+import time
+from datetime import datetime, timezone
 
 import mpmapas_commons as commons
 import mpmapas_logger
@@ -8,7 +9,7 @@ import numpy
 import pandas as pd
 import urllib3
 from db_utils import mpmapas_db_commons as dbcommons
-from mpmapas_exceptions import MPMapasDataBaseException, MPMapasErrorFileNotFound, MPMapasException
+from mpmapas_exceptions import MPMapasErrorAccessingTable, MPMapasDataBaseException, MPMapasErrorFileNotFound, MPMapasException
 from psycopg2.extensions import register_adapter, AsIs
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
