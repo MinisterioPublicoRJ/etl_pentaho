@@ -21,10 +21,10 @@ setwd("E:/pentaho/etl/painel_compras/var/tmp/saida")
 # abrindo view de itens classificados pela equipe de Engenharia de Dados
 df <- read.csv2("itens_contratos_filtrados.csv", header = TRUE, sep = ';', encoding = 'UTF-8')
 
-# abrindo historico de alertas para ver contratacoes que j√° foram consideradas suspeitas
+# abrindo historico de alertas para ver contratacoes que j· foram consideradas suspeitas
 suspeitos <- read.csv2("alertas_historico.csv", header = TRUE, sep = ';', encoding = 'UTF-8')
 
-# ajustando nome das colunas para min√≠sculo
+# ajustando nome das colunas para minÌsculo
 colnames(df) <- str_to_lower(colnames(df))
 
 # selecionando colunas e colocando em ordem
@@ -51,22 +51,22 @@ df %<>% filter(tp_item == "produto")
 # Retirando linhas com valor do item 0
 df %<>% filter(vl_unit != 0.00)
 
-######################## Metodologia para analise de pre√ßos ###################
-# Considera contratos similares(an√°lise feito pelo id_item) dos √∫ltimos 180 dias
+######################## Metodologia para analise de preÁos ###################
+# Considera contratos similares(an·lise feito pelo id_item) dos ˙ltimos 180 dias
 # Primeiro passo: gerar analise
 # Segundo passso: gerar dados para alimentar tabela de alertas
-# Terceiro passo: chamar tabela de alertas para verificar contrata√ß√µes que foram alertas
-# Quarto passo: Para casos em que o pre√ßo m√≠nimo ja tenha sido um alerta separar em 3 tabelas
+# Terceiro passo: chamar tabela de alertas para verificar contrataÁıes que foram alertas
+# Quarto passo: Para casos em que o preÁo mÌnimo ja tenha sido um alerta separar em 3 tabelas
 
 
-#Filtrando para contratos dos √∫ltimos 180 dias
+#Filtrando para contratos dos ˙ltimos 180 dias
 df$dt_contratacao <- as.Date(df$dt_contratacao)
 ultimodia <- max(df$dt_contratacao)
 d180 <- ultimodia - 180 
 df %<>% filter(dt_contratacao<= ultimodia, dt_contratacao >= d180)
 
 
-#CALCULANDO M√âTRICAS ESTAT√çSTICAS PARA O ALERTA, SEGUNDO CADA ID_ITEM
+#CALCULANDO M…TRICAS ESTATÕSTICAS PARA O ALERTA, SEGUNDO CADA ID_ITEM
 
 df.summary <- df %>%
   
@@ -98,28 +98,28 @@ df.summary <- df %>%
 df = left_join(df, df.summary)
 
 ######################## JOIN tabela com suspeitos ################################
-# criar condi√ß√£o: se tabela suspeitos estiver vazia n√£o realizar join
+# criar condiÁ„o: se tabela suspeitos estiver vazia n„o realizar join
 
 
-# fazendo join para trazer coluna informando se contratacao j√° foi considerada suspeita
+# fazendo join para trazer coluna informando se contratacao j· foi considerada suspeita
 if(is_empty(suspeitos$contratacao) == 'FALSE'){
   
-  join <- suspeitos %>% select(contratacao, id_item, cpf_cnpj, alerta) %>% filter(alerta == "Pre√ßo Anormal")
+  join <- suspeitos %>% select(contratacao, id_item, cpf_cnpj, alerta) %>% filter(alerta == "PreÁo Anormal")
   colnames(join) <- c("contratacao", "id_item", "cpf_cnpj","suspeitos")
   df <- left_join(df,join, by = c("contratacao", "id_item", "cpf_cnpj"))
   
-  df %<>% mutate(preco_suspeito = ifelse(vl_unit == preco_minimo & suspeitos == "Pre√ßo Anormal",
-   "Avaliar contrata√ß√µes deste item","" ))
+  df %<>% mutate(preco_suspeito = ifelse(vl_unit == preco_minimo & suspeitos == "PreÁo Anormal",
+   "Avaliar contrataÁıes deste item","" ))
   
-  x <- ifelse("Avaliar contrata√ß√µes deste item" %in% df$preco_suspeito, 1, 0)
+  x <- ifelse("Avaliar contrataÁıes deste item" %in% df$preco_suspeito, 1, 0)
   if(x == 1 ){
-    tb_precos_alertas  <- df %>% filter(preco_suspeito == "Avaliar contrata√ß√µes deste item") %>%
+    tb_precos_alertas  <- df %>% filter(preco_suspeito == "Avaliar contrataÁıes deste item") %>%
       select(id_item,preco_suspeito)
     tb_precos_alertas <- distinct(tb_precos_alertas)
     tb <- df[,-35]
     tb_precos_alertas <- left_join(tb,tb_precos_alertas, by = "id_item")
-    tb_precos_alertas %<>% filter(preco_suspeito == "Avaliar contrata√ß√µes deste item")
-    tb_precos_alertas %<>% mutate(periodo_analise = paste(d180,"at√©",ultimodia))
+    tb_precos_alertas %<>% filter(preco_suspeito == "Avaliar contrataÁıes deste item")
+    tb_precos_alertas %<>% mutate(periodo_analise = paste(d180,"atÈ",ultimodia))
     tb_precos_alertas %<>% select("contratacao",  "status",             "orgao",                "processo",         
                         "objeto",                 "tipo_aquisicao",     "criterio_julgamento",  "fornecedor",         
                         "cpf_cnpj",               "dt_contratacao",     "vl_estimado",          "vl_empenhado", 
@@ -139,10 +139,10 @@ if(is_empty(suspeitos$contratacao) == 'FALSE'){
 
 df %<>% dplyr::mutate(var_perc=round(((vl_unit/preco_minimo)-1)*100,2))
 
-df$alerta <- ifelse(df$var_perc >= 30 , "Pre√ßo Anormal", "")
+df$alerta <- ifelse(df$var_perc >= 30 , "PreÁo Anormal", "")
 
-df$mensagem <- ifelse(df$var_perc >= 30 , paste0("O valor unit√°rio deste item √© ", df$var_perc,
-                       "% maior que o menor pre√ßo!"), "")
+df$mensagem <- ifelse(df$var_perc >= 30 , paste0("O valor unit·rio deste item È ", df$var_perc,
+                       "% maior que o menor preÁo!"), "")
 
 df %<>% mutate(contrato_id_item = paste0(contratacao,"-",id_item))
 
@@ -156,7 +156,7 @@ rm(df.summary, join, suspeitos)
 
 # adicionar coluna de data
 
-df %<>% mutate(periodo_analise = paste(d180,"at√©",ultimodia))
+df %<>% mutate(periodo_analise = paste(d180,"atÈ",ultimodia))
 
 # selecionando colunas para a tabela final
 
@@ -181,7 +181,7 @@ write.csv2(df, "alertas_contratos_produtos.csv", row.names=F, fileEncoding = "UT
 
 ####################################### SALVANDO TABELA DE HISTORICO ###########################
 
-historico <- df %>% filter(alerta == "Pre√ßo Anormal")
+historico <- df %>% filter(alerta == "PreÁo Anormal")
 write.csv2(historico, "alertas_historico.csv", row.names=F, fileEncoding = "UTF-8", na="")
 
 #################### FIM DO SCRIPT ###############################################################
