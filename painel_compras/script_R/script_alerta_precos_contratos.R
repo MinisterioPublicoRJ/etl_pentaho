@@ -19,10 +19,10 @@ library(stringr)
 setwd("E:/pentaho/etl/painel_compras/var/tmp/saida")
 
 # abrindo view de itens classificados pela equipe de Engenharia de Dados
-df <- read.csv2("itens_contratos_filtrados.csv", header = TRUE, sep = ';', encoding = 'UTF-8')
+df <- read.csv2("itens_contratos_filtrados.csv", header = TRUE, sep = ';', dec = '.', encoding = 'UTF-8')
 
 # abrindo historico de alertas para ver contratacoes que já foram consideradas suspeitas
-suspeitos <- read.csv2("alertas_historico.csv", header = TRUE, sep = ';', encoding = 'UTF-8')
+suspeitos <- read.csv2("alertas_historico.csv", header = TRUE, sep = ';', dec = '.', encoding = 'UTF-8')
 
 # ajustando nome das colunas para minísculo
 colnames(df) <- str_to_lower(colnames(df))
@@ -128,7 +128,7 @@ if(is_empty(suspeitos$contratacao) == 'FALSE'){
                         "vl_unit_aditiv_supr",    "preco_minimo",       "preco_maximo",         "quartil_um",   
                         "quartil_dois",           "quartil_tres",       "n" , "preco_suspeito", "periodo_analise")
 
-    write.csv2(tb_precos_alertas, "alertas_contratos_avaliacao.csv", row.names=F, fileEncoding = "UTF-8", na="")
+    write.csv2(tb_precos_alertas, "alertas_contratos_avaliacao.csv", row.names=F, dec = '.', fileEncoding = "UTF-8", na="")
   }
 
 
@@ -176,13 +176,13 @@ df %<>% select("contratacao",           "status",            "orgao",           
                "alerta","mensagem",     "contrato_id_item",  "periodo_analise")
 
 
-write.csv2(df, "alertas_contratos_produtos.csv", row.names=F, fileEncoding = "UTF-8", na="")
+write.csv2(df, "alertas_contratos_produtos.csv", row.names=F, dec = '.', fileEncoding = "UTF-8", na="")
 
 
 ####################################### SALVANDO TABELA DE HISTORICO ###########################
 
 historico <- df %>% filter(alerta == "Preço Anormal")
-write.csv2(historico, "alertas_historico.csv", row.names=F, fileEncoding = "UTF-8", na="")
+write.csv2(historico, "alertas_historico.csv", row.names=F, dec = '.', fileEncoding = "UTF-8", na="")
 
 #################### FIM DO SCRIPT ###############################################################
 
