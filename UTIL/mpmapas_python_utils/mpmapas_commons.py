@@ -2,9 +2,7 @@ import codecs
 import csv
 import hashlib
 import logging
-import os
-import shlex
-import subprocess
+import os, subprocess
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,7 +14,7 @@ import pandas as pd
 import unidecode
 import yaml
 from db_utils import mpmapas_db_commons
-from mpmapas_exceptions import MPMapasExecSubProcessException, MPMapasErrorEtlStillRunning, MPMapasErrorFileNotFound
+from mpmapas_exceptions import MPMapasErrorEtlStillRunning, MPMapasErrorFileNotFound
 from pyjavaproperties import Properties
 
 os.environ["NLS_LANG"] = ".UTF8"
@@ -137,16 +135,16 @@ def read_config(settings_path: str):
 
     if 'settings' in configs and 'JDBC_PROPERTIES_FILE' in configs['settings']:
         jdbc_prop.load(open(os.path.abspath(os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][0]] +
-                                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
+                            os.environ[configs['settings']['JDBC_PROPERTIES_FILE'][1]])))
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     elif settings_env and settings_env in configs and 'JDBC_PROPERTIES_FILE' in configs[settings_env]:
         jdbc_prop.load(open(os.path.abspath(os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][0]] +
-                                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
+                            os.environ[configs[settings_env]['JDBC_PROPERTIES_FILE'][1]])))
         jdbcproperties.load(open(jdbc_prop['JDBC']))
     return Configs(configs, jdbcproperties, etl_env)
 
 
-# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_table_name(text):
     if text and type(text) == str:
         text = str.lower(text)
@@ -154,7 +152,7 @@ def normalize_table_name(text):
     return text
 
 
-# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_column_name(text):
     if text and type(text) == str:
         text = str.lower(text)
@@ -163,7 +161,7 @@ def normalize_column_name(text):
     return text
 
 
-# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_text(text):
     if text and type(text) == str:
         remove_chars = '.,;:!?@#$%&*/\\<>(){}[]~^´`¨-+°ºª¹²³£¢¬\'\"'
@@ -174,6 +172,7 @@ def normalize_text(text):
     return text
 
 
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def normalize_str(text):
     if text and type(text) == str:
         text = str.upper(text)
@@ -184,7 +183,7 @@ def normalize_str(text):
     return text
 
 
-# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui
+# TODO: pesquisar onde está em uso e colocar para usar apenas esses aqui 
 def unaccent_df(df, col):
     # return df.apply(lambda x: translate_str(normalize_str(x[col])), axis=1)
     # return df.apply(lambda x: normalize_str(x[col]), axis=1)
@@ -380,63 +379,19 @@ def read_csv(file_csv, header=0, na_values='-', decimal='.', dayfirst=True, enco
     return df
 
 
-def gravar_saida(df, file_csv, sep=';', decimal='.', na_rep='', quoting=csv.QUOTE_ALL, header=True, index=False,
-                 quotechar='"', encoding='utf-8', delete_file_if_exist=True):
+def gravar_saida(df, file_csv, sep=';', decimal='.', na_rep='', quoting=csv.QUOTE_ALL, header=True, index=False, quotechar='"', encoding='utf-8', delete_file_if_exist = True):
     if delete_file_if_exist and os.path.isfile(file_csv):
         os.remove(file_csv)
     df.to_csv(path_or_buf=file_csv, sep=sep, decimal=decimal, na_rep=na_rep, quoting=quoting, quotechar=quotechar,
-              encoding=encoding, header=header, index=index)
+              encoding=encoding, header=header, index=index )
 
 
-def exec_command_line(logger, configs, command_line, encoding='utf8'):
-    return exec_subprocess(logger=logger, configs=configs, args=shlex.split(command_line), encoding=encoding)
-
-
-def exec_subprocess(logger, configs, args, encoding='utf8'):
-    try:
-        with subprocess.Popen(
-                args,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                # stderr=subprocess.STDOUT,
-                # encoding=encoding,
-                shell=True
-        ) as proc:
-            process_output, process_err = proc.communicate()
-        return process_output, process_err
-    except subprocess.CalledProcessError as exception:
-        logger.info('Exception occured: ' + str(exception))
-        logger.info('Subprocess failed')
-        raise MPMapasExecSubProcessException(etl_name=configs.settings.ETL_JOB, error_name='CalledProcessError',
-                                             arg_list=args)
-    except OSError as exception:
-        logger.info('Exception occured: ' + str(exception))
-        logger.info('Subprocess failed')
-        raise MPMapasExecSubProcessException(etl_name=configs.settings.ETL_JOB, error_name='OSError',
-                                             arg_list=args)
-    except Exception as exception:
-        logger.info('Exception occured: ' + str(exception))
-        logger.info('Subprocess failed')
-        raise MPMapasExecSubProcessException(etl_name=configs.settings.ETL_JOB, error_name='Fatal Error',
-                                             arg_list=args)
-
-
-def execute_r_script(logger, configs, file_script_r, folder_name, list_param=[], encoding='utf8', logg_std=True):
+def execute_r_script(logger, configs, file_script_r, folder_name, list_param=[]):
     complete_name_file_script_r = os.path.abspath(folder_name) + os.sep + file_script_r
     if os.path.isfile(complete_name_file_script_r):
         logger.info('Starting run script R  [%s].' % complete_name_file_script_r)
-        process_output, process_err = exec_subprocess(logger=logger, configs=configs,
-                                                      args=['Rscript', '--vanilla', complete_name_file_script_r],
-                                                      encoding=encoding)
-        if logg_std and process_output:
-            logger.info('init process_output: ')
-            logger.info(process_output.decode(encoding))
-            logger.info('end process_output: ')
-        if logg_std and process_err:
-            logger.info('init process_err: ')
-            logger.info(process_err.decode(encoding))
-            logger.info('end process_err: ')
+        # TODO: pesquisar como passar parâmetro para script R usando list_param
+        subprocess.call(['R', 'CMD', 'BATCH', complete_name_file_script_r])
         logger.info('Finish script R run...')
     else:
-        raise MPMapasErrorFileNotFound(etl_name=configs.settings.ETL_JOB, error_name='Script R file not found',
-                                       abs_path=folder_name, file_name=file_script_r)
+        raise MPMapasErrorFileNotFound(etl_name=configs.settings.ETL_JOB, error_name='Script R file not found', abs_path=folder_name, file_name=file_script_r)

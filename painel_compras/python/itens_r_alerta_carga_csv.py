@@ -1,6 +1,7 @@
 import logging
-import os
-from datetime import datetime
+import os, subprocess
+import time
+from datetime import datetime, timezone
 
 import mpmapas_commons as commons
 import mpmapas_logger
@@ -8,7 +9,7 @@ import numpy
 import pandas as pd
 import urllib3
 from db_utils import mpmapas_db_commons as dbcommons
-from mpmapas_exceptions import MPMapasDataBaseException, MPMapasErrorFileNotFound, MPMapasException
+from mpmapas_exceptions import MPMapasErrorAccessingTable, MPMapasDataBaseException, MPMapasErrorFileNotFound, MPMapasException
 from psycopg2.extensions import register_adapter, AsIs
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -38,7 +39,7 @@ def export_table_to_csv(obj_jdbc, table_name,
                                       csvDelimiter=';', csvDecimal=',')
     df_result = dict_table['table']
     logger.info('Load table [%s] from schema [%s].' % (table_name, schema_name))
-    commons.gravar_saida(df_result, complete_file_name, delete_file_if_exist=False)
+    commons.gravar_saida(df_result, complete_file_name)
     if os.path.isfile(complete_file_name):
         print("Finishing OK output file [%s] - export_table_to_csv." % complete_file_name)
     else:
@@ -108,23 +109,23 @@ def main():
         file_script_r = 'script_alerta_precos_contratos.R'
         folder_name = configs.folders.R_SCRIPT_DIR
         commons.execute_r_script(logger=logger, configs=configs, file_script_r=file_script_r,
-                                 folder_name=folder_name, encoding='windows-1252', logg_std=True)
+                                 folder_name=folder_name)
 
         folder_name = configs.folders.SAIDA_DIR
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_produtos',
                             file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='id', pk_field='id',
+                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
                             file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='id', pk_field='id',
+                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_avaliacao',
                             file_name='alertas_contratos_avaliacao.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='id', pk_field='id',
+                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
     except MPMapasDataBaseException as c_err:
