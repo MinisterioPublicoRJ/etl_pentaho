@@ -10,6 +10,7 @@ from mpmapas_exceptions import MPMapasException
 
 import gate_check_base
 import itens_classificar
+import itens_r_alerta_carga_csv
 import painel_compras
 import painel_compras_carga
 import siga_download_carga
@@ -59,6 +60,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
             painel_compras_carga.main()
             painel_compras.main()
             itens_classificar.main()
+            itens_r_alerta_carga_csv.main()
         update_tables_dt_ult_ver_gate(configs)
     except MPMapasException as c_err:
         logger.exception(c_err)
@@ -94,7 +96,8 @@ if __name__ == '__main__':
         for opt, arg in opts:
             if opt == '-h':
                 print('usage: ' + sys.argv[0] + ' [-r] --> to run painel_compras')
-                print('usage: ' + sys.argv[0] + ' [-t] --> to check diffent table data for gate or truncate tables from stage schema for siga')
+                print('usage: ' + sys.argv[
+                    0] + ' [-t] --> to check diffent table data for gate or truncate tables from stage schema for siga')
                 print('usage: ' + sys.argv[0] + ' [-c] --> to check diffent row count')
                 sys.exit()
             elif opt in ["-r"]:
