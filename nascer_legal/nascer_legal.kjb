@@ -416,7 +416,7 @@ Ocorreu ERRO no JOB
       <add_date>N</add_date>
       <add_time>N</add_time>
       <insertScript>Y</insertScript>
-      <script>${PYTHON_DIR} nascer_legal.py</script>
+      <script>${PYTHON39_DIR} nascer_legal.py</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
