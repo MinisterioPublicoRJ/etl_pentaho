@@ -250,16 +250,16 @@ class PostgresqlDB:
                 )
         return select_list_sql
 
-    def load_table_info(self, schema_name, table_name):
+    def load_table_info(self, schema_name, table_name, column_list = ['table_schema', 'table_name', 'column_name', 'data_type',
+                                              'ordinal_position']):
         logging.debug('Function load_table_info abrindo conexao com o Postgresql.')
         connection = self.connect()
         try:
-            info_sql = "SELECT table_schema, table_name, column_name, data_type, ordinal_position FROM " \
-                       "information_schema.columns WHERE table_schema = \'" + schema_name + "\' and table_name = \'" + \
-                       table_name + "\' order by ordinal_position asc; "
+            info_sql = "SELECT %s FROM information_schema.columns " \
+                        "WHERE table_schema='%s' and table_name ='%s' order by ordinal_position asc; " %\
+                             (','.join(list(column_list)), schema_name, table_name)
             df_fields = pd.DataFrame(self.execute_select(info_sql, result_mode='all'),
-                                     columns=['table_schema', 'table_name', 'column_name', 'data_type',
-                                              'ordinal_position'])
+                                     columns=column_list)
             if not len(df_fields) > 0:
                 info_mview = "select ns.nspname as table_schema, cls.relname as table_name, " \
                              "attr.attname as column_name, trim(leading '_' from tp.typname) as data_type, " \
