@@ -1,0 +1,21 @@
+settings:
+ ETL_JOB : 'painel_rh'
+ LOG_FILE_NAME: 'painel_rh.log'
+ JDBC_PROPERTIES_FILE: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
+ DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+settings_prod:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+settings_dsv:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+folders:
+ ETL_DIR: ../
+ CONFIG_DIR: ../etc/
+ LOG_DIR: ../var/log/
+ ENTRADA_DIR: ../var/tmp/entrada/
+ DOWNLOAD_DIR: ../var/tmp/download/
+ SAIDA_DIR: ../var/tmp/saida/
+ PYTHON_SCRIPT_DIR: ../python/
+ R_SCRIPT_DIR: ../script_R/
+ TEMP_DIR: ../var/tmp/
