@@ -66,7 +66,6 @@ class Questionario:
     def ordenar_perguntas(self):
         self.perguntas = dict(sorted(self.perguntas.items(), key=lambda item: item[1].ordem_pergunta))
 
-
     @staticmethod
     def get_all_questionarios(df_surv: pd.DataFrame):
         dict_quests: dict[str: Questionario] = {}
@@ -143,9 +142,10 @@ class Survey:
              respostas_template.format(resposta=str(pergunta.resposta))
              for pergunta in self.questionario.perguntas.values()]
         )
-        email_body_html = email_template.format(estabelecimento=self.estabelecimento.unidade, respondente=self.respondente,
-                                       data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'),
-                                       pergunstas_respostas=perguntas)
+        email_body_html = email_template.format(estabelecimento=self.estabelecimento.unidade,
+                                                respondente=self.respondente,
+                                                data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'),
+                                                pergunstas_respostas=perguntas)
         return Email(mail_from=mail_from, mail_to=email_to, mail_cc=email_cc, mail_bcc=email_bcc,
                      mail_subject=email_subject, mail_body_html=email_body_html)
 
