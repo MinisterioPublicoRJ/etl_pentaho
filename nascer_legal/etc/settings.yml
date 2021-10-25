@@ -11,7 +11,7 @@ settings:
 settings_prod:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
- MAIL_TO: False
+ MAIL_TO: True
 settings_dsv:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'

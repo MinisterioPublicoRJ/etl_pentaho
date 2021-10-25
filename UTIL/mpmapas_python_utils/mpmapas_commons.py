@@ -28,7 +28,7 @@ class Settings:
                 exec("self.%s = configs['%s']['%s']" % (config, settings_env, config))
         if 'settings' in configs:
             for config in configs['settings']:
-                if isinstance(configs['settings'][config], str) and 'ETL_CLASSIFIED' in configs['settings'][config] and 'PROP_CLASSIFIED' in configs['settings'][config]:
+                if isinstance(configs['settings'][config], list) and 'ETL_CLASSIFIED' in configs['settings'][config] and 'PROP_CLASSIFIED' in configs['settings'][config]:
                     classified_prop: Properties = Properties()
                     classified_prop.load(open(os.path.abspath(os.environ[configs['settings'][config][0]] +
                                                               os.environ[configs['settings'][config][1]])))

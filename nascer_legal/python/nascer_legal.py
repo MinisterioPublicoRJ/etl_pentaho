@@ -120,7 +120,7 @@ class Survey:
         email_to = [dests.email for dests in self.estabelecimento.destinatarios if
                     configs.settings.MAIL_TO]
         email_cc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
-                    cc.codigo != 0 and configs.settings.MAIL_TO]
+                    cc.codigo == 999999 and configs.settings.MAIL_TO]
         email_bcc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
                      cc.codigo == 0]
         mail_from = configs.settings.MAIL_SENDER
@@ -156,13 +156,15 @@ class Survey:
         for index, row_survey in df_survey.iterrows():
             if 'det' in tipo_survey:
                 campo_codigo = 'detran'
+            elif 'cart' in tipo_survey:
+                campo_codigo = 'cartorio'
             else:
                 campo_codigo = 'cnes_estabelec'
-            if int(row_survey[campo_codigo]) in dict_est:
+            if ('det' in tipo_survey and str(row_survey[campo_codigo]) in dict_est) or \
+                    ('det' not in tipo_survey and int(row_survey[campo_codigo]) in dict_est):
                 estab = dict_est[int(row_survey[campo_codigo])]
                 estab_cods: list[int] = [int(row_survey[campo_codigo])]
                 if 'cart' in tipo_survey:
-                    estab_cods.append(int(row_survey['cartorio']))
                     data_resp = row_survey['data1']
                 else:
                     data_resp = row_survey['data_resp']
@@ -216,11 +218,11 @@ def load_surveys():
         configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
                                               table_name='survey_nascer_legal_emails_enviados')['table']
     # filtrar emails ja enviados
-    df_survey_hosp = df_survey_hosp[~df_survey_hosp['objectid'].isin(
+    df_survey_hosp = df_survey_hosp[~df_survey_hosp['id'].isin(
         df_survey_enviados.loc[df_survey_enviados['tp_survey'] == 'cnes']['id_survey'].values)]
-    df_survey_detran = df_survey_detran[~df_survey_detran['objectid'].isin(
+    df_survey_detran = df_survey_detran[~df_survey_detran['id'].isin(
         df_survey_enviados.loc[df_survey_enviados['tp_survey'] == 'det']['id_survey'].values)]
-    df_survey_cart = df_survey_cart[~df_survey_cart['objectid'].isin(
+    df_survey_cart = df_survey_cart[~df_survey_cart['id'].isin(
         df_survey_enviados.loc[df_survey_enviados['tp_survey'] == 'cart']['id_survey'].values)]
 
     list_surveys: list[Survey] = preencher_survey(df_survey_dest, df_survey_perguntas,
@@ -246,7 +248,7 @@ def send_emails(list_surveys: list[Survey]):
             nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
                 if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
             list_enviados.append(
-                {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
+                {'id_survey': survey.survey['id'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
     logger.info('Finish %s - send_emails.' % configs.settings.ETL_JOB)
     return list_enviados
 
