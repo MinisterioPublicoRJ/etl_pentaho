@@ -91,9 +91,9 @@ class Email:
                  mail_body_html: str):
         self.email_msg = MIMEMultipart()
         self.email_msg['From'] = mail_from
-        self.email_msg['To'] = ', '.join(mail_to)
-        self.email_msg['Cc'] = ', '.join(mail_cc)
-        self.email_msg['Bcc'] = ', '.join(mail_bcc)
+        self.email_msg['To'] = ','.join(mail_to)
+        self.email_msg['Cc'] = ','.join(mail_cc)
+        self.email_msg['Bcc'] = ','.join(mail_bcc)
         self.email_msg['Subject'] = mail_subject
         self.email_msg.attach(MIMEText(mail_body_html, 'html'))
 
@@ -242,9 +242,14 @@ def send_emails(list_surveys: list[Survey]):
     with smtplib.SMTP(host, port) as smtp:
         smtp.ehlo('mprj.mp.br')
         for survey in list_surveys:
+            print(245, "survey.email.email_msg['From'] =", survey.email.email_msg['From'])
+            print(246, "survey.email.email_msg['To'] =", survey.email.email_msg['To'])
+            print(247, "survey.email.email_msg['Cc'] =", survey.email.email_msg['Cc'])
+            print(248, "survey.email.email_msg['Bcc'] =", survey.email.email_msg['Bcc'])
             smtp.sendmail(survey.email.email_msg['From'],
-                          str(survey.email.email_msg['To'] + survey.email.email_msg['Cc'] +
-                              survey.email.email_msg['Bcc']).split(','),
+                          survey.email.email_msg['To'] + '\r\n' +
+                          survey.email.email_msg['Cc'] + '\r\n' +
+                          survey.email.email_msg['Bcc'],
                           survey.email.email_msg.as_string())
             nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
                 if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
