@@ -239,13 +239,26 @@ def send_emails(list_surveys: list[Survey]):
     host = configs.settings.MAIL_SMTP_SERVER
     port = configs.settings.MAIL_SMTP_PORT
     list_enviados = []
-    with smtplib.SMTP(host, port) as smtp:
-        smtp.ehlo('mprj.mp.br')
+    if configs.settings.MAIL_TO:
+        with smtplib.SMTP(host, port) as smtp:
+            smtp.ehlo('mprj.mp.br')
+            for survey in list_surveys:
+                smtp.sendmail(survey.email.email_msg['From'],
+                              ','.join([survey.email.email_msg['To'], survey.email.email_msg['Cc'],
+                                        survey.email.email_msg['Bcc']]).split(','),
+                              survey.email.email_msg.as_string())
+                nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
+                    if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
+                list_enviados.append(
+                    {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
+    else:
         for survey in list_surveys:
-            smtp.sendmail(survey.email.email_msg['From'],
-                          ','.join([survey.email.email_msg['To'], survey.email.email_msg['Cc'],
-                                    survey.email.email_msg['Bcc']]).split(','),
-                          survey.email.email_msg.as_string())
+            logger.info('email from: {efrom} to: {eto} msg: {emsg}'.format(efrom=survey.email.email_msg['From'],
+                                                                           eto=','.join([survey.email.email_msg['To'],
+                                                                                         survey.email.email_msg['Cc'],
+                                                                                         survey.email.email_msg[
+                                                                                             'Bcc']]).split(','),
+                                                                           emsg=survey.email.email_msg.as_string()))
             nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
                 if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
             list_enviados.append(
