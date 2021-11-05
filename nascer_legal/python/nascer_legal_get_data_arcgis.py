@@ -148,10 +148,10 @@ def get_df_from_arcgis_stakeholder(file_config, file_output):
 
 def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_already_loaded,
                         schema_name='assistencia', checksum_column='checksumid',
-                        checksum_drop_column_list=['id', 'checksumid', 'dt_ult_atualiz'],
+                        checksum_drop_column_list=['objectid', 'checksumid', 'dt_ult_atualiz'],
                         fillna_values_column_list={'note0': '', 'note1': '', 'note2': '',},
                         datetime_field='dt_ult_atualiz',
-                        unique_field='id', pk_field='id', raise_error_if_file_does_not_exist=True):
+                        unique_field='objectid', pk_field='objectid', raise_error_if_file_does_not_exist=True):
     
     folder_name = os.path.abspath(folder_name)
     complete_file_name = folder_name + os.sep + file_name
