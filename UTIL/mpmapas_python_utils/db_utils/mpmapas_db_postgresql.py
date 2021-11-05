@@ -59,6 +59,8 @@ class PostgresqlDB:
                     elif result_mode == 'all_commit':
                         result = cursor.fetchall()
                         conn.commit()
+                    elif result_mode == 'no_result':
+                        conn.commit()
 
             return result
         except (Exception, Error) as error:
