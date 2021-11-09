@@ -109,12 +109,11 @@ def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
         df_result = pd.read_json(json_object)
         for r in answer:    # todo: ponto de revisão
             for a in r['attributes']:
-                column = list_attr_name_column[a]
-                if 'int' in list_attr_name_type[a] and column in df_result.columns:
-                    df_result[column] = df_result[column].fillna(value=-1)
-                    df_result[column] = df_result[column].astype('int')
-                    #df_result[column] = df_result[column].replace(to_replace=-1, value=numpy.NaN)
-                    #print(130, 'df_result[column] =', df_result[column])
+                if a in list_attr_name_column:
+                    column = list_attr_name_column[a]
+                    if 'int' in list_attr_name_type[a] and column in df_result.columns:
+                        df_result[column] = df_result[column].fillna(value=-1)
+                        df_result[column] = df_result[column].astype('int')
         df_result[checksum_column] = commons.generate_checksum(df_result)
         file_output, file_extension = os.path.splitext(file)
         complete_file_name = file_output + '.csv'
@@ -145,6 +144,7 @@ def get_df_from_arcgis_stakeholder(file_config, file_output):
     export_json_from_arcgis_to_file (file_output, url, user, password, search_info)
     df = convert_json_file_to_csv(file_output, config['attributes_to_table_fiels'])
     return df
+
 
 def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_already_loaded,
                         schema_name='assistencia', checksum_column='checksumid',
@@ -178,6 +178,18 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
             df[checksum_column] = commons.generate_checksum(df)
             dt_now = datetime.now()
             df[datetime_field] = dt_now
+            # vamos excluir de df globalid que já existam devido ao índice uuid_1998 criado pelo ArcGIS
+            #psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uuid_1998"
+            # DETAIL:  Key (globalid)=(069e956b-d66e-4e27-8d82-857adcf426ce) already exists.
+            ban_field = []
+            for g in df['globalid']:
+                cmd = "select globalid from "  + schema_name + '.' + table_name + \
+                    " where globalid = '" + g + "'"
+                result = db.execute_select(sql=cmd, result_mode = 'one', list_values=[])
+                if result is not None and g in result[0] and g not in ban_field:
+                    ban_field.append(g)
+            if len(ban_field) > 0:
+                df = df[~df.globalid.isin(ban_field)]
             list_fields = df.columns.values
             df_insert = df.loc[~df[checksum_column].isin(df_chk_already_loaded[checksum_column])]
             if len(df_insert) > 0:
@@ -189,7 +201,7 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
                 result = db.execute_values_insert(sql=insert_sql_statement,
                                                   template=insert_template_statement,
                                                   df_values_to_execute=df_insert, fetch=False,
-                                                  server_encoding=server_encoding)
+                                                  client_encoding=server_encoding)
             # vamos atualizar o campo "shape" de cada tabela com as informações de geometria
             cmd = 'update ' + schema_name + '.' + table_name + \
                     ' set shape = ST_SetSRID( st_POINT (y::double precision, x::double precision), 4326) ' + \
