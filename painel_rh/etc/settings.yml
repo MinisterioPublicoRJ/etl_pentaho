@@ -2,13 +2,26 @@ settings:
  ETL_JOB : 'painel_rh'
  LOG_FILE_NAME: 'painel_rh.log'
  JDBC_PROPERTIES_FILE: ['ETL_CLASSIFIED', 'PROP_CLASSIFIED']
- DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+ FILES_LIST: ['Estrutura RH.csv', 'PJs Feitos 2.csv']
+ FILE_SCRIPT_R: 'script_rh_etl.R'
 settings_prod:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
+ AMB_EXEC: 'PRD'
+ DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+ DIR_CSVS: 'K:/SUB ADMINISTRAÇÃO/CADG/MPemMapas/Estatística/RH'
 settings_dsv:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
+ AMB_EXEC: 'DSV'
+ DB_OPENGEO_DS_NAME: 'opengeo_dsv_pentaho'
+ DIR_CSVS: 'K:/SUB ADMINISTRAÇÃO/CADG/MPemMapas/Estatística/RH'
+settings_local:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ AMB_EXEC: 'LOCAL'
+ DB_OPENGEO_DS_NAME: 'postgres_local'
+ DIR_CSVS: '../var/tmp/dir_csvs'
 folders:
  ETL_DIR: ../
  CONFIG_DIR: ../etc/

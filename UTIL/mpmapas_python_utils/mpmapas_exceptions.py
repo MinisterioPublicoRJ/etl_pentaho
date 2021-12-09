@@ -47,6 +47,48 @@ class MPMapasDataBaseException(MPMapasException):
         return self.msg
 
 
+class MPMapasIOException(MPMapasException):
+    def __init__(self, **kwargs):
+        etl_name = kwargs.get('etl_name')
+        error_name = kwargs.get('error_name')
+        file_name = kwargs.get('file_name')
+        abs_path = kwargs.get('abs_path')
+        error_code = kwargs.get('error_code')
+        error_msg = kwargs.get('error_msg')
+        self.error_code = error_code if error_code else self.error_code
+        self.error_msg = (error_msg if error_msg else self.error_msg).format(
+            etl_name=etl_name if etl_name else '',
+            error_name=error_name if error_name else '',
+            file_name=file_name if file_name else '',
+            abs_path=abs_path if abs_path else '')
+
+        self.msg = "Error_code: {error_code} msg: {error_msg}".format(error_code=self.error_code,
+                                                                      error_msg=self.error_msg)
+
+    def __str__(self):
+        return self.msg
+
+
+class MPMapasSubprocessException(MPMapasException):
+    def __init__(self, **kwargs):
+        etl_name = kwargs.get('etl_name')
+        error_name = kwargs.get('error_name')
+        arg_list = kwargs.get('arg_list')
+        error_code = kwargs.get('error_code')
+        error_msg = kwargs.get('error_msg')
+        self.error_code = error_code if error_code else self.error_code
+        self.error_msg = (error_msg if error_msg else self.error_msg).format(
+            etl_name=etl_name if etl_name else '',
+            error_name=error_name if error_name else '',
+            arg_list=','.join(list(arg_list)) if arg_list else '')
+
+        self.msg = "Error_code: {error_code} msg: {error_msg}".format(error_code=self.error_code,
+                                                                      error_msg=self.error_msg)
+
+    def __str__(self):
+        return self.msg
+
+
 class MPMapasErrorCantBeNull(MPMapasDataBaseException):
     error_code = 1
     error_msg = 'A variavel %s nao pode ser nula.'
@@ -105,3 +147,13 @@ class MPMapasErrorPostgresqlPsycopg2(MPMapasDataBaseException):
 class MPMapasErrorEtlStillRunning(MPMapasException):
     error_code = 11
     error_msg = 'Erro: O etl {error_name} ainda esta sendo executado e não irá iniciar outra vez antes que a execução anterior finalize.'
+
+
+class MPMapasExecSubProcessException(MPMapasSubprocessException):
+    error_code = 12
+    error_msg = 'Erro[{error_name}] no ETL[{etl_name}] ao executar chamar o subprocess.Popen com os argumentos[{arg_list}].'
+
+
+class MPMapasErrorFileNotFound(MPMapasIOException):
+    error_code = 13
+    error_msg = 'Erro[{error_name}] o ETL[{etl_name}] precisa do arquivo[{file_name}] na pasta[{abs_path}] para continuar.'

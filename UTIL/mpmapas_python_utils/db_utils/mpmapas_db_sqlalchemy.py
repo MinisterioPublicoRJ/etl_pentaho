@@ -1,5 +1,6 @@
 import logging
 import os
+import urllib.parse
 
 import sqlalchemy
 from sqlalchemy import MetaData
@@ -16,6 +17,7 @@ class SqlalchemyDB:
     # https://docs.sqlalchemy.org/en/14/tutorial/engine.html
     # https://docs.sqlalchemy.org/en/14/glossary.html#term-DBAPI
     # https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.session.Session.add
+    # https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls
     def __init__(self, simple_jdbc):
         self.database = simple_jdbc.database
         self.simple_jdbc = simple_jdbc
@@ -30,7 +32,7 @@ class SqlalchemyDB:
             self.simple_jdbc.sgbd,
             dbapi,
             self.simple_jdbc.user,
-            self.simple_jdbc.password,
+            urllib.parse.quote_plus(self.simple_jdbc.password),
             self.simple_jdbc.hostname,
             self.simple_jdbc.port,
             self.simple_jdbc.database
@@ -42,7 +44,7 @@ class SqlalchemyDB:
                   dtype=None, method=None, echo=True, datestyle=None):
         self.create_engine(echo=echo)
         with self.engine.connect() as conn:
-            if dtype and not isinstance(dtype, dict):
+            if not dtype.empty and not isinstance(dtype, dict):
                 meta = MetaData()
                 meta.bind = self.engine
                 meta.schema = schema_name

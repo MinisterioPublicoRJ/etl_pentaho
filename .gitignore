@@ -13,3 +13,5 @@ tmp/
 *.csv
 *.xls
 .Rproj.user
+*.Rproj
+*.p12
