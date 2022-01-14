@@ -1,5 +1,5 @@
 import logging
-import os, subprocess
+import os, subprocess, glob
 import time
 from datetime import datetime, timezone
 
@@ -97,36 +97,70 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
 
 def main():
     try:
-        jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME]
-        folder_name = configs.folders.SAIDA_DIR
+        interval_timestamp = 3600 * 24 * 15
+        allowed_to_continue_execution = True
+        folder_name = configs.folders.LOG_DIR
+        list_files = glob.glob(folder_name + os.sep  + 'lst_run_*.json')
+        if len(list_files) > 0:
+            relevant_list = sorted(list_files, reverse=True)
+            now = datetime.now()
+            current_timestamp = time.time()
+            for item in relevant_list:
+                evaluation_last_runtime = item[item.index('lst_run_') + len('lst_run_'):]
+                evaluation_last_runtime = evaluation_last_runtime.replace('.json', '')
+                evaluation_last_runtime = int(evaluation_last_runtime)
+                if evaluation_last_runtime < current_timestamp:
+                    minimum_timestamp_to_run = evaluation_last_runtime + interval_timestamp
+                    if minimum_timestamp_to_run > current_timestamp:
+                        allowed_to_continue_execution = False
+                        break
 
-        df_out_icf = export_table_to_csv(obj_jdbc=jdbc_opengeo, table_name='itens_contratos_filtrados',
-                                         file_name='itens_contratos_filtrados.csv', folder_name=folder_name)
+        if allowed_to_continue_execution:
+            jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME]
+            folder_name = configs.folders.SAIDA_DIR
 
-        df_out_ah = export_table_to_csv(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
-                                        file_name='alertas_historico.csv', folder_name=folder_name)
+            df_out_icf = export_table_to_csv(obj_jdbc=jdbc_opengeo, table_name='itens_contratos_filtrados',
+                                            file_name='itens_contratos_filtrados.csv', folder_name=folder_name)
 
-        file_script_r = 'script_alerta_precos_contratos.R'
-        folder_name = configs.folders.R_SCRIPT_DIR
-        commons.execute_r_script(logger=logger, configs=configs, file_script_r=file_script_r,
-                                 folder_name=folder_name)
+            df_out_ah = export_table_to_csv(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
+                                            file_name='alertas_historico.csv', folder_name=folder_name)
 
-        folder_name = configs.folders.SAIDA_DIR
+            file_script_r = 'script_alerta_precos_contratos.R'
+            folder_name = configs.folders.R_SCRIPT_DIR
+            commons.execute_r_script(logger=logger, configs=configs, file_script_r=file_script_r,
+                                    folder_name=folder_name)
 
-        import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_produtos',
-                            file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
-                            raise_error_if_file_does_not_exist=False)
+            folder_name = configs.folders.SAIDA_DIR
 
-        import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
-                            file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
-                            raise_error_if_file_does_not_exist=False)
+            import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_produtos',
+                                file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
+                                df_chk_already_loaded=df_out_ah, unique_field='checksumid',
+                                raise_error_if_file_does_not_exist=False)
 
-        import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_avaliacao',
-                            file_name='alertas_contratos_avaliacao.csv', folder_name=folder_name,
-                            df_chk_already_loaded=df_out_ah, unique_field='checksumid',
-                            raise_error_if_file_does_not_exist=False)
+            import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_historico',
+                                file_name='alertas_contratos_produtos.csv', folder_name=folder_name,
+                                df_chk_already_loaded=df_out_ah, unique_field='checksumid',
+                                raise_error_if_file_does_not_exist=False)
+
+            import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='alertas_contratos_avaliacao',
+                                file_name='alertas_contratos_avaliacao.csv', folder_name=folder_name,
+                                df_chk_already_loaded=df_out_ah, unique_field='checksumid',
+                                raise_error_if_file_does_not_exist=False)
+        else:
+            msg = datetime.utcfromtimestamp(minimum_timestamp_to_run).strftime('%Y-%m-%d %H:%M:%S')
+            logger.info('Cant run before [%s] - itens_r_alerta_carga_csv.main' % msg)
+        
+        folder_name = configs.folders.LOG_DIR
+        now = datetime.now()
+        last_running = int(time.time())
+        file_output = folder_name + os.sep  + 'lst_run_' + str(last_running) + '.json'
+        file_content = '{"last_running": "%s", "dt_1": "%s", "who": "itens_r_alerta_carga_csv.main.line.136"}\n' % (last_running, now) 
+        with open(file_output, "a+", encoding='utf-8') as file:
+            file.write(file_content)
+        logger.info('Last run [%s] - itens_r_alerta_carga_csv.main' % now)
+        msg = datetime.utcfromtimestamp(last_running + interval_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        logger.info('Next run will be allowed from [%s] - itens_r_alerta_carga_csv.main' % msg)
+        
 
     except MPMapasDataBaseException as c_err:
         logger.exception(c_err)
