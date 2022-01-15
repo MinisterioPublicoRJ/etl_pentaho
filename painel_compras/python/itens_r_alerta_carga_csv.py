@@ -97,14 +97,14 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
 
 def main():
     try:
+        current_timestamp = time.time()
         interval_timestamp = 3600 * 24 * 15
+        minimum_timestamp_to_run = 0
         allowed_to_continue_execution = True
         folder_name = configs.folders.LOG_DIR
         list_files = glob.glob(folder_name + os.sep  + 'lst_run_*.json')
         if len(list_files) > 0:
             relevant_list = sorted(list_files, reverse=True)
-            now = datetime.now()
-            current_timestamp = time.time()
             for item in relevant_list:
                 evaluation_last_runtime = item[item.index('lst_run_') + len('lst_run_'):]
                 evaluation_last_runtime = evaluation_last_runtime.replace('.json', '')
@@ -146,22 +146,19 @@ def main():
                                 file_name='alertas_contratos_avaliacao.csv', folder_name=folder_name,
                                 df_chk_already_loaded=df_out_ah, unique_field='checksumid',
                                 raise_error_if_file_does_not_exist=False)
+            folder_name = configs.folders.LOG_DIR
+            now = datetime.now()
+            last_running = int(time.time())
+            file_output = folder_name + os.sep  + 'lst_run_' + str(last_running) + '.json'
+            file_content = '{"last_running": "%s", "dt_1": "%s", "who": "itens_r_alerta_carga_csv.main.line.136"}\n' % (last_running, now) 
+            with open(file_output, "a+", encoding='utf-8') as file:
+                file.write(file_content)
+            logger.info('Last run [%s] - itens_r_alerta_carga_csv.main' % now)
+            msg = datetime.utcfromtimestamp(last_running + interval_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            logger.info('Next run will be allowed from [%s] - itens_r_alerta_carga_csv.main' % msg)
         else:
             msg = datetime.utcfromtimestamp(minimum_timestamp_to_run).strftime('%Y-%m-%d %H:%M:%S')
             logger.info('Cant run before [%s] - itens_r_alerta_carga_csv.main' % msg)
-        
-        folder_name = configs.folders.LOG_DIR
-        now = datetime.now()
-        last_running = int(time.time())
-        file_output = folder_name + os.sep  + 'lst_run_' + str(last_running) + '.json'
-        file_content = '{"last_running": "%s", "dt_1": "%s", "who": "itens_r_alerta_carga_csv.main.line.136"}\n' % (last_running, now) 
-        with open(file_output, "a+", encoding='utf-8') as file:
-            file.write(file_content)
-        logger.info('Last run [%s] - itens_r_alerta_carga_csv.main' % now)
-        msg = datetime.utcfromtimestamp(last_running + interval_timestamp).strftime('%Y-%m-%d %H:%M:%S')
-        logger.info('Next run will be allowed from [%s] - itens_r_alerta_carga_csv.main' % msg)
-        
-
     except MPMapasDataBaseException as c_err:
         logger.exception(c_err)
         exit(c_err.error_code)
