@@ -112,8 +112,8 @@ def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
                 if a in list_attr_name_column:
                     column = list_attr_name_column[a]
                     if 'int' in list_attr_name_type[a] and column in df_result.columns:
-                        df_result[column] = df_result[column].fillna(value=-1)
-                        df_result[column] = df_result[column].astype('int')
+                        df_result[column] = df_result[column].fillna(value=pd.Int64Dtype.na_value)
+                        df_result[column] = df_result[column].astype(pd.Int64Dtype())
         df_result[checksum_column] = commons.generate_checksum(df_result)
         file_output, file_extension = os.path.splitext(file)
         complete_file_name = file_output + '.csv'
@@ -124,7 +124,7 @@ def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
 def export_json_from_arcgis_to_file (file, url, user, password, search_info):
     list_features = get_list_json_from_arcgis(url, user, password, search_info)
     # Formato Features usado pelo ArcGIS é JSON "pero no mucho"
-    # <https://pro.arcgis.com/en/pro-app/2.7/tool-reference/conversion/features-to-json.htm> 
+    # <https://pro.arcgis.com/en/pro-app/2.7/tool-reference/conversion/features-to-json.htm>
     #with open(file, 'w', encoding='utf-8') as f:
     #    json.dump(list_features, f, ensure_ascii=False, indent=4)
     size = 0
