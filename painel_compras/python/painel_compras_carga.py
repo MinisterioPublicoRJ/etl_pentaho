@@ -2,14 +2,25 @@ import logging
 import os
 from datetime import datetime, timezone
 
+import pandas as pd
+
 import mpmapas_commons as commons
 import mpmapas_logger
-import pandas as pd
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasException
 
 os.environ["NLS_LANG"] = ".UTF8"
 dt_now = datetime.now(timezone.utc)
+
+
+def safe_listcolumns_string(dataframe, column_names):
+    for column_name in column_names:
+        dataframe[column_name] = safe_column_string(dataframe=dataframe, column_name=column_name)
+    return dataframe
+
+
+def safe_column_string(dataframe, column_name):
+    return [None if not col_val or col_val == 'NaN' else str(col_val) for col_val in dataframe[column_name]]
 
 
 def safe_column_string_to_datetime(dataframe, column_name):
@@ -77,6 +88,10 @@ def carga_painel_comprasrj():
             'vl_unitaditivadosuprimido': 'VL_UNIT_ADITIV_SUPR',
             'dt_extracao': 'DT_EXTRACAO'
         }).drop(['id', 'dt_ult_atualiz'], axis='columns')
+
+        result_df_item_contrato = safe_listcolumns_string(dataframe=result_df_item_contrato,
+                                                          column_names=list(result_df_item_contrato))
+
         result_df_item_contrato['VL_UNIT'] = safe_column_string_to_float(dataframe=result_df_item_contrato,
                                                                          column_name='VL_UNIT')
         result_df_item_contrato['QTD'] = safe_column_string_to_int(dataframe=result_df_item_contrato, column_name='QTD')
@@ -106,6 +121,10 @@ def carga_painel_comprasrj():
             'valor_total_pago_r': 'VL_PAGO',
             'dt_extracao': 'DT_EXTRACAO'
         }).drop(['id', 'dt_ult_atualiz'], axis='columns')
+
+        result_df_contrato = safe_listcolumns_string(dataframe=result_df_contrato,
+                                                     column_names=list(result_df_contrato))
+
         result_df_contrato['DT_CONTRATACAO'] = safe_column_string_to_date(dataframe=result_df_contrato,
                                                                           column_name='DT_CONTRATACAO')
         result_df_contrato['DT_INICIO'] = safe_column_string_to_date(dataframe=result_df_contrato,
@@ -141,6 +160,9 @@ def carga_painel_comprasrj():
             'vl_unitario_r': 'VL_UNITARIO',
             'dt_extracao': 'DT_EXTRACAO'
         }).drop(['id', 'dt_ult_atualiz'], axis='columns')
+
+        result_df_compra = safe_listcolumns_string(dataframe=result_df_compra, column_names=list(result_df_compra))
+
         result_df_compra['DT_APROVACAO'] = safe_column_string_to_date(dataframe=result_df_compra,
                                                                       column_name='DT_APROVACAO')
         result_df_compra['QTD'] = safe_column_string_to_int(dataframe=result_df_compra, column_name='QTD')
@@ -152,6 +174,10 @@ def carga_painel_comprasrj():
         result_df_catalogo = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
             configs.settings.DB_OPENGEO_DS_NAME].jndi_name, schema_name='comprasrj_stage', table_name='catalogo')[
             'table']
+
+        result_df_catalogo = safe_listcolumns_string(dataframe=result_df_catalogo,
+                                                     column_names=list(result_df_catalogo))
+
         result_df_catalogo['id_tipo'] = safe_column_string_to_int(dataframe=result_df_catalogo, column_name='id_tipo')
         result_df_catalogo['id_familia'] = safe_column_string_to_int(dataframe=result_df_catalogo,
                                                                      column_name='id_familia')
