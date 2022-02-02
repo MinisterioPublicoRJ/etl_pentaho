@@ -18,6 +18,12 @@ settings_dsv:
  MAIL_TO: False
  DB_GISDB_DS_NAME: 'gisdb_dsv_assistencia'
  DB_OPENGEO_DS_NAME: 'opengeo_dsv_pentaho'
+settings_local:
+ LOG_LEVEL: 'INFO'
+ LOG_MODE: 'a'
+ MAIL_TO: False
+ DB_GISDB_DS_NAME: 'postgres_local_linux'
+ DB_OPENGEO_DS_NAME: 'postgres_local_linux'
 folders:
  ETL_DIR: ../
  CONFIG_DIR: ../etc/
