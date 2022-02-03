@@ -1,15 +1,14 @@
-import logging
-import os, subprocess, sys
-import time
-from datetime import datetime, timezone
-from arcgis.gis import GIS
-
 import json
+import logging
+import os
+from datetime import datetime
+
 import mpmapas_commons as commons
 import mpmapas_logger
 import numpy
 import pandas as pd
 import urllib3
+from arcgis.gis import GIS
 from db_utils import mpmapas_db_commons as dbcommons
 from mpmapas_exceptions import MPMapasDataBaseException, MPMapasErrorFileNotFound, MPMapasException
 from psycopg2.extensions import register_adapter, AsIs, Float
@@ -37,13 +36,14 @@ register_adapter(numpy.float64, addapt_numpy_float64)
 register_adapter(numpy.int64, addapt_numpy_int64)
 
 
-def load_text_config_file (file):
+def load_text_config_file(file):
     text = ''
     with open(file, encoding='utf-8-sig') as text_file:
         text = text_file.read()
     return text
 
-def load_json_config_file (file):
+
+def load_json_config_file(file):
     json_data = {}
     with open(file, encoding='utf-8-sig') as json_file:
         text = json_file.read()
@@ -51,8 +51,8 @@ def load_json_config_file (file):
     return json_data
 
 
-def get_list_json_from_arcgis (url, user, password, search_info):
-    gisSource=GIS(url, user, password, verify_cert=False)
+def get_list_json_from_arcgis(url, user, password, search_info):
+    gisSource = GIS(url, user, password, verify_cert=False)
     search_info_stakeholder = 'id:"%s"' % search_info
     items = gisSource.content.search(query=search_info_stakeholder)
     layer = items[0].layers[0]
@@ -64,10 +64,10 @@ def chk_value(value, type_value):
     result = value
     if result is not None:
         if 'datetime' == type_value:
-            result = datetime.utcfromtimestamp(result/1000).strftime('%Y-%m-%d %H:%M:%S')
+            result = datetime.utcfromtimestamp(result / 1000).strftime('%Y-%m-%d %H:%M:%S')
         elif 'datetime3' == type_value:
-            result = result - (3*3600)  # acertando o fuso para o data hora incluídas automaticamente pelo ArcGIS
-            result = datetime.utcfromtimestamp(result/1000).strftime('%Y-%m-%d %H:%M:%S')
+            result = result - (3 * 3600)  # acertando o fuso para o data hora incluídas automaticamente pelo ArcGIS
+            result = datetime.utcfromtimestamp(result / 1000).strftime('%Y-%m-%d %H:%M:%S')
         elif 'float' == type_value:
             result = float(value)
         elif 'int' == type_value:
@@ -84,7 +84,7 @@ def chk_value(value, type_value):
 def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
     df_result = None
     answer = {}
-    text = load_text_config_file (file)
+    text = load_text_config_file(file)
     # TODO: ponto de revisão: verificar como tratar o 'null' depois devido a "Features"/JSON do ArcGIS
     null = None
     answer = eval(text)
@@ -97,7 +97,7 @@ def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
     if len(answer) > 0:
         list_fields = {}
         for r in answer:
-            list_fields={}
+            list_fields = {}
             for a in r['attributes']:
                 if a in list_attr_name_column:
                     value = r['attributes'][a]
@@ -107,7 +107,7 @@ def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
     if len(records) > 0:
         json_object = json.dumps(records)
         df_result = pd.read_json(json_object)
-        for r in answer:    # todo: ponto de revisão
+        for r in answer:  # todo: ponto de revisão
             for a in r['attributes']:
                 if a in list_attr_name_column:
                     column = list_attr_name_column[a]
@@ -121,11 +121,11 @@ def convert_json_file_to_csv(file, config, checksum_column='checksumid'):
     return df_result
 
 
-def export_json_from_arcgis_to_file (file, url, user, password, search_info):
+def export_json_from_arcgis_to_file(file, url, user, password, search_info):
     list_features = get_list_json_from_arcgis(url, user, password, search_info)
     # Formato Features usado pelo ArcGIS é JSON "pero no mucho"
     # <https://pro.arcgis.com/en/pro-app/2.7/tool-reference/conversion/features-to-json.htm>
-    #with open(file, 'w', encoding='utf-8') as f:
+    # with open(file, 'w', encoding='utf-8') as f:
     #    json.dump(list_features, f, ensure_ascii=False, indent=4)
     size = 0
     with open(file, 'w', encoding='utf-8-sig') as fout:
@@ -141,7 +141,7 @@ def get_df_from_arcgis_stakeholder(file_config, file_output):
     user = config['user']
     password = config['password']
     search_info = config['search_info']
-    export_json_from_arcgis_to_file (file_output, url, user, password, search_info)
+    export_json_from_arcgis_to_file(file_output, url, user, password, search_info)
     df = convert_json_file_to_csv(file_output, config['attributes_to_table_fiels'])
     return df
 
@@ -149,10 +149,9 @@ def get_df_from_arcgis_stakeholder(file_config, file_output):
 def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_already_loaded,
                         schema_name='assistencia', checksum_column='checksumid',
                         checksum_drop_column_list=['objectid', 'checksumid', 'dt_ult_atualiz'],
-                        fillna_values_column_list={'note0': '', 'note1': '', 'note2': '',},
+                        fillna_values_column_list={'note0': '', 'note1': '', 'note2': '', },
                         datetime_field='dt_ult_atualiz',
                         unique_field='objectid', pk_field='objectid', raise_error_if_file_does_not_exist=True):
-    
     folder_name = os.path.abspath(folder_name)
     complete_file_name = folder_name + os.sep + file_name
 
@@ -169,8 +168,8 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
         df = pd.DataFrame(data=dict_1['table'], columns=dict_1['table_info']['column_name'])
         if len(df) > 0:
             # vamos separar registros que não foram enviados ainda
-            #checksum_drop_column_list.append('shape')
-            #checksum_drop_column_list.append('gdb_geomattr_data')
+            # checksum_drop_column_list.append('shape')
+            # checksum_drop_column_list.append('gdb_geomattr_data')
             for f in checksum_drop_column_list:
                 df = df.drop([f], axis='columns')
             df = df.fillna(fillna_values_column_list)
@@ -179,13 +178,13 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
             dt_now = datetime.now()
             df[datetime_field] = dt_now
             # vamos excluir de df globalid que já existam devido ao índice uuid_1998 criado pelo ArcGIS
-            #psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uuid_1998"
+            # psycopg2.errors.UniqueViolation: duplicate key value violates unique constraint "uuid_1998"
             # DETAIL:  Key (globalid)=(069e956b-d66e-4e27-8d82-857adcf426ce) already exists.
             ban_field = []
             for g in df['globalid']:
-                cmd = "select globalid from "  + schema_name + '.' + table_name + \
-                    " where globalid = '" + g + "'"
-                result = db.execute_select(sql=cmd, result_mode = 'one', list_values=[])
+                cmd = "select globalid from " + schema_name + '.' + table_name + \
+                      " where globalid = '" + g + "'"
+                result = db.execute_select(sql=cmd, result_mode='one', list_values=[])
                 if result is not None and g in result[0] and g not in ban_field:
                     ban_field.append(g)
             if len(ban_field) > 0:
@@ -204,9 +203,9 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
                                                   client_encoding=server_encoding)
             # vamos atualizar o campo "shape" de cada tabela com as informações de geometria
             cmd = 'update ' + schema_name + '.' + table_name + \
-                    ' set shape = ST_SetSRID( st_POINT (y::double precision, x::double precision), 4326) ' + \
-                    'where shape is null and y is not null and x is not null;'
-            db.execute_select(sql=cmd, result_mode = 'no_result', list_values=[])
+                  ' set shape = ST_SetSRID( st_POINT (y::double precision, x::double precision), 4326) ' + \
+                  'where shape is null and y is not null and x is not null;'
+            db.execute_select(sql=cmd, result_mode='no_result', list_values=[])
         logger.info('Finishing import [%s] to [%s.%s] - import_csv_to_table.' % (file_name, schema_name, table_name))
     else:
         logger.info('Finishing NOK [%s] - import_csv_to_table.' % complete_file_name)
@@ -217,7 +216,8 @@ def import_csv_to_table(obj_jdbc, table_name, file_name, folder_name, df_chk_alr
 
 def main():
     try:
-        jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_GISDB_DS_NAME]
+        db_gisdb = configs.settings.JDBC_PROPERTIES[configs.settings.DB_GISDB_DS_NAME]
+        jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME]
         folder_config = configs.folders.CONFIG_DIR
         folder_output = configs.folders.SAIDA_DIR
 
@@ -228,21 +228,33 @@ def main():
         file_config = folder_config + os.sep + 'config_02_arcgis_hospital.json'
         file_output = folder_output + os.sep + 'answer_02_hospital.json'
         df_input_hospital = get_df_from_arcgis_stakeholder(file_config, file_output)
-        
+
         file_config = folder_config + os.sep + 'config_03_arcgis_cartorio.json'
         file_output = folder_output + os.sep + 'answer_03_cartorio.json'
         df_input_cartorio = get_df_from_arcgis_stakeholder(file_config, file_output)
 
+        import_csv_to_table(obj_jdbc=db_gisdb, table_name='survey_nascer_legal_detran',
+                            file_name='answer_01_detran.csv', folder_name=folder_output,
+                            df_chk_already_loaded=df_input_detran, unique_field='checksumid',
+                            raise_error_if_file_does_not_exist=False)
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='survey_nascer_legal_detran',
                             file_name='answer_01_detran.csv', folder_name=folder_output,
                             df_chk_already_loaded=df_input_detran, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
+        import_csv_to_table(obj_jdbc=db_gisdb, table_name='survey_nascer_legal_hosp',
+                            file_name='answer_02_hospital.csv', folder_name=folder_output,
+                            df_chk_already_loaded=df_input_hospital, unique_field='checksumid',
+                            raise_error_if_file_does_not_exist=False)
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='survey_nascer_legal_hosp',
                             file_name='answer_02_hospital.csv', folder_name=folder_output,
                             df_chk_already_loaded=df_input_hospital, unique_field='checksumid',
                             raise_error_if_file_does_not_exist=False)
 
+        import_csv_to_table(obj_jdbc=db_gisdb, table_name='survey_nascer_legal_cart_3',
+                            file_name='answer_03_cartorio.csv', folder_name=folder_output,
+                            df_chk_already_loaded=df_input_cartorio, unique_field='checksumid',
+                            raise_error_if_file_does_not_exist=False)
         import_csv_to_table(obj_jdbc=jdbc_opengeo, table_name='survey_nascer_legal_cart_3',
                             file_name='answer_03_cartorio.csv', folder_name=folder_output,
                             df_chk_already_loaded=df_input_cartorio, unique_field='checksumid',
@@ -259,6 +271,7 @@ def main():
         exit(c_err)
     finally:
         logger.info('Finishing item imports CSV to %s database.' % configs.settings.DB_GISDB_DS_NAME)
+
 
 global configs, logger
 
