@@ -61,7 +61,9 @@ def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
     with open(file_path + file_nam, mode) as file:
         last_modified_date = datetime.strptime(req.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z').replace(
             tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
-        if (not last_date_to_check) or (not last_modified_date) or (last_modified_date > last_date_to_check):
+        if configs.settings.BD_FORCE_UPDATE or (not last_date_to_check) or (not last_modified_date) or (last_modified_date > last_date_to_check):
+            if configs.settings.BD_FORCE_UPDATE:
+                logger.info('--->>  Force UPDATE !!!!! %s !' % file_nam)
             file.write(req.content)
             dict_last_modified_date[file_nam] = last_modified_date
             return_new_file = True
