@@ -9,6 +9,7 @@ settings:
 settings_prod:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
+ BD_FORCE_UPDATE: false
  DB_GATE_DS_NAME: 'postgres_hml_gate'
  DB_OPENGEO_DS_NAME: 'mpmapas_geo'
  GATE_CSV_CONTRATO: ''
