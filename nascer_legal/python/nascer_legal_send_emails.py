@@ -172,7 +172,7 @@ class Survey:
                 estab_cc = [est for est in dict_est.values() if
                             (est.tipo in quest.send_to and est.tipo not in estab.tipo) and (
                                     est.tipo not in tipo_survey or (
-                                        est.tipo in tipo_survey and est.codigo in estab_cods))]
+                                    est.tipo in tipo_survey and est.codigo in estab_cods))]
                 list_surveys.append(Survey(tipo=tipo_survey, estabelecimento=estab, questionario=quest,
                                            respondente=row_survey['respondente'], data_resposta=data_resp,
                                            estab_cc=estab_cc, survey=row_survey))
@@ -269,11 +269,22 @@ def send_emails(list_surveys: list[Survey]):
 
 def update_enviados(list_enviados: list):
     logger.info('Starting %s - update_enviados.' % configs.settings.ETL_JOB)
-    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_GISDB_DS_NAME], api=None)
+    db_gisdb = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_GISDB_DS_NAME], api=None)
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
     server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
         configs.settings.DB_GISDB_DS_NAME].jndi_name)
     df_enviados = pd.DataFrame(list_enviados)
     list_flds_enviados = df_enviados.columns.values
+    insert_sql_enviados, insert_template_enviados = db_gisdb.insert_values_sql(schema_name='assistencia',
+                                                                               table_name='survey_nascer_legal_emails_enviados',
+                                                                               list_flds=list_flds_enviados,
+                                                                               unique_field='objectid',
+                                                                               pk_field='objectid')
+    db_gisdb.execute_values_insert(sql=insert_sql_enviados,
+                                   template=insert_template_enviados,
+                                   df_values_to_execute=df_enviados,
+                                   fetch=True, server_encoding=server_encoding)
+
     insert_sql_enviados, insert_template_enviados = db_opengeo.insert_values_sql(schema_name='assistencia',
                                                                                  table_name='survey_nascer_legal_emails_enviados',
                                                                                  list_flds=list_flds_enviados,
