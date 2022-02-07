@@ -101,6 +101,7 @@ class Email:
 class Survey:
     def __init__(self, tipo: str, estabelecimento: Estabelecimento, questionario: Questionario, respondente: str,
                  data_resposta: datetime, estab_cc: list[Estabelecimento], survey):
+        self.neg_num = self.preencher_neg_num(questionario)
         self.tipo = tipo
         self.estabelecimento = estabelecimento
         self.survey = survey
@@ -116,6 +117,19 @@ class Survey:
             pergunta.resposta = survey[pergunta.cod_pergunta] if survey[pergunta.cod_pergunta] != '' else 'Sem Resposta'
         return questionario
 
+    @staticmethod
+    def preencher_neg_num(questionario):
+        neg_num = False
+        for pergunta in questionario.perguntas.values():
+            try:
+                resp = int(pergunta.resposta)
+                if resp < 0:
+                    neg_num = True
+                    logger.info('neg_num: {neg} -> {perg} => {resp}'.format(neg=neg_num, perg=pergunta.cod_pergunta, resp=pergunta.resposta))
+            except ValueError:
+                resp = 0
+        return neg_num
+
     def preencher_email(self):
         email_to = [dests.email for dests in self.estabelecimento.destinatarios if
                     configs.settings.MAIL_TO]
@@ -124,11 +138,18 @@ class Survey:
         email_bcc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
                      cc.codigo == 0]
         mail_from = configs.settings.MAIL_SENDER
-        email_subject = 'Survey estabelecimento: %s respondente: %s data da resposta: %s' % (
-            self.estabelecimento.unidade, self.respondente, self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'))
-        with open(configs.folders.CONFIG_DIR + 'template_email.html', mode='r', encoding='utf-8') as file:
-            template = file.readlines()
-        email_template = ''.join(template)
+        email_subject = '{neg_num}Survey estabelecimento: {unidade} respondente: {respondente} data da resposta: {data_resposta}'.format(
+            neg_num='NEG_NUM NAO PODE <> ' if self.neg_num else '', unidade=self.estabelecimento.unidade,
+            respondente=self.respondente, data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'))
+
+        if self.neg_num:
+            with open(configs.folders.CONFIG_DIR + 'template_email_neg_num.html', mode='r', encoding='utf-8') as file:
+                template = file.readlines()
+            email_template = ''.join(template)
+        else:
+            with open(configs.folders.CONFIG_DIR + 'template_email.html', mode='r', encoding='utf-8') as file:
+                template = file.readlines()
+            email_template = ''.join(template)
         with open(configs.folders.CONFIG_DIR + 'template_pergunta.html', mode='r', encoding='utf-8') as file:
             template = file.readlines()
         perguntas_template = ''.join(template)
@@ -243,26 +264,30 @@ def send_emails(list_surveys: list[Survey]):
         with smtplib.SMTP(host, port) as smtp:
             smtp.ehlo('mprj.mp.br')
             for survey in list_surveys:
-                smtp.sendmail(survey.email.email_msg['From'],
-                              ','.join([survey.email.email_msg['To'], survey.email.email_msg['Cc'],
-                                        survey.email.email_msg['Bcc']]).split(','),
-                              survey.email.email_msg.as_string())
+                if (not survey.neg_num) or (survey.neg_num and configs.settings.NEG_NUM_SEND_MAIL):
+                    smtp.sendmail(survey.email.email_msg['From'],
+                                  ','.join([survey.email.email_msg['To'], survey.email.email_msg['Cc'],
+                                            survey.email.email_msg['Bcc']]).split(','),
+                                  survey.email.email_msg.as_string())
+                    nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
+                        if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
+                    list_enviados.append(
+                        {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
+    else:
+        for survey in list_surveys:
+            if survey.neg_num and configs.settings.NEG_NUM_SEND_MAIL:
+                logger.info('email from: {efrom} to: {eto} msg: {emsg}'.format(efrom=survey.email.email_msg['From'],
+                                                                               eto=','.join([survey.email.email_msg['To'],
+                                                                                             survey.email.email_msg['Cc'],
+                                                                                             survey.email.email_msg[
+                                                                                                 'Bcc']]).split(','),
+                                                                               emsg=survey.email.email_msg.as_string()))
                 nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
                     if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
                 list_enviados.append(
                     {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
-    else:
-        for survey in list_surveys:
-            logger.info('email from: {efrom} to: {eto} msg: {emsg}'.format(efrom=survey.email.email_msg['From'],
-                                                                           eto=','.join([survey.email.email_msg['To'],
-                                                                                         survey.email.email_msg['Cc'],
-                                                                                         survey.email.email_msg[
-                                                                                             'Bcc']]).split(','),
-                                                                           emsg=survey.email.email_msg.as_string()))
-            nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
-                if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
-            list_enviados.append(
-                {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
+            # else:
+                # logger.info('pos_num -> {quest}'.format(quest=survey.tipo))
     logger.info('Finish %s - send_emails.' % configs.settings.ETL_JOB)
     return list_enviados
 
