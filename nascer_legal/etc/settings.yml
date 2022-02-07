@@ -10,18 +10,21 @@ settings_prod:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
  MAIL_TO: True
+ NEG_NUM_SEND_MAIL: False
  DB_GISDB_DS_NAME: 'gisdb_assistencia'
- DB_OPENGEO_DS_NAME: 'mpmapas_geo'
+ DB_OPENGEO_DS_NAME: 'opengeo_geo'
 settings_dsv:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
  MAIL_TO: False
+ NEG_NUM_SEND_MAIL: True
  DB_GISDB_DS_NAME: 'gisdb_dsv_assistencia'
- DB_OPENGEO_DS_NAME: 'opengeo_dsv_pentaho'
+ DB_OPENGEO_DS_NAME: 'opengeo_geo_dsv'
 settings_local:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
  MAIL_TO: False
+ NEG_NUM_SEND_MAIL: True
  DB_GISDB_DS_NAME: 'postgres_local_linux'
  DB_OPENGEO_DS_NAME: 'postgres_local_linux'
 folders:
