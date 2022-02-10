@@ -125,7 +125,8 @@ class Survey:
                 resp = int(pergunta.resposta)
                 if resp < 0:
                     neg_num = True
-                    logger.info('neg_num: {neg} -> {perg} => {resp}'.format(neg=neg_num, perg=pergunta.cod_pergunta, resp=pergunta.resposta))
+                    # logger.info('neg_num: {neg} -> {perg} => {resp}'.format(neg=neg_num, perg=pergunta.cod_pergunta,
+                    #                                                         resp=pergunta.resposta))
             except ValueError:
                 resp = 0
         return neg_num
@@ -277,17 +278,18 @@ def send_emails(list_surveys: list[Survey]):
         for survey in list_surveys:
             if survey.neg_num and configs.settings.NEG_NUM_SEND_MAIL:
                 logger.info('email from: {efrom} to: {eto} msg: {emsg}'.format(efrom=survey.email.email_msg['From'],
-                                                                               eto=','.join([survey.email.email_msg['To'],
-                                                                                             survey.email.email_msg['Cc'],
-                                                                                             survey.email.email_msg[
-                                                                                                 'Bcc']]).split(','),
+                                                                               eto=','.join(
+                                                                                   [survey.email.email_msg['To'],
+                                                                                    survey.email.email_msg['Cc'],
+                                                                                    survey.email.email_msg[
+                                                                                        'Bcc']]).split(','),
                                                                                emsg=survey.email.email_msg.as_string()))
                 nm_table = 'survey_nascer_legal_cart_3' if survey.tipo == 'cart' else 'survey_nascer_legal_hosp' \
                     if survey.tipo == 'cnes' else 'survey_nascer_legal_detran' if survey.tipo == 'det' else ''
                 list_enviados.append(
                     {'id_survey': survey.survey['objectid'], 'tp_survey': survey.tipo, 'nome_tabela': nm_table})
             # else:
-                # logger.info('pos_num -> {quest}'.format(quest=survey.tipo))
+            # logger.info('pos_num -> {quest}'.format(quest=survey.tipo))
     logger.info('Finish %s - send_emails.' % configs.settings.ETL_JOB)
     return list_enviados
 
@@ -322,13 +324,37 @@ def update_enviados(list_enviados: list):
     logger.info('Finish %s - update_enviados.' % configs.settings.ETL_JOB)
 
 
+def update_opengeo_estab():
+    logger.info('Starting %s - update_opengeo_estab.' % configs.settings.ETL_JOB)
+    jdbc_opengeo = configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME]
+    db_opengeo = commons.get_database(configs.settings.JDBC_PROPERTIES[configs.settings.DB_OPENGEO_DS_NAME], api=None)
+    server_encoding = dbcommons.show_server_encoding(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_OPENGEO_DS_NAME].jndi_name)
+    df_lista_estab = dbcommons.load_table(configs=configs, jndi_name=configs.settings.JDBC_PROPERTIES[
+        configs.settings.DB_GISDB_DS_NAME].jndi_name, schema_name='assistencia',
+                                          table_name='lista_estabelecimentos_nascer_legal')['table']
+    list_flds_lista_estab = df_lista_estab.columns.values
+    trunc_opengeo_lista_estab_sql = "TRUNCATE TABLE assistencia.lista_estabelecimentos_nascer_legal CONTINUE IDENTITY RESTRICT"
+    db_opengeo.execute_select(trunc_opengeo_lista_estab_sql, result_mode=None)
+    insert_sql_lista_estab, insert_template_lista_estab = db_opengeo.insert_values_sql(schema_name='assistencia',
+                                                                                       table_name='lista_estabelecimentos_nascer_legal',
+                                                                                       list_flds=list_flds_lista_estab,
+                                                                                       unique_field='id',
+                                                                                       pk_field='id')
+    db_opengeo.execute_values_insert(sql=insert_sql_lista_estab,
+                                     template=insert_template_lista_estab,
+                                     df_values_to_execute=df_lista_estab,
+                                     fetch=True, server_encoding=server_encoding)
+    logger.info('Finish %s - update_opengeo_estab.' % configs.settings.ETL_JOB)
+
+
 def main():
     try:
         logger.info('Starting %s.' % 'nascer_legal_send_emails')
         list_surveys: list[Survey] = load_surveys()
         list_enviados = send_emails(list_surveys)
         update_enviados(list_enviados)
-
+        update_opengeo_estab()
     except MPMapasException as c_err:
         logger.exception(c_err)
         exit(c_err.msg)
