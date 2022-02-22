@@ -10,7 +10,7 @@ settings_prod:
  LOG_LEVEL: 'INFO'
  LOG_MODE: 'a'
  MAIL_TO: True
- NEG_NUM_SEND_MAIL: False
+ NEG_NUM_SEND_MAIL: True
  DB_GISDB_DS_NAME: 'gisdb_assistencia'
  DB_OPENGEO_DS_NAME: 'opengeo_geo'
 settings_dsv:

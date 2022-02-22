@@ -101,11 +101,11 @@ class Email:
 class Survey:
     def __init__(self, tipo: str, estabelecimento: Estabelecimento, questionario: Questionario, respondente: str,
                  data_resposta: datetime, estab_cc: list[Estabelecimento], survey):
-        self.neg_num = self.preencher_neg_num(questionario)
         self.tipo = tipo
         self.estabelecimento = estabelecimento
         self.survey = survey
         self.questionario = self.preencher_questionario(questionario, survey)
+        self.neg_num = self.preencher_neg_num(questionario)
         self.respondente = respondente
         self.data_resposta = data_resposta
         self.estab_cc = estab_cc
@@ -133,24 +133,24 @@ class Survey:
 
     def preencher_email(self):
         email_to = [dests.email for dests in self.estabelecimento.destinatarios if
-                    configs.settings.MAIL_TO]
+                    configs.settings.MAIL_TO if not self.neg_num]
         email_cc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
-                    cc.codigo == 999999 and configs.settings.MAIL_TO]
+                    cc.codigo == 999999 and configs.settings.MAIL_TO if not self.neg_num]
         email_bcc = [des.email for cc in self.estab_cc for des in cc.destinatarios if
                      cc.codigo == 0]
         mail_from = configs.settings.MAIL_SENDER
         email_subject = '{neg_num}Survey estabelecimento: {unidade} respondente: {respondente} data da resposta: {data_resposta}'.format(
-            neg_num='NEG_NUM NAO PODE <> ' if self.neg_num else '', unidade=self.estabelecimento.unidade,
+            neg_num='Preenchimento rejeitado - numero negativo identificado <> ' if self.neg_num else '', unidade=self.estabelecimento.unidade,
             respondente=self.respondente, data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'))
-
+        email_neg_template = ''
         if self.neg_num:
             with open(configs.folders.CONFIG_DIR + 'template_email_neg_num.html', mode='r', encoding='utf-8') as file:
                 template = file.readlines()
-            email_template = ''.join(template)
-        else:
-            with open(configs.folders.CONFIG_DIR + 'template_email.html', mode='r', encoding='utf-8') as file:
-                template = file.readlines()
-            email_template = ''.join(template)
+            email_neg_template = ''.join(template)
+
+        with open(configs.folders.CONFIG_DIR + 'template_email.html', mode='r', encoding='utf-8') as file:
+            template = file.readlines()
+        email_template = ''.join(template)
         with open(configs.folders.CONFIG_DIR + 'template_pergunta.html', mode='r', encoding='utf-8') as file:
             template = file.readlines()
         perguntas_template = ''.join(template)
@@ -165,7 +165,9 @@ class Survey:
              respostas_template.format(resposta=str(pergunta.resposta))
              for pergunta in self.questionario.perguntas.values()]
         )
-        email_body_html = email_template.format(estabelecimento=self.estabelecimento.unidade,
+
+        email_body_html = email_template.format(neg_num=email_neg_template,
+                                                estabelecimento=self.estabelecimento.unidade,
                                                 respondente=self.respondente,
                                                 data_resposta=self.data_resposta.strftime('%d/%m/%Y %H:%M:%S %z'),
                                                 pergunstas_respostas=perguntas)
