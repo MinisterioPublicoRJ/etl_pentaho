@@ -410,7 +410,7 @@ INICIANDO JOB ANP
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>350</xloc>
-      <yloc>300</yloc>
+      <yloc>275</yloc>
       <attributes_kjc />
     </entry>
     <entry>
@@ -640,7 +640,7 @@ Ocorreu ERRO no JOB
       <to>Checa DB</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -649,7 +649,7 @@ Ocorreu ERRO no JOB
       <to>classified</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -705,6 +705,15 @@ Ocorreu ERRO no JOB
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
       <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>log_inic_job</from>
+      <to>classified</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
   </hops>

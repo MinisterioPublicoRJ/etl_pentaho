@@ -412,7 +412,7 @@ INICIANDO JOB datasus_cnes
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>375</xloc>
-      <yloc>275</yloc>
+      <yloc>300</yloc>
       <attributes_kjc />
     </entry>
     <entry>
@@ -591,7 +591,7 @@ Ocorreu ERRO no JOB datasus_cnes
       <to>Checa DB</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -600,7 +600,7 @@ Ocorreu ERRO no JOB datasus_cnes
       <to>TRANSF NomesArquivos_hist</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
-      <enabled>Y</enabled>
+      <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>N</unconditional>
     </hop>
@@ -639,6 +639,15 @@ Ocorreu ERRO no JOB datasus_cnes
       <enabled>Y</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>log_inic_job</from>
+      <to>TRANSF NomesArquivos_hist</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>N</unconditional>
     </hop>
   </hops>
   <notepads>
