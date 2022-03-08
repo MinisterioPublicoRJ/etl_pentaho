@@ -195,6 +195,7 @@ def replace_inf_nan(df):
     df = df.replace(np.NZERO, 0)
     df = df.replace(np.inf, -1).replace(np.infty, -1).replace(np.Inf, -1)
     df = df.replace(np.Infinity, -1).replace(np.NINF, -1).replace(np.PINF, -1).replace(math.inf, -1)
+    df = df.replace(str(np.NaN), 0)
     return df
 
 

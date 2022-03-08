@@ -51,7 +51,7 @@ def main(run_painel_compras=True, diff_check_table=False, diff_count_table=False
         fonte_dados = configs.settings.FONTE_DADOS
 
         if 'SIGA' in fonte_dados:
-            run_painel_compras = check_atualizacao_bases_siga(truncate_stage=diff_check_table)
+            run_painel_compras = check_atualizacao_bases_siga(truncate_stage=configs.settings.TRUNCATE_STAGE)
         elif 'GATE' in fonte_dados:
             run_painel_compras = check_atualizacao_bases_gate(run_painel_compras, diff_check_table, diff_count_table)
 
