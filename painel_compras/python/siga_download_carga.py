@@ -58,14 +58,24 @@ def download_file(urlstr, file_path, file_nam, last_date_to_check, mode='wb'):
     #     shutil.copyfileobj(response, out_file)
     # urllib.request.urlretrieve(urlstr, file_path + file_nam)
     req = requests.get(urlstr)
+    if '.zip' in str.lower(urlstr):
+        file_nam = file_nam+'.zip'
+    elif '.csv' in str.lower(urlstr):
+        file_nam = file_nam + '.CSV'
+
     with open(file_path + file_nam, mode) as file:
-        last_modified_date = datetime.strptime(req.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z').replace(
-            tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
+        try:
+            last_modified_date = datetime.strptime(req.headers['last-modified'], '%a, %d %b %Y %H:%M:%S %Z').replace(
+                tzinfo=tz.gettz('UTC')).astimezone(tz.tzlocal())
+        except Exception as c_err:
+            last_modified_date = False
+
         if configs.settings.BD_FORCE_UPDATE or (not last_date_to_check) or (not last_modified_date) or (last_modified_date > last_date_to_check):
             if configs.settings.BD_FORCE_UPDATE:
                 logger.info('--->>  Force UPDATE !!!!! %s !' % file_nam)
             file.write(req.content)
-            dict_last_modified_date[file_nam] = last_modified_date
+            if last_modified_date:
+                dict_last_modified_date[file_nam] = last_modified_date
             return_new_file = True
     logger.info('file saved at %s !' % file_nam)
     return return_new_file
@@ -112,11 +122,14 @@ def siga_download(truncate_stage):
             if dt_extracao and ((not max_dt_extracao) or (dt_extracao > max_dt_extracao)):
                 max_dt_extracao = dt_extracao
         new_file = download_file(urlstr=siga_url, file_path=configs.folders.DOWNLOAD_DIR,
-                                 file_nam=siga_zip + '.zip', last_date_to_check=max_dt_extracao, mode='wb')
+                                 file_nam=siga_zip, last_date_to_check=max_dt_extracao, mode='wb')
         if new_file:
             result_new_data = new_file
-            unzip_file(file_path=configs.folders.DOWNLOAD_DIR, file_name=siga_zip + '.zip')
-            last_modified_date = dict_last_modified_date[siga_zip + '.zip']
+            if '.zip' in str.lower(siga_url):
+                unzip_file(file_path=configs.folders.DOWNLOAD_DIR, file_name=siga_zip + '.zip')
+                last_modified_date = dict_last_modified_date[siga_zip + '.zip']
+            else:
+                last_modified_date = dict_last_modified_date[siga_zip + '.CSV']
             for (dirpath, dirnames, filenames) in walk(configs.folders.DOWNLOAD_DIR):
                 for filename in filenames:
                     if '.CSV' in filename and filename.split('.')[0] in siga_csvs:
