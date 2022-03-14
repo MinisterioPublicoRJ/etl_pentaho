@@ -739,8 +739,8 @@
       <schema_name />
     </partitioning>
     <servername>${var_outlook_host}</servername>
-    <username>${var_mail_gr}</username>
-    <password>${var_mail_gr_pass}</password>
+    <username>${var_mail_gadg}</username>
+    <password>${var_mail_gadg_pass}</password>
     <usessl>Y</usessl>
     <sslport>${var_outlook_port}</sslport>
     <retrievemails>0</retrievemails>
