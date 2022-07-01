@@ -1,10 +1,11 @@
-# 2021/08/12 17h30 version 0.5
-# Autoras: Mariana Casemiro/Thalita Nascimento
+# 2022/07/01 15h30 version 0.8
+# Autoras: Mariana Casemiro/Thalita Nascimento/Rebecca Souza
+
 
 rm(list=ls())
 
-# install.packages(c("tidyverse","magrittr","zoo","dplyr","purrr","tidyr",
-# "outliers","data.table", "stringr"), dependencies = TRUE))
+#install.packages(c("tidyverse","magrittr","zoo","dplyr","purrr","tidyr","outliers","data.table",
+#                  "stringr", "spatstat"), dependencies = TRUE)
 
 library(tidyverse)
 library(magrittr)
@@ -15,194 +16,143 @@ library(tidyr)
 library(outliers)
 library(data.table)
 library(stringr)
+library(spatstat)
 
-setwd("E:/pentaho/etl/painel_compras/var/tmp/saida")
+# TODO: Colocar diretorio do Pentaho 
+setwd("E:/pentaho/etl/ALERTA_COMPRAS_RJ")
 
 # abrindo view de itens classificados pela equipe de Engenharia de Dados
-df <- read.csv2("itens_contratos_filtrados.csv", header = TRUE, sep = ';',
-                dec = '.', encoding = 'UTF-8')
+df <- read.csv2("itens_contratos_filtrados.csv", header = TRUE, sep = ';',dec = ".", encoding = 'UTF-8')
 
-# abrir histórico de alertas para ver contratações consideradas suspeitas
-suspeitos <- read.csv2("alertas_historico.csv", header = TRUE, sep = ';',
-                       dec = '.', encoding = 'UTF-8')
-
-# ajustando nome das colunas para minísculo
+# ajustando nome das colunas para minusculo
 colnames(df) <- str_to_lower(colnames(df))
 
-# selecionando colunas e colocando em ordem
-df <- select(df,c("contratacao", "status", "orgao", "processo", "objeto", 
-                  "tipo_aquisicao", "criterio_julgamento", "fornecedor", 
-                  "cpf_cnpj", "dt_contratacao", "dt_inicio", "dt_fim", 
-                  "vl_estimado", "vl_empenhado", "vl_executado",  "vl_pago",
-                  "id_item", "item","tp_item" ,"qtd", "qtd_aditiv_supr", 
-                  "vl_unit", "vl_unit_aditiv_supr")) 
+# Limpezas 
+df <- df %>%
+  select(contratacao,status,orgao,processo,objeto,tipo_aquisicao,criterio_julgamento,
+         fornecedor,cpf_cnpj,dt_contratacao,dt_inicio,dt_fim,vl_estimado,vl_empenhado,
+         vl_executado,vl_pago,id_item,item,tp_item,qtd,qtd_aditiv_supr,vl_unit,vl_unit_aditiv_supr) %>%
+  mutate(vl_estimado = as.numeric(vl_estimado),
+         vl_empenhado = as.numeric(vl_empenhado),
+         vl_executado = as.numeric(df$vl_executado),
+         vl_pago = as.numeric(vl_pago),
+         vl_unit = as.numeric(vl_unit),
+         vl_unit_aditiv_supr = as.numeric(vl_unit_aditiv_supr),
+         qtd = as.numeric(qtd),
+         qtd_aditiv_supr = as.numeric(qtd_aditiv_supr)) %>%
+  filter(status != c("CANCELADO","REJEITADO") & 
+           tp_item == "produto" &
+           vl_unit != 0.00)
 
-# alterando classes
-df$vl_estimado <- as.numeric(df$vl_estimado)
-df$vl_empenhado <- as.numeric(df$vl_empenhado)
-df$vl_executado <- as.numeric(df$vl_executado)
-df$vl_pago <- as.numeric(df$vl_pago)
-df$vl_unit <- as.numeric(df$vl_unit)
-df$vl_unit_aditiv_supr <- as.numeric(df$vl_unit_aditiv_supr)
-df$qtd <- as.numeric(df$qtd)
-df$qtd_aditiv_supr <- as.numeric(df$qtd_aditiv_supr)
+######################## Metodologia para analise de precos ###################
+# Considera contratos similares(analise feito pelo id_item) dos ultimos 180 dias
+# Gerar preco medio de id_item
+# msg de alerta quando o vl_unit for maior que 30% do preco medio
 
-# Retirando contratacoes Canceladas ou Encerradas
-df %<>% filter(status != "CANCELADO")
-df %<>% filter(status != "REJEITADO")
-df %<>% filter(tp_item == "produto")
+#Filtrando para contratos dos ultimos 180 dias
+df <- df %>%
+  mutate(dt_contratacao = as.Date(dt_contratacao))
 
-# Retirando linhas com valor do item 0
-df %<>% filter(vl_unit != 0.00)
-
-######################## Metodologia para analise de preços ###################
-# Considera contratos similares(análise feito pelo id_item) dos últimos 180 dias
-# Primeiro passo: gerar analise
-# Segundo passso: gerar dados para alimentar tabela de alertas
-# Terceiro passo: chamar tabela de alertas para verificar contratações que foram
-# alertas
-# Quarto passo: Para casos em que o preço mínimo ja tenha sido um alerta separar
-# em 3 tabelas
-
-
-# Filtrando para contratos dos últimos 180 dias
-df$dt_contratacao <- as.Date(df$dt_contratacao)
-ultimodia <- max(df$dt_contratacao)
+ultimodia <- max(df$dt_contratacao) 
 d180 <- ultimodia - 180 
 df %<>% filter(dt_contratacao<= ultimodia, dt_contratacao >= d180)
 
+#--------Proposta de pegar o ultimo dia dentro de cada item-----
+#df.ultimodia <- df %>%
+#  group_by(id_item) %>%
+#  summarise(
+#    ultimodia = max(dt_contratacao)
+#    )
+#df <- left_join(df, df.ultimodia)
+#df %<>% filter(dt_contratacao <= ultimodia, dt_contratacao >= ultimodia-180)
 
-# CALCULANDO MÉTRICAS ESTATÍSTICAS PARA O ALERTA, SEGUNDO CADA ID_ITEM
+
+#----- Calculando estatísticas para os alertas por id_item -----
 
 df.summary <- df %>%
-  
   group_by(id_item) %>%
-  
   summarise(
-    
     media_preco=round(mean(vl_unit),digits =  2),
-    
     preco_minimo=min(vl_unit),
-    
     preco_maximo=max(vl_unit),
-    
     amplitude_preco=max(vl_unit)-min(vl_unit),
-    
     quartil_um = quantile(vl_unit, c(0.25)),
-    
     quartil_dois = quantile(vl_unit, c(0.5)),
-    
     quartil_tres = quantile(vl_unit, c(0.75)),
-    
-    outlier_inferior = quartil_um - 1.5*(quartil_tres - quartil_um),
-    
-    outlier_superior = quartil_tres + 1.5*(quartil_tres - quartil_um),
-    
-    n = length(id_item) )
-
+    limite_inferior = quartil_um - 1.5*(quartil_tres - quartil_um),
+    limite_superior = quartil_tres + 1.5*(quartil_tres - quartil_um),
+    n = length(id_item),
+    qt_fornecedor = n_distinct(fornecedor))
 
 df = left_join(df, df.summary)
 
-######################## JOIN tabela com suspeitos #############################
-# criar condição: se tabela suspeitos estiver vazia não realizar join
+#---- Analisar apenas os itens com mais de 5 compras e mais de 2 fornecedores----
+df %<>% filter(n > 5 & qt_fornecedor > 2)
+
+df.summary2 <- df %>%
+  group_by(id_item) %>%
+  summarise(quantil_90_densi = as.numeric(quantile(density(vl_unit,
+                                                           kernel="cosine"),prob=0.90)))
+
+df = left_join(df, df.summary2)
 
 
-# fazendo join para trazer coluna informando se contratacao já foi considerada
-# suspeita
-if(is_empty(suspeitos$contratacao) == 'FALSE'){
-  
-  join <- suspeitos %>% select(contratacao, id_item, cpf_cnpj, alerta) %>% 
-    filter(alerta == "Preço Anormal")
-  colnames(join) <- c("contratacao", "id_item", "cpf_cnpj","suspeitos")
-  df <- left_join(df,join, by = c("contratacao", "id_item", "cpf_cnpj"))
-  
-  df %<>% mutate(preco_suspeito = ifelse(vl_unit == preco_minimo 
-                                         & suspeitos == "Preço Anormal",
-   "Avaliar contratações deste item","" ))
-  
-  x <- ifelse("Avaliar contratações deste item" %in% df$preco_suspeito, 1, 0)
-  if(x == 1 ){
-    tb_precos_alertas  <- df %>% 
-      filter(preco_suspeito == "Avaliar contratações deste item") %>%
-      select(id_item,preco_suspeito)
-    tb_precos_alertas <- distinct(tb_precos_alertas)
-    tb <- df[,-35]
-    tb_precos_alertas <- left_join(tb,tb_precos_alertas, by = "id_item")
-    tb_precos_alertas %<>% filter(preco_suspeito == "Avaliar contratações deste item")
-    tb_precos_alertas %<>% mutate(periodo_analise = paste(d180,"até",ultimodia))
-    tb_precos_alertas %<>% select("contratacao",  "status", "orgao", "processo",
-                                  "objeto", "tipo_aquisicao", "criterio_julgamento",
-                                  "fornecedor", "cpf_cnpj", "dt_contratacao",
-                                  "vl_estimado", "vl_empenhado", "vl_executado",
-                                  "vl_pago", "id_item", "item", "tp_item", "qtd",
-                                  "qtd_aditiv_supr", "vl_unit", "vl_unit_aditiv_supr",
-                                  "preco_minimo", "preco_maximo", "quartil_um",
-                                  "quartil_dois", "quartil_tres", "n", 
-                                  "preco_suspeito", "periodo_analise")
+#----- Criando alerta pela Media ------
+df <- df %>%
+  mutate(var_perc=round((vl_unit/media_preco-1)*100,2),
+         contrato_id_item = paste0(contratacao,"-",id_item)) %>%
+  arrange(desc(var_perc))
 
-    write.csv2(tb_precos_alertas, "alertas_contratos_avaliacao.csv", row.names=F,
-               dec = '.', fileEncoding = "UTF-8", na="")
-    # fazer filtro para retirar itens que foram para a avaliação da tabela de analise
-    
-    exc <- df$id_item %in% tb_precos_alertas$id_item
-    df <- df[!exc,]
-  }
+df$alerta_media <- ifelse(df$var_perc >= 30 , T, F)
+
+#----- Criando alerta pelo intervalo interquartil ------
+df$alerta_iq <- ifelse(df$vl_unit >= df$limite_superior , T, F)
 
 
-}
+#----- Criando alerta pelo quantil 90 da densidade --------
+df$alerta_densidade <- ifelse(df$vl_unit >= df$quantil_90_densi , T, F)
 
 
-# Seguir tabela normal de analise
+#----- Mensagens de alerta vermelho e alerta amarelo ------
 
-df %<>% dplyr::mutate(var_perc=round(((vl_unit/preco_minimo)-1)*100,2))
-
-df$alerta <- ifelse(df$var_perc >= 30 , "Preço Anormal", "")
-
-df$mensagem <- ifelse(df$var_perc >= 30 ,
-                      paste0("O valor unitário deste item é ", df$var_perc,
-                             "% maior que o menor preço!"), "")
-
-df %<>% mutate(contrato_id_item = paste0(contratacao,"-",id_item))
-
-df<- arrange(df, desc(var_perc))
-df %<>% filter(n > 3)
-
+df$alerta_msg <- ifelse(df$alerta_densidade + df$alerta_media + df$alerta_iq == 3,
+                        paste0("Alerta Vermelho"), 
+                        ifelse(df$alerta_densidade + df$alerta_media + df$alerta_iq == 2,
+                               paste0("Alerta Laranja"),
+                               ifelse(df$alerta_media == 1,
+                                      paste0("Alerta Amarelo"), "")))
+df$mensagem <- ifelse(df$var_perc >= 30 , paste0("O valor unitário deste item é ", df$var_perc, "% maior que o menor preço!"), "")
 options(scipen = 999) #
 
-rm(df.summary, join, suspeitos)
+rm(df.summary)
+rm(df.summary2)
+#rm(df.ultimodia)
 
-
-# adicionar coluna de data
+#------- adicionar coluna informando período --------
 
 df %<>% mutate(periodo_analise = paste(d180,"até",ultimodia))
 
 # selecionando colunas para a tabela final
-
-# contratacao,status,orgao,processo,objeto,tipo_aquisicao,criterio_julgamento,
-# fornecedor,cpf_cnpj,dt_contratacao,vl_estimado,vl_empenhado,vl_executado,
-# vl_pago,id_item,item,tp_item,qtd,qtd_aditiv_supr, vl_unit, vl_unit_aditiv_supr,
-# preco_minimo,preco_maximo,quartil_um,quartil_dois,quartil_tres,n,var_perc,
+# contratacao,status,orgao,processo,objeto,tipo_aquisicao,criterio_julgamento,fornecedor,cpf_cnpj,
+# dt_contratacao,vl_estimado,vl_empenhado,vl_executado,vl_pago,id_item,item,tp_item,qtd,qtd_aditiv_supr,
+# vl_unit, vl_unit_aditiv_supr,preco_minimo,preco_maximo,quartil_um,quartil_dois,quartil_tres,n,var_perc,
 # mensagem, contrato_id_item,periodo_analise
 
-names(df)
-df %<>% select("contratacao", "status", "orgao", "processo", "objeto",
-               "tipo_aquisicao", "criterio_julgamento", "fornecedor", "cpf_cnpj",
-               "dt_contratacao", "vl_estimado", "vl_empenhado", "vl_executado",
-               "vl_pago", "id_item", "item", "tp_item", "qtd", "qtd_aditiv_supr",
-               "vl_unit", "vl_unit_aditiv_supr", "preco_minimo", "preco_maximo",
-               "quartil_um", "quartil_dois", "quartil_tres","n", "var_perc",      
-               "alerta","mensagem", "contrato_id_item", "periodo_analise")
+df %<>% select("contratacao","status"  ,"orgao","processo","objeto",
+               "tipo_aquisicao","criterio_julgamento", "fornecedor","cpf_cnpj" ,
+               "dt_contratacao" ,"vl_estimado","vl_empenhado","vl_executado",
+               "vl_pago","id_item", "item", "tp_item","qtd","qtd_aditiv_supr",
+               "vl_unit","vl_unit_aditiv_supr","media_preco",  "preco_minimo" ,"preco_maximo",
+               "quartil_um","quartil_dois","quartil_tres","n","var_perc",
+               "limite_superior", "quantil_90_densi",
+               "alerta_media", "alerta_iq","alerta_densidade", "alerta_msg",
+               "mensagem",
+               "contrato_id_item",
+               "periodo_analise")
 
+write.csv2(df, "alertas_contratos_produtos.csv", row.names=F, fileEncoding = "UTF-8", na="")
 
-write.csv2(df, "alertas_contratos_produtos.csv", row.names=F, dec = '.',
-           fileEncoding = "UTF-8", na="")
+####################################### SALVANDO TABELA DE HISTORICO ###########################
+write.csv2(df, "alertas_historico.csv", row.names=F, fileEncoding = "UTF-8", na="")
 
-
-####################### SALVANDO TABELA DE HISTORICO ###########################
-
-historico <- df %>% filter(alerta == "Preço Anormal")
-write.csv2(historico, "alertas_historico.csv", row.names=F, dec = '.',
-           fileEncoding = "UTF-8", na="")
-
-############################   FIM DO SCRIPT  ##################################
-
+#################### FIM DO SCRIPT ###############################################################
